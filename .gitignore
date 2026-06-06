@@ -1,0 +1,20 @@
+# Dependencias
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Variables de entorno (contienen secretos: contraseñas, cadenas de conexión)
+.env
+.env.local
+.env.*.local
+
+# Configuración local de IDE / Claude
+.vscode/
+.idea/
+.claude/
+
+# Sistema
+.DS_Store
+Thumbs.db

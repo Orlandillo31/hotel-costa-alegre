@@ -1,0 +1,29 @@
+{
+  "name": "villas-cangrejo",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Sitio web de Villas Cangrejo con backend Node.js + MongoDB, panel de cliente y administrador, contabilidad, exportación a Excel y recuperación de contraseña.",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "actualizar-admin": "node server/scripts/actualizar-admin.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.4.2",
+    "express": "^4.19.2",
+    "express-rate-limit": "^8.5.2",
+    "helmet": "^8.2.0",
+    "mongoose": "^9.6.3",
+    "nodemailer": "^8.0.10"
+  },
+  "author": "Angel Leonor",
+  "license": "MIT",
+  "devDependencies": {
+    "mongodb-memory-server": "^11.2.0"
+  }
+}
