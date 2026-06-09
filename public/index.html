@@ -15,6 +15,9 @@
 
   <!-- Hoja de estilos externa — css/styles.css -->
   <link rel="stylesheet" href="css/styles.css" />
+
+  <!-- Favicon: logo del hotel -->
+  <link rel="icon" type="image/svg+xml" href="img/logo.svg" />
 </head>
 
 <body>
@@ -26,8 +29,11 @@
   ====================================================== -->
   <nav id="navbar" role="navigation" aria-label="Menú principal">
     <div class="navbar-logo">
-      Villas Cangrejo
-      <span>Jalisco, México</span>
+      <img src="img/logo.svg" alt="" class="logo-img" aria-hidden="true" />
+      <span class="navbar-logo-texto">
+        Villas Cangrejo
+        <span>Jalisco, México</span>
+      </span>
     </div>
 
     <!-- Botón hamburguesa (visible en mobile) -->
@@ -460,15 +466,12 @@
         style="width: 100%; border-radius: 1rem; object-fit: cover; max-height: 500px;" />
     </div>
 
-    <!-- ====== VIDEO — recorrido por las playas de la región ====== -->
+    <!-- ====== Imagen panorámica de nuestras playas ====== -->
     <div class="reveal" style="margin-top: 3rem;">
       <p class="galeria-video-titulo">Un recorrido por nuestras playas</p>
-      <div class="video-wrapper">
-        <iframe src="https://www.youtube.com/embed/-zP0Mp70SQ8?rel=0"
-          title="Playas, ballenas y snorkel en la Costalegre de Jalisco"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen></iframe>
-      </div>
+      <img src="https://images.unsplash.com/photo-1505228395891-9a51e7e86bf6?w=1600&q=80"
+        alt="Vista aérea de las playas del Pacífico en la Costa Alegre, Jalisco"
+        style="width: 100%; border-radius: 1rem; object-fit: cover; max-height: 520px;" />
     </div>
 
     <!-- ====== AUDIO ambiental — reproductor personalizado controlado por JS ====== -->
@@ -742,8 +745,11 @@
       <!-- Columna: Marca del hotel -->
       <div class="footer-marca">
         <div class="navbar-logo" style="margin-bottom:1rem">
-          Villas Cangrejo
-          <span>Jalisco, México</span>
+          <img src="img/logo.svg" alt="" class="logo-img" aria-hidden="true" />
+          <span class="navbar-logo-texto">
+            Villas Cangrejo
+            <span>Jalisco, México</span>
+          </span>
         </div>
         <p>
           Tu hogar en la costa más bella del Pacífico mexicano.
@@ -826,6 +832,9 @@
 
   <!-- SheetJS (xlsx) — librería para generar archivos Excel en el navegador -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <!-- jsPDF — generación de recibos en PDF (solo lo usa el panel admin) -->
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
   <!-- JavaScript principal (validación, navbar, animaciones) -->
   <script src="js/main.js"></script>

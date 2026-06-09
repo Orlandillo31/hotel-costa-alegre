@@ -99,6 +99,9 @@
 
     /* Logo del hotel */
     .navbar-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
       font-family: var(--fuente-titulo);
       font-size: 1.6rem;
       font-weight: 600;
@@ -106,7 +109,14 @@
       letter-spacing: 0.03em;
       line-height: 1;
     }
-    .navbar-logo span {
+    .logo-img {
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));
+    }
+    .navbar-logo-texto { display: flex; flex-direction: column; }
+    .navbar-logo-texto > span {
       display: block;
       font-size: 0.65rem;
       font-family: var(--fuente-cuerpo);
@@ -1577,6 +1587,8 @@
     .btn-mini.confirmar:hover { background: #1f3f1a; }
     .btn-mini.rechazar  { background: #c0392b; color: #fff; }
     .btn-mini.rechazar:hover  { background: #922b21; }
+    .btn-mini.recibo   { background: var(--color-dorado); color: #3a2c10; }
+    .btn-mini.recibo:hover    { background: #b88e45; }
     .btn-mini.eliminar  { background: #fff; color: #555; border: 1px solid #ddd; }
     .btn-mini.eliminar:hover  { background: #555; color: #fff; border-color: #555; }
 

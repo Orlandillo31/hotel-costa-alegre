@@ -362,9 +362,11 @@
   });
 
   // ----- Lista de reservaciones (admin) -----
+  let reservasAdminCache = [];   // para generar recibos sin volver a pedir datos
   async function cargarReservacionesAdmin() {
     try {
       const reservas = await api('/api/reservaciones');
+      reservasAdminCache = reservas;
       const tbody = document.getElementById('admin-tbody-reservaciones');
       const vacio = document.getElementById('admin-reservaciones-vacio');
       tbody.innerHTML = '';
@@ -387,6 +389,7 @@
           <td class="acciones-celda">
             ${r.estado !== 'confirmada' ? `<button class="btn-mini confirmar" data-id="${r.id}">✓ Confirmar</button>` : ''}
             ${r.estado !== 'rechazada'  ? `<button class="btn-mini rechazar"  data-id="${r.id}">✗ Rechazar</button>` : ''}
+            <button class="btn-mini recibo" data-id="${r.id}">🧾 Recibo</button>
             <button class="btn-mini eliminar" data-id="${r.id}">🗑</button>
           </td>
         `;
@@ -403,9 +406,90 @@
       tbody.querySelectorAll('.btn-mini.eliminar').forEach(b => {
         b.addEventListener('click', () => eliminarReserva(b.dataset.id));
       });
+      tbody.querySelectorAll('.btn-mini.recibo').forEach(b => {
+        b.addEventListener('click', () => generarRecibo(b.dataset.id));
+      });
     } catch (err) {
       alert('Error cargando reservaciones: ' + err.message);
     }
+  }
+
+  // ----- Generar recibo de una reservación en PDF (admin) -----
+  function generarRecibo(id) {
+    const r = reservasAdminCache.find(x => x.id === id);
+    if (!r) { alert('No se encontró la reservación.'); return; }
+    if (!window.jspdf || !window.jspdf.jsPDF) {
+      alert('La librería para generar el PDF no se cargó. Verifica tu conexión a internet.');
+      return;
+    }
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+    const W = doc.internal.pageSize.getWidth();
+
+    const OCEANO = [11, 61, 78], ORO = [201, 160, 88], GRIS = [110, 110, 110], OSC = [25, 25, 25];
+    const MX = n => '$' + (n || 0).toLocaleString('es-MX') + ' MXN';
+    const fechaLarga = s => s
+      ? new Date(s + 'T00:00:00').toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' })
+      : '—';
+
+    // Encabezado
+    doc.setFillColor(...OCEANO); doc.rect(0, 0, W, 92, 'F');
+    doc.setFillColor(...ORO);    doc.rect(0, 92, W, 4, 'F');
+    doc.setTextColor(...ORO); doc.setFont('helvetica', 'bold'); doc.setFontSize(22);
+    doc.text('VILLAS CANGREJO', 40, 46);
+    doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'normal'); doc.setFontSize(11);
+    doc.text('Recibo de reservación', 40, 66);
+    doc.setFontSize(8.5); doc.setTextColor(200, 220, 225);
+    doc.text('Costa Alegre, Jalisco, México   ·   Tel. +52 315 100 7106', 40, 82);
+    doc.setTextColor(255, 255, 255); doc.setFontSize(9);
+    doc.text('Folio: ' + String(r.id || '').slice(-8).toUpperCase(), W - 40, 40, { align: 'right' });
+    doc.text('Emitido: ' + new Date().toLocaleDateString('es-MX'), W - 40, 56, { align: 'right' });
+
+    let y = 140;
+    const seccion = (titulo, anchoLinea) => {
+      doc.setTextColor(...OCEANO); doc.setFont('helvetica', 'bold'); doc.setFontSize(13);
+      doc.text(titulo, 40, y);
+      doc.setDrawColor(...ORO); doc.setLineWidth(1); doc.line(40, y + 6, 40 + anchoLinea, y + 6);
+      y += 26;
+    };
+    const fila = (label, valor) => {
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(...GRIS);
+      doc.text(label, 40, y);
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(11); doc.setTextColor(...OSC);
+      doc.text(String(valor == null || valor === '' ? '—' : valor), 210, y);
+      y += 22;
+    };
+
+    seccion('Datos del huésped', 150);
+    fila('Nombre', r.nombre);
+    fila('Correo electrónico', r.email);
+    fila('Teléfono', r.telefono || 'No proporcionado');
+
+    y += 12;
+    seccion('Detalle de la reservación', 210);
+    fila('Villa', 'Villa ' + r.villa);
+    fila('Huéspedes', r.huespedes);
+    fila('Fecha de llegada', fechaLarga(r.llegada));
+    fila('Fecha de salida', fechaLarga(r.salida));
+    fila('Noches', r.noches);
+    fila('Precio por noche', MX(r.precioNoche));
+    fila('Estado', String(r.estado || '').toUpperCase());
+
+    // Total destacado
+    y += 10;
+    doc.setFillColor(...OCEANO); doc.rect(40, y, W - 80, 42, 'F');
+    doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(12);
+    doc.text('TOTAL', 58, y + 27);
+    doc.setTextColor(...ORO); doc.setFontSize(16);
+    doc.text(MX(r.total), W - 58, y + 28, { align: 'right' });
+    y += 76;
+
+    // Nota al pie
+    doc.setTextColor(...GRIS); doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+    doc.text('Comprobante de la solicitud de reservación. La estancia queda sujeta a confirmación', 40, y);
+    doc.text('por parte de Villas Cangrejo. ¡Gracias por su preferencia!', 40, y + 14);
+
+    doc.save('Recibo_VillasCangrejo_' + String(r.id || '').slice(-8) + '.pdf');
   }
 
   async function cambiarEstado(id, estado) {
@@ -500,60 +584,65 @@
 
     const c = datosContabilidad;
     const wb = XLSX.utils.book_new();
+    const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+    const fechaCorta = s => s ? new Date(s + 'T00:00:00').toLocaleDateString('es-MX') : '';
 
-    // Hoja 1 — Resumen
+    // ---------- Hoja 1: Resumen ----------
     const resumen = [
-      ['VILLAS CANGREJO — CONTABILIDAD'],
-      ['Generado:', new Date().toLocaleString('es-MX')],
+      ['VILLAS CANGREJO'],
+      ['Reporte de contabilidad · reservaciones CONFIRMADAS'],
+      ['Generado el:', new Date().toLocaleString('es-MX')],
       [],
+      ['Indicador', 'Valor'],
       ['Reservaciones confirmadas', c.totalReservacionesConfirmadas],
-      ['Noches vendidas',           c.nochesTotales],
-      ['Ingreso total (MXN)',       c.ingresoTotal],
+      ['Noches vendidas',            c.nochesTotales],
+      ['Ingreso total (MXN)',        c.ingresoTotal],
       ['Promedio por reserva (MXN)', c.promedioPorReserva],
       [],
-      ['DESGLOSE POR VILLA'],
-      ['Villa', 'Reservas', 'Ingresos (MXN)']
+      ['DESGLOSE POR VILLA', '', ''],
+      ['Villa', 'Reservas confirmadas', 'Ingresos (MXN)']
     ];
     Object.keys(c.porVilla || {}).forEach(t => {
       resumen.push([t, c.porVilla[t].cantidad, c.porVilla[t].ingresos]);
     });
+    resumen.push(['TOTAL', c.totalReservacionesConfirmadas, c.ingresoTotal]);
+
     const wsResumen = XLSX.utils.aoa_to_sheet(resumen);
-    wsResumen['!cols'] = [{ wch: 30 }, { wch: 18 }, { wch: 18 }];
+    wsResumen['!cols']   = [{ wch: 30 }, { wch: 22 }, { wch: 20 }];
+    wsResumen['!merges'] = [
+      { s: { r: 0, c: 0 }, e: { r: 0, c: 2 } },   // título
+      { s: { r: 1, c: 0 }, e: { r: 1, c: 2 } },   // subtítulo
+      { s: { r: 10, c: 0 }, e: { r: 10, c: 2 } }  // "DESGLOSE POR VILLA"
+    ];
     XLSX.utils.book_append_sheet(wb, wsResumen, 'Resumen');
 
-    // Hoja 2 — Detalle de reservaciones confirmadas
-    const detalle = [[
-      'ID', 'Cliente', 'Correo', 'Teléfono',
-      'Villa', 'Huéspedes', 'Llegada', 'Salida',
-      'Noches', 'Precio/Noche', 'Total (MXN)', 'Estado', 'Creada'
-    ]];
-    c.reservaciones.forEach(r => {
-      detalle.push([
-        r.id,
-        r.nombre,
-        r.email,
-        r.telefono,
-        fmtVilla(r.villa),
-        r.huespedes,
-        r.llegada,
-        r.salida,
-        r.noches,
-        r.precioNoche,
-        r.total,
-        r.estado,
-        new Date(r.creada).toLocaleString('es-MX')
-      ]);
-    });
-    const wsDetalle = XLSX.utils.aoa_to_sheet(detalle);
-    wsDetalle['!cols'] = [
-      { wch: 18 }, { wch: 24 }, { wch: 28 }, { wch: 16 },
-      { wch: 22 }, { wch: 10 }, { wch: 12 }, { wch: 12 },
-      { wch: 8 }, { wch: 12 }, { wch: 14 }, { wch: 12 }, { wch: 22 }
+    // ---------- Hoja 2: Detalle de reservaciones ----------
+    const encabezados = [
+      'Folio', 'Cliente', 'Correo', 'Teléfono', 'Villa', 'Huéspedes',
+      'Llegada', 'Salida', 'Noches', 'Precio/noche (MXN)', 'Total (MXN)', 'Estado', 'Fecha de solicitud'
     ];
-    XLSX.utils.book_append_sheet(wb, wsDetalle, 'Reservaciones confirmadas');
+    const filas = c.reservaciones.map(r => ([
+      String(r.id || '').slice(-8).toUpperCase(),
+      r.nombre, r.email, r.telefono || '',
+      'Villa ' + r.villa, r.huespedes,
+      fechaCorta(r.llegada), fechaCorta(r.salida),
+      r.noches, r.precioNoche, r.total, cap(r.estado),
+      new Date(r.creada).toLocaleDateString('es-MX')
+    ]));
+    const totNoches  = c.reservaciones.reduce((s, r) => s + (r.noches || 0), 0);
+    const totIngreso = c.reservaciones.reduce((s, r) => s + (r.total  || 0), 0);
+    const filaTotales = ['', '', '', '', '', '', '', 'TOTALES', totNoches, '', totIngreso, '', ''];
 
-    const nombreArchivo = `Contabilidad_VillasCangrejo_${new Date().toISOString().split('T')[0]}.xlsx`;
-    XLSX.writeFile(wb, nombreArchivo);
+    const wsDetalle = XLSX.utils.aoa_to_sheet([encabezados, ...filas, [], filaTotales]);
+    wsDetalle['!cols'] = [
+      { wch: 10 }, { wch: 24 }, { wch: 28 }, { wch: 16 }, { wch: 10 }, { wch: 11 },
+      { wch: 12 }, { wch: 12 }, { wch: 8 }, { wch: 18 }, { wch: 14 }, { wch: 12 }, { wch: 16 }
+    ];
+    // Autofiltro en los encabezados para ordenar/filtrar fácilmente
+    wsDetalle['!autofilter'] = { ref: 'A1:M' + (filas.length + 1) };
+    XLSX.utils.book_append_sheet(wb, wsDetalle, 'Reservaciones');
+
+    XLSX.writeFile(wb, `Contabilidad_VillasCangrejo_${new Date().toISOString().split('T')[0]}.xlsx`);
   });
 
   // =========================================================
