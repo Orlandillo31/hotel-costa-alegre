@@ -138,16 +138,22 @@ router.post('/recuperar', limiterAuth, async (req, res) => {
   cliente.resetIntentos = 0;
   await cliente.save();
 
-  await mailer.enviar({
-    to: email,
-    subject: 'Código de recuperación — Villas Cangrejo',
-    text: `Hola ${cliente.nombre},\n\nTu código de recuperación es: ${codigo}\n` +
-          `Vence en 15 minutos. Si no solicitaste esto, ignora este mensaje.\n\n— Villas Cangrejo`,
-    html: `<p>Hola <strong>${cliente.nombre}</strong>,</p>` +
-          `<p>Tu código de recuperación es:</p>` +
-          `<p style="font-size:1.8rem;letter-spacing:4px;font-weight:bold">${codigo}</p>` +
-          `<p>Vence en 15 minutos. Si no solicitaste esto, ignora este mensaje.</p><p>— Villas Cangrejo</p>`
-  });
+  // El try/catch evita que un fallo del proveedor de correo deje la
+  // petición sin respuesta; el mensaje al usuario siempre es genérico.
+  try {
+    await mailer.enviar({
+      to: email,
+      subject: 'Código de recuperación — Villas Cangrejo',
+      text: `Hola ${cliente.nombre},\n\nTu código de recuperación es: ${codigo}\n` +
+            `Vence en 15 minutos. Si no solicitaste esto, ignora este mensaje.\n\n— Villas Cangrejo`,
+      html: `<p>Hola <strong>${cliente.nombre}</strong>,</p>` +
+            `<p>Tu código de recuperación es:</p>` +
+            `<p style="font-size:1.8rem;letter-spacing:4px;font-weight:bold">${codigo}</p>` +
+            `<p>Vence en 15 minutos. Si no solicitaste esto, ignora este mensaje.</p><p>— Villas Cangrejo</p>`
+    });
+  } catch (e) {
+    console.error('No se pudo enviar el código de recuperación:', e.message);
+  }
 
   const resp = { ...generica };
   // Solo en desarrollo y sin SMTP real: devolver el código para poder probar.

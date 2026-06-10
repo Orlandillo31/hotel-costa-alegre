@@ -105,6 +105,7 @@ router.patch('/:id', requiereAuth('admin'), async (req, res) => {
   if (!reservacion) return res.status(404).json({ error: 'Reservación no encontrada.' });
 
   let correo = null;
+  let correoError;
   if (estado === 'confirmada' || estado === 'rechazada') {
     const plantilla = estado === 'confirmada'
       ? correoConfirmacion(reservacion)
@@ -115,10 +116,13 @@ router.patch('/:id', requiereAuth('admin'), async (req, res) => {
     } catch (e) {
       console.error('No se pudo notificar al cliente por correo:', e.message);
       correo = 'fallo';
+      // Solo lo ve el admin (endpoint autenticado): ayuda a diagnosticar
+      // problemas de configuración del proveedor de correo.
+      correoError = e.message;
     }
   }
 
-  res.json({ ok: true, reservacion, correo });
+  res.json({ ok: true, reservacion, correo, correoError });
 });
 
 // Eliminar (admin)
