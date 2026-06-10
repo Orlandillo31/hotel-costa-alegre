@@ -1,21 +1,34 @@
 /**
- * utils/mailer.js — Envío de correos con nodemailer.
+ * utils/mailer.js — Envío de correos.
  *
- * Se configura con variables de entorno (EMAIL_USER / EMAIL_PASS, etc.).
- * Para Gmail se recomienda una "App Password":
- *   https://myaccount.google.com/apppasswords
+ * Soporta dos vías (en este orden de prioridad):
  *
- * Si no hay credenciales configuradas, funciona en modo DEV: registra el
- * correo en consola en lugar de enviarlo (útil para desarrollo local).
+ *  1) BREVO (API HTTPS) — recomendado en Render, cuyo plan Free bloquea
+ *     las conexiones SMTP salientes. Variables:
+ *       BREVO_API_KEY   clave de https://app.brevo.com (gratis, 300/día)
+ *       EMAIL_FROM      remitente, ej. "Villas Cangrejo <correo@gmail.com>"
+ *       (el remitente debe estar verificado en Brevo)
+ *
+ *  2) SMTP con nodemailer (Gmail + contraseña de aplicación) — funciona
+ *     en local y en hostings que permiten SMTP. Variables:
+ *       EMAIL_HOST, EMAIL_PORT, EMAIL_USER, EMAIL_PASS, EMAIL_FROM
+ *
+ *  Sin credenciales → modo DEV: imprime el correo en consola.
  */
 const nodemailer = require('nodemailer');
 
 let transporter = null;
+let usaBrevo    = false;
 
 function init() {
+  if (process.env.BREVO_API_KEY) {
+    usaBrevo = true;
+    console.log('✉  Correo por API de Brevo (HTTPS).');
+    return;
+  }
   const { EMAIL_HOST, EMAIL_PORT, EMAIL_USER, EMAIL_PASS } = process.env;
   if (!EMAIL_USER || !EMAIL_PASS) {
-    console.warn('✉  Correo en modo DEV (sin SMTP). Define EMAIL_USER/EMAIL_PASS para enviar correos reales.');
+    console.warn('✉  Correo en modo DEV (sin SMTP ni Brevo). Define credenciales para enviar correos reales.');
     return;
   }
   const port = Number(EMAIL_PORT) || 465;
@@ -35,7 +48,40 @@ function init() {
   console.log('✉  Transporte de correo configurado (' + (EMAIL_HOST || 'smtp.gmail.com') + ')');
 }
 
+// Separa "Nombre <correo@x.com>" en sus partes para la API de Brevo.
+function parsearRemitente() {
+  const from = process.env.EMAIL_FROM || process.env.EMAIL_USER || '';
+  const m = from.match(/^(.*)<([^>]+)>\s*$/);
+  if (m) return { name: m[1].trim().replace(/^"|"$/g, ''), email: m[2].trim() };
+  return { name: 'Villas Cangrejo', email: from.trim() };
+}
+
+async function enviarPorBrevo({ to, subject, text, html }) {
+  const resp = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: {
+      'api-key': process.env.BREVO_API_KEY,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      sender: parsearRemitente(),
+      to: [{ email: to }],
+      subject,
+      textContent: text,
+      htmlContent: html || undefined
+    }),
+    signal: AbortSignal.timeout(20000)
+  });
+  if (!resp.ok) {
+    const cuerpo = await resp.text().catch(() => '');
+    throw new Error('Brevo respondió ' + resp.status + ': ' + cuerpo.slice(0, 200));
+  }
+  return resp.json();
+}
+
 async function enviar({ to, subject, text, html }) {
+  if (usaBrevo) return enviarPorBrevo({ to, subject, text, html });
+
   if (!transporter) {
     console.log('────────── [CORREO MODO DEV] ──────────');
     console.log('Para:', to);
@@ -48,6 +94,6 @@ async function enviar({ to, subject, text, html }) {
   return transporter.sendMail({ from, to, subject, text, html });
 }
 
-const configurado = () => !!transporter;
+const configurado = () => usaBrevo || !!transporter;
 
 module.exports = { init, enviar, configurado };
