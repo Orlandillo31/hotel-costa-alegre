@@ -10,6 +10,9 @@ npm-debug.log*
 .env.local
 .env.*.local
 
+# Plantillas de trabajo con datos reales de clientes (no subir al repo público)
+plantillas/
+
 # Configuración local de IDE / Claude
 .vscode/
 .idea/
