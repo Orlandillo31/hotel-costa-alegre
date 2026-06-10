@@ -23,7 +23,14 @@ function init() {
     host: EMAIL_HOST || 'smtp.gmail.com',
     port,
     secure: port === 465,       // 465 = SSL, 587 = STARTTLS
-    auth: { user: EMAIL_USER, pass: EMAIL_PASS }
+    auth: { user: EMAIL_USER, pass: EMAIL_PASS },
+    // Timeouts cortos: si el SMTP no responde, el envío falla rápido en
+    // lugar de colgar la petición HTTP que lo disparó (p. ej. confirmar
+    // una reserva desde el panel admin).
+    connectionTimeout: 10000,
+    greetingTimeout:   10000,
+    socketTimeout:     20000,
+    dnsTimeout:        10000
   });
   console.log('✉  Transporte de correo configurado (' + (EMAIL_HOST || 'smtp.gmail.com') + ')');
 }
