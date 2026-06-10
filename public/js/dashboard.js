@@ -494,10 +494,15 @@
 
   async function cambiarEstado(id, estado) {
     try {
-      await api('/api/reservaciones/' + id, {
+      const data = await api('/api/reservaciones/' + id, {
         method: 'PATCH',
         body: JSON.stringify({ estado })
       });
+      // El backend notifica al cliente por correo al confirmar/rechazar;
+      // solo avisamos al admin si ese correo no se pudo enviar.
+      if (data.correo === 'fallo') {
+        alert('El estado se actualizó, pero el correo de aviso al cliente NO se pudo enviar. Contáctalo manualmente.');
+      }
       await Promise.all([cargarReservacionesAdmin(), cargarContabilidad()]);
     } catch (err) {
       alert('Error: ' + err.message);

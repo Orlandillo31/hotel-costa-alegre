@@ -16,6 +16,8 @@ const router  = express.Router();
 const Reservacion = require('../models/Reservacion');
 const { PRECIO_NOCHE, NUM_VILLAS } = require('../config/db');
 const { obtenerSesion, requiereAuth } = require('../auth');
+const mailer = require('../utils/mailer');
+const { correoConfirmacion, correoRechazo } = require('../utils/notificaciones');
 
 const FECHA_RE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -87,7 +89,9 @@ router.get('/', requiereAuth('admin'), async (req, res) => {
   res.json(reservas);
 });
 
-// Cambiar estado (admin)
+// Cambiar estado (admin). Al confirmar o rechazar se notifica al cliente
+// por correo automáticamente; si el envío falla, el cambio de estado se
+// mantiene y se informa al admin en la respuesta (correo: 'fallo').
 router.patch('/:id', requiereAuth('admin'), async (req, res) => {
   const { estado } = req.body;
   if (!['pendiente', 'confirmada', 'rechazada'].includes(estado)) {
@@ -99,7 +103,22 @@ router.patch('/:id', requiereAuth('admin'), async (req, res) => {
     { new: true }
   );
   if (!reservacion) return res.status(404).json({ error: 'Reservación no encontrada.' });
-  res.json({ ok: true, reservacion });
+
+  let correo = null;
+  if (estado === 'confirmada' || estado === 'rechazada') {
+    const plantilla = estado === 'confirmada'
+      ? correoConfirmacion(reservacion)
+      : correoRechazo(reservacion);
+    try {
+      await mailer.enviar({ to: reservacion.email, ...plantilla });
+      correo = 'enviado';
+    } catch (e) {
+      console.error('No se pudo notificar al cliente por correo:', e.message);
+      correo = 'fallo';
+    }
+  }
+
+  res.json({ ok: true, reservacion, correo });
 });
 
 // Eliminar (admin)
