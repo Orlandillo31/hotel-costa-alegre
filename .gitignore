@@ -13,6 +13,10 @@ npm-debug.log*
 # Plantillas de trabajo con datos reales de clientes (no subir al repo público)
 plantillas/
 
+# Audio local de trabajo (archivos pesados / con copyright; no publicar).
+# La música ambiental del sitio se sirve desde una URL externa.
+audio/
+
 # Configuración local de IDE / Claude
 .vscode/
 .idea/
