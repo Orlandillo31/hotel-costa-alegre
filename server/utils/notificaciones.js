@@ -15,7 +15,7 @@ const DOMICILIO    = 'Km 72, Carretera Federal 200, San Patricio-Melaque, Jalisc
 const TEL_HOTEL    = '+52 315 100 7106';
 const EMAIL_HOTEL  = process.env.HOTEL_EMAIL || 'joseangel.hotel68@gmail.com';
 const SITE_URL     = process.env.SITE_URL || 'https://hotel-costa-alegre-7wl2.onrender.com';
-const LOGO_URL     = SITE_URL + '/img/logo.png';
+const LOGO_URL     = SITE_URL + '/img/logo.png?v=3';
 const IVA_RATE     = 0.16;   // IVA general en México
 
 // ---- Helpers ----
@@ -39,8 +39,8 @@ function encabezado(subtitulo) {
   <tr><td style="background:#0b3d4e;padding:22px 30px">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
       <td width="74" style="vertical-align:middle">
-        <img src="${LOGO_URL}" width="64" height="64" alt="Villas Cangrejo"
-             style="display:block;border:0;border-radius:50%"/>
+        <img src="${LOGO_URL}" width="66" height="63" alt="Villas Cangrejo"
+             style="display:block;border:0"/>
       </td>
       <td style="vertical-align:middle;padding-left:14px">
         <div style="color:#c9a058;font-size:20px;font-weight:bold;letter-spacing:1px;font-family:Georgia,'Times New Roman',serif">VILLAS CANGREJO</div>

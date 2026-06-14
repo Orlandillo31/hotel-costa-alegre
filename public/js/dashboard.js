@@ -446,7 +446,7 @@
           const im = new Image();
           im.onload = () => ok(im);
           im.onerror = no;
-          im.src = 'img/logo.png?v=2';
+          im.src = 'img/logo.png?v=3';
         });
         const cv = document.createElement('canvas');
         cv.width = img.naturalWidth || 512;
