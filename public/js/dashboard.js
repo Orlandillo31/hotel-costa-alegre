@@ -509,25 +509,25 @@
     fila('Estado', String(r.estado || '').toUpperCase());
     fila('Forma de pago', 'Por confirmar con el hotel');
 
-    // ---- Desglose de importes (columna derecha) ----
+    // ---- Desglose de importes (alineado a la izquierda, como el resto) ----
     y += 14;
-    const xLbl = W - 300, xVal = W - 48;
-    doc.setDrawColor(...ORO); doc.setLineWidth(0.8); doc.line(xLbl, y - 12, W - 40, y - 12);
+    const blkL = 40, blkR = 312;          // columna izquierda (ancho 272)
+    doc.setDrawColor(...ORO); doc.setLineWidth(0.8); doc.line(blkL, y - 12, blkR, y - 12);
     const importe = (l, v) => {
       doc.setFont('helvetica', 'normal'); doc.setFontSize(10.5); doc.setTextColor(...GRIS);
-      doc.text(l, xLbl, y);
-      doc.setTextColor(...OSC); doc.text(v, xVal, y, { align: 'right' });
+      doc.text(l, blkL, y);
+      doc.setTextColor(...OSC); doc.text(v, blkR, y, { align: 'right' });
       y += 20;
     };
     importe('Subtotal', MX(base) + ' MXN');
     importe('IVA (16%)', MX(iva) + ' MXN');
     // Caja de TOTAL
     y += 2;
-    doc.setFillColor(...OCEANO); doc.rect(xLbl - 12, y - 2, (W - 40) - (xLbl - 12), 32, 'F');
+    doc.setFillColor(...OCEANO); doc.rect(blkL, y - 2, blkR - blkL, 32, 'F');
     doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(12);
-    doc.text('TOTAL', xLbl, y + 19);
+    doc.text('TOTAL', blkL + 14, y + 19);
     doc.setTextColor(...ORO); doc.setFontSize(14);
-    doc.text(MX(r.total) + ' MXN', W - 52, y + 20, { align: 'right' });
+    doc.text(MX(r.total) + ' MXN', blkR - 12, y + 20, { align: 'right' });
 
     // ---- Nota legal al pie ----
     doc.setDrawColor(230, 224, 208); doc.setLineWidth(0.8); doc.line(40, H - 96, W - 40, H - 96);
