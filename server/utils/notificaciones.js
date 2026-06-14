@@ -26,11 +26,11 @@ const fechaLarga = s =>
 const MX = n => '$' + Number(n || 0).toLocaleString('es-MX',
   { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' MXN';
 
-// Desglose de IVA asumiendo que el precio mostrado ya incluye IVA.
-function desgloseIVA(total) {
-  const base = +(total / (1 + IVA_RATE)).toFixed(2);
-  const iva  = +(total - base).toFixed(2);
-  return { base, iva, total };
+// El subtotal (noches × precio) más el 16% de IVA da el total a pagar.
+function desgloseIVA(subtotal) {
+  const iva   = +(subtotal * IVA_RATE).toFixed(2);
+  const total = +(subtotal + iva).toFixed(2);
+  return { subtotal, iva, total };
 }
 
 // Encabezado con logo + razón social (tabla = compatible con Gmail/Outlook).
@@ -59,8 +59,8 @@ function pie() {
         Tel. / WhatsApp: ${TEL_HOTEL} · ${EMAIL_HOTEL}<br><br>
         <span style="color:#aaa">Este documento es un comprobante de reservación de carácter informativo y
         <strong>no constituye un Comprobante Fiscal Digital por Internet (CFDI)</strong>. Si requiere factura
-        fiscal, solicítela proporcionando su RFC y uso de CFDI al correo del hotel. Precios en pesos mexicanos
-        (MXN) con IVA incluido.</span>
+        fiscal, solicítela proporcionando su RFC y uso de CFDI al correo del hotel. Importes en pesos mexicanos
+        (MXN); el total incluye IVA del 16%.</span>
       </td></tr>
     </table>`;
 }
@@ -82,7 +82,7 @@ function envoltura(subtitulo, contenido) {
 
 // Tabla de concepto + desglose de IVA (para el comprobante de confirmación).
 function bloqueComprobante(r) {
-  const { base, iva, total } = desgloseIVA(r.total);
+  const { subtotal, iva, total } = desgloseIVA(r.total);
   const fila = (k, v, extra = '') =>
     `<tr><td style="padding:7px 0;color:#666;font-size:13px">${k}</td>
      <td style="padding:7px 0;font-size:13px;text-align:right;${extra}">${v}</td></tr>`;
@@ -100,19 +100,20 @@ function bloqueComprobante(r) {
         </table>
       </td></tr>
     </table>
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:10px;background:#0b3d4e;border-radius:8px">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:10px 0 0">
+      ${fila('Subtotal', MX(subtotal))}
+      ${fila('IVA (16%)', MX(iva))}
+    </table>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:8px;background:#0b3d4e;border-radius:8px">
       <tr>
         <td style="padding:14px 18px;color:#fff;font-size:14px;font-weight:bold">TOTAL</td>
         <td style="padding:14px 18px;color:#c9a058;font-size:18px;font-weight:bold;text-align:right">${MX(total)}</td>
       </tr>
-    </table>
-    <p style="margin:6px 2px 0;font-size:11px;color:#888;text-align:right">
-      Precio con IVA incluido &nbsp;·&nbsp; Base gravable: ${MX(base)} &nbsp;·&nbsp; IVA (16%): ${MX(iva)}
-    </p>`;
+    </table>`;
 }
 
 function correoConfirmacion(r) {
-  const { base, iva, total } = desgloseIVA(r.total);
+  const { subtotal, iva, total } = desgloseIVA(r.total);
   const contenido = `
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:6px">
       <tr>
@@ -146,8 +147,7 @@ function correoConfirmacion(r) {
       `Villa: ${r.villa}\nLlegada: ${fechaLarga(r.llegada)} (check-in 3:00 PM)\n` +
       `Salida: ${fechaLarga(r.salida)} (check-out 12:00 PM)\n` +
       `Noches: ${r.noches} × ${MX(r.precioNoche)}\n\n` +
-      `TOTAL: ${MX(total)} (IVA incluido)\n` +
-      `Base gravable: ${MX(base)} · IVA (16%): ${MX(iva)}\n\n` +
+      `Subtotal: ${MX(subtotal)}\nIVA (16%): ${MX(iva)}\nTOTAL: ${MX(total)}\n\n` +
       `${RAZON_SOCIAL} · ${DOMICILIO} · Tel. ${TEL_HOTEL}\n` +
       `Comprobante informativo, no es un CFDI. Para factura, solicítela con su RFC.`,
     html: envoltura('Comprobante de reservación', contenido)

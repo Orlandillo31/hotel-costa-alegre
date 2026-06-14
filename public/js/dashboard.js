@@ -434,8 +434,9 @@
     const folio = String(r.id || '').slice(-8).toUpperCase();
     const MX = n => '$' + Number(n || 0).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const IVA_RATE = 0.16;
-    const base = +(r.total / (1 + IVA_RATE)).toFixed(2);
-    const iva  = +(r.total - base).toFixed(2);
+    const subtotal  = r.total;                              // noches × precio
+    const iva       = +(subtotal * IVA_RATE).toFixed(2);    // 16% sobre el subtotal
+    const granTotal = +(subtotal + iva).toFixed(2);         // total a pagar
 
     // Cargar el logo como dataURL PNG (más compatible con jsPDF que pasar
     // el elemento <img>). Si algo falla, el recibo se genera igual sin él.
@@ -540,17 +541,19 @@
 
     const totBoxX = R - 250, totLbl = R - 238, totVal = R - 12;
     let ty = y;
-    // Caja de TOTAL (el precio anunciado ya incluye IVA)
-    doc.setFillColor(...OCEANO); doc.rect(totBoxX, ty - 2, R - totBoxX, 34, 'F');
+    const importe = (l, v) => {
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(10.5); doc.setTextColor(...GRIS);
+      doc.text(l, totBoxX, ty);
+      doc.setTextColor(...OSC); doc.text(v, totVal, ty, { align: 'right' });
+      ty += 19;
+    };
+    importe('Subtotal', MX(subtotal) + ' MXN');
+    importe('IVA (16%)', MX(iva) + ' MXN');
+    doc.setFillColor(...OCEANO); doc.rect(totBoxX, ty - 2, R - totBoxX, 32, 'F');
     doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(12);
-    doc.text('TOTAL', totLbl, ty + 16);
-    doc.setTextColor(...ORO); doc.setFontSize(15);
-    doc.text(MX(r.total) + ' MXN', totVal, ty + 17, { align: 'right' });
-    ty += 46;
-    // Desglose informativo: el IVA va incluido en el total, no se suma.
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...GRIS);
-    doc.text('Precio con IVA incluido', totVal, ty, { align: 'right' });
-    doc.text('Base gravable: ' + MX(base) + '  ·  IVA (16%): ' + MX(iva), totVal, ty + 12, { align: 'right' });
+    doc.text('TOTAL', totLbl, ty + 19);
+    doc.setTextColor(...ORO); doc.setFontSize(14);
+    doc.text(MX(granTotal) + ' MXN', totVal, ty + 20, { align: 'right' });
 
     // ---- Nota legal al pie ----
     doc.setDrawColor(230, 224, 208); doc.setLineWidth(0.8); doc.line(40, H - 96, W - 40, H - 96);
@@ -558,7 +561,7 @@
     const nota =
       'Comprobante de reservación de carácter informativo. No constituye un Comprobante Fiscal Digital ' +
       'por Internet (CFDI). Si requiere factura fiscal, solicítela proporcionando su RFC y uso de CFDI al ' +
-      'correo del hotel. Precios en pesos mexicanos (MXN) con IVA incluido.';
+      'correo del hotel. Importes en pesos mexicanos (MXN); el total incluye IVA del 16%.';
     doc.text(doc.splitTextToSize(nota, W - 80), 40, H - 82);
     doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(...OCEANO);
     doc.text(RAZON + ' · ' + DOMICILIO, 40, H - 40);
