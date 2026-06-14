@@ -24,6 +24,7 @@
   "author": "Angel Leonor",
   "license": "MIT",
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "mongodb-memory-server": "^11.2.0"
   }
 }

@@ -414,8 +414,8 @@
     }
   }
 
-  // ----- Generar recibo de una reservación en PDF (admin) -----
-  function generarRecibo(id) {
+  // ----- Generar recibo premium de una reservación en PDF (admin) -----
+  async function generarRecibo(id) {
     const r = reservasAdminCache.find(x => x.id === id);
     if (!r) { alert('No se encontró la reservación.'); return; }
     if (!window.jspdf || !window.jspdf.jsPDF) {
@@ -425,71 +425,111 @@
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'pt', format: 'a4' });
     const W = doc.internal.pageSize.getWidth();
+    const H = doc.internal.pageSize.getHeight();
 
     const OCEANO = [11, 61, 78], ORO = [201, 160, 88], GRIS = [110, 110, 110], OSC = [25, 25, 25];
-    const MX = n => '$' + (n || 0).toLocaleString('es-MX') + ' MXN';
+    const RAZON = 'Villas Cangrejo';
+    const DOMICILIO = 'Km 72, Carr. Federal 200, San Patricio-Melaque, Jalisco';
+    const TEL = '+52 315 100 7106', CORREO = 'joseangel.hotel68@gmail.com';
+    const folio = String(r.id || '').slice(-8).toUpperCase();
+    const MX = n => '$' + Number(n || 0).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const fechaLarga = s => s
       ? new Date(s + 'T00:00:00').toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' })
       : '—';
+    const IVA_RATE = 0.16;
+    const base = +(r.total / (1 + IVA_RATE)).toFixed(2);
+    const iva  = +(r.total - base).toFixed(2);
 
-    // Encabezado
-    doc.setFillColor(...OCEANO); doc.rect(0, 0, W, 92, 'F');
-    doc.setFillColor(...ORO);    doc.rect(0, 92, W, 4, 'F');
-    doc.setTextColor(...ORO); doc.setFont('helvetica', 'bold'); doc.setFontSize(22);
-    doc.text('VILLAS CANGREJO', 40, 46);
-    doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'normal'); doc.setFontSize(11);
-    doc.text('Recibo de reservación', 40, 66);
-    doc.setFontSize(8.5); doc.setTextColor(200, 220, 225);
-    doc.text('Costa Alegre, Jalisco, México   ·   Tel. +52 315 100 7106', 40, 82);
+    // Cargar el logo (si falla, el recibo se genera igual sin él)
+    const logo = await new Promise(res => {
+      const im = new Image();
+      im.onload = () => res(im);
+      im.onerror = () => res(null);
+      im.src = 'img/logo.png';
+    });
+
+    // ---- Encabezado ----
+    doc.setFillColor(...OCEANO); doc.rect(0, 0, W, 110, 'F');
+    doc.setFillColor(...ORO);    doc.rect(0, 110, W, 4, 'F');
+    if (logo) doc.addImage(logo, 'PNG', 40, 23, 64, 64);
+    const xT = logo ? 118 : 40;
+    doc.setTextColor(...ORO); doc.setFont('helvetica', 'bold'); doc.setFontSize(20);
+    doc.text('VILLAS CANGREJO', xT, 46);
+    doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+    doc.text('Recibo de reservación', xT, 63);
+    doc.setFontSize(8); doc.setTextColor(200, 220, 225);
+    doc.text(DOMICILIO, xT, 79);
+    doc.text('Tel. ' + TEL + '   ·   ' + CORREO, xT, 91);
     doc.setTextColor(255, 255, 255); doc.setFontSize(9);
-    doc.text('Folio: ' + String(r.id || '').slice(-8).toUpperCase(), W - 40, 40, { align: 'right' });
-    doc.text('Emitido: ' + new Date().toLocaleDateString('es-MX'), W - 40, 56, { align: 'right' });
+    doc.text('FOLIO: ' + folio, W - 40, 40, { align: 'right' });
+    doc.text('Emisión: ' + new Date().toLocaleDateString('es-MX'), W - 40, 56, { align: 'right' });
+    doc.text('Lugar: Melaque, Jalisco', W - 40, 72, { align: 'right' });
 
-    let y = 140;
+    let y = 150;
     const seccion = (titulo, anchoLinea) => {
-      doc.setTextColor(...OCEANO); doc.setFont('helvetica', 'bold'); doc.setFontSize(13);
+      doc.setTextColor(...OCEANO); doc.setFont('helvetica', 'bold'); doc.setFontSize(12);
       doc.text(titulo, 40, y);
       doc.setDrawColor(...ORO); doc.setLineWidth(1); doc.line(40, y + 6, 40 + anchoLinea, y + 6);
-      y += 26;
+      y += 24;
     };
     const fila = (label, valor) => {
-      doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(...GRIS);
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(9.5); doc.setTextColor(...GRIS);
       doc.text(label, 40, y);
-      doc.setFont('helvetica', 'normal'); doc.setFontSize(11); doc.setTextColor(...OSC);
-      doc.text(String(valor == null || valor === '' ? '—' : valor), 210, y);
-      y += 22;
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(10.5); doc.setTextColor(...OSC);
+      doc.text(String(valor == null || valor === '' ? '—' : valor), 200, y);
+      y += 20;
     };
 
-    seccion('Datos del huésped', 150);
+    seccion('Datos del cliente', 150);
     fila('Nombre', r.nombre);
     fila('Correo electrónico', r.email);
     fila('Teléfono', r.telefono || 'No proporcionado');
 
-    y += 12;
-    seccion('Detalle de la reservación', 210);
+    y += 10;
+    seccion('Detalle del hospedaje', 200);
     fila('Villa', 'Villa ' + r.villa);
     fila('Huéspedes', r.huespedes);
-    fila('Fecha de llegada', fechaLarga(r.llegada));
-    fila('Fecha de salida', fechaLarga(r.salida));
+    fila('Llegada', fechaLarga(r.llegada) + '  (check-in 3:00 PM)');
+    fila('Salida', fechaLarga(r.salida) + '  (check-out 12:00 PM)');
     fila('Noches', r.noches);
-    fila('Precio por noche', MX(r.precioNoche));
+    fila('Precio por noche', MX(r.precioNoche) + ' MXN');
     fila('Estado', String(r.estado || '').toUpperCase());
+    fila('Forma de pago', 'Por confirmar con el hotel');
 
-    // Total destacado
-    y += 10;
-    doc.setFillColor(...OCEANO); doc.rect(40, y, W - 80, 42, 'F');
+    // ---- Desglose de importes (columna derecha) ----
+    y += 14;
+    const xLbl = W - 300, xVal = W - 48;
+    doc.setDrawColor(...ORO); doc.setLineWidth(0.8); doc.line(xLbl, y - 12, W - 40, y - 12);
+    const importe = (l, v) => {
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(10.5); doc.setTextColor(...GRIS);
+      doc.text(l, xLbl, y);
+      doc.setTextColor(...OSC); doc.text(v, xVal, y, { align: 'right' });
+      y += 20;
+    };
+    importe('Subtotal', MX(base) + ' MXN');
+    importe('IVA (16%)', MX(iva) + ' MXN');
+    // Caja de TOTAL
+    y += 2;
+    doc.setFillColor(...OCEANO); doc.rect(xLbl - 12, y - 2, (W - 40) - (xLbl - 12), 32, 'F');
     doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(12);
-    doc.text('TOTAL', 58, y + 27);
-    doc.setTextColor(...ORO); doc.setFontSize(16);
-    doc.text(MX(r.total), W - 58, y + 28, { align: 'right' });
-    y += 76;
+    doc.text('TOTAL', xLbl, y + 19);
+    doc.setTextColor(...ORO); doc.setFontSize(14);
+    doc.text(MX(r.total) + ' MXN', W - 52, y + 20, { align: 'right' });
 
-    // Nota al pie
-    doc.setTextColor(...GRIS); doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
-    doc.text('Comprobante de la solicitud de reservación. La estancia queda sujeta a confirmación', 40, y);
-    doc.text('por parte de Villas Cangrejo. ¡Gracias por su preferencia!', 40, y + 14);
+    // ---- Nota legal al pie ----
+    doc.setDrawColor(230, 224, 208); doc.setLineWidth(0.8); doc.line(40, H - 96, W - 40, H - 96);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...GRIS);
+    const nota =
+      'Comprobante de reservación de carácter informativo. No constituye un Comprobante Fiscal Digital ' +
+      'por Internet (CFDI). Si requiere factura fiscal, solicítela proporcionando su RFC y uso de CFDI al ' +
+      'correo del hotel. Precios en pesos mexicanos (MXN) con IVA incluido.';
+    doc.text(doc.splitTextToSize(nota, W - 80), 40, H - 82);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(...OCEANO);
+    doc.text(RAZON + ' · ' + DOMICILIO, 40, H - 40);
+    doc.setFont('helvetica', 'normal'); doc.setTextColor(...GRIS);
+    doc.text('¡Gracias por su preferencia! 🦀', 40, H - 28);
 
-    doc.save('Recibo_VillasCangrejo_' + String(r.id || '').slice(-8) + '.pdf');
+    doc.save('Recibo_VillasCangrejo_' + folio + '.pdf');
   }
 
   async function cambiarEstado(id, estado) {
