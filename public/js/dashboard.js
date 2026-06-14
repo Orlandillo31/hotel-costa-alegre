@@ -433,9 +433,6 @@
     const TEL = '+52 315 100 7106', CORREO = 'joseangel.hotel68@gmail.com';
     const folio = String(r.id || '').slice(-8).toUpperCase();
     const MX = n => '$' + Number(n || 0).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    const fechaLarga = s => s
-      ? new Date(s + 'T00:00:00').toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' })
-      : '—';
     const IVA_RATE = 0.16;
     const base = +(r.total / (1 + IVA_RATE)).toFixed(2);
     const iva  = +(r.total - base).toFixed(2);
@@ -478,56 +475,84 @@
     doc.text('Emisión: ' + new Date().toLocaleDateString('es-MX'), W - 40, 56, { align: 'right' });
     doc.text('Lugar: Melaque, Jalisco', W - 40, 72, { align: 'right' });
 
-    let y = 150;
-    const seccion = (titulo, anchoLinea) => {
-      doc.setTextColor(...OCEANO); doc.setFont('helvetica', 'bold'); doc.setFontSize(12);
-      doc.text(titulo, 40, y);
-      doc.setDrawColor(...ORO); doc.setLineWidth(1); doc.line(40, y + 6, 40 + anchoLinea, y + 6);
-      y += 24;
+    // Layout a todo el ancho (márgenes simétricos de 40 pt)
+    const M = 40, R = W - 40, CW = R - M;
+    const fechaCorta = s => s ? new Date(s + 'T00:00:00').toLocaleDateString('es-MX') : '—';
+    let y = 148;
+
+    const tituloSec = (txt, x, ancho) => {
+      doc.setTextColor(...OCEANO); doc.setFont('helvetica', 'bold'); doc.setFontSize(11.5);
+      doc.text(txt, x, y);
+      doc.setDrawColor(...ORO); doc.setLineWidth(1); doc.line(x, y + 5, x + ancho, y + 5);
     };
-    const fila = (label, valor) => {
-      doc.setFont('helvetica', 'bold'); doc.setFontSize(9.5); doc.setTextColor(...GRIS);
-      doc.text(label, 40, y);
+
+    // ---- Dos columnas simétricas: cliente | reservación ----
+    const colGap = 24;
+    const colW = (CW - colGap) / 2;
+    const c1 = M, c2 = M + colW + colGap;
+    tituloSec('Datos del cliente', c1, colW);
+    tituloSec('Datos de la reservación', c2, colW);
+    y += 22;
+
+    const campo = (x, label, valor, yy) => {
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(...GRIS);
+      doc.text(label.toUpperCase(), x, yy);
       doc.setFont('helvetica', 'normal'); doc.setFontSize(10.5); doc.setTextColor(...OSC);
-      doc.text(String(valor == null || valor === '' ? '—' : valor), 200, y);
-      y += 20;
+      const lineas = doc.splitTextToSize(String(valor == null || valor === '' ? '—' : valor), colW - 4);
+      doc.text(lineas, x, yy + 13);
     };
+    const ROW = 34;
+    campo(c1, 'Nombre',             r.nombre,                              y);
+    campo(c2, 'Villa',              'Villa ' + r.villa,                    y);
+    campo(c1, 'Correo electrónico', r.email,                               y + ROW);
+    campo(c2, 'Huéspedes',          r.huespedes,                           y + ROW);
+    campo(c1, 'Teléfono',           r.telefono || 'No proporcionado',      y + ROW * 2);
+    campo(c2, 'Estado',             String(r.estado || '').toUpperCase(),  y + ROW * 2);
+    y += ROW * 3 + 6;
 
-    seccion('Datos del cliente', 150);
-    fila('Nombre', r.nombre);
-    fila('Correo electrónico', r.email);
-    fila('Teléfono', r.telefono || 'No proporcionado');
+    // ---- Tabla de concepto a todo el ancho ----
+    const cDesc = M + 12, cNoches = M + CW * 0.56, cPU = M + CW * 0.76, cImp = R - 12;
+    doc.setFillColor(...OCEANO); doc.rect(M, y, CW, 22, 'F');
+    doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(8);
+    doc.text('DESCRIPCIÓN', cDesc, y + 14);
+    doc.text('NOCHES', cNoches, y + 14, { align: 'center' });
+    doc.text('P. UNITARIO', cPU, y + 14, { align: 'right' });
+    doc.text('IMPORTE', cImp, y + 14, { align: 'right' });
+    y += 22;
+    doc.setTextColor(...OSC); doc.setFont('helvetica', 'normal'); doc.setFontSize(10.5);
+    doc.text('Hospedaje · Villa ' + r.villa, cDesc, y + 16);
+    doc.setFontSize(8); doc.setTextColor(...GRIS);
+    doc.text(fechaCorta(r.llegada) + '  →  ' + fechaCorta(r.salida) + '  (' + r.noches + ' noches)', cDesc, y + 28);
+    doc.setFontSize(10.5); doc.setTextColor(...OSC);
+    doc.text(String(r.noches), cNoches, y + 16, { align: 'center' });
+    doc.text(MX(r.precioNoche), cPU, y + 16, { align: 'right' });
+    doc.text(MX(r.total), cImp, y + 16, { align: 'right' });
+    doc.setDrawColor(230, 224, 208); doc.setLineWidth(0.6); doc.line(M, y + 40, R, y + 40);
+    y += 56;
 
-    y += 10;
-    seccion('Detalle del hospedaje', 200);
-    fila('Villa', 'Villa ' + r.villa);
-    fila('Huéspedes', r.huespedes);
-    fila('Llegada', fechaLarga(r.llegada) + '  (check-in 3:00 PM)');
-    fila('Salida', fechaLarga(r.salida) + '  (check-out 12:00 PM)');
-    fila('Noches', r.noches);
-    fila('Precio por noche', MX(r.precioNoche) + ' MXN');
-    fila('Estado', String(r.estado || '').toUpperCase());
-    fila('Forma de pago', 'Por confirmar con el hotel');
+    // ---- Forma de pago (izquierda) + totales (derecha), mismo nivel ----
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(...GRIS);
+    doc.text('FORMA DE PAGO', M, y);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(10.5); doc.setTextColor(...OSC);
+    doc.text('Por confirmar con el hotel', M, y + 14);
+    doc.setFontSize(9); doc.setTextColor(...GRIS);
+    doc.text('Check-in 3:00 PM  ·  Check-out 12:00 PM', M, y + 30);
 
-    // ---- Desglose de importes (alineado a la izquierda, como el resto) ----
-    y += 14;
-    const blkL = 40, blkR = 312;          // columna izquierda (ancho 272)
-    doc.setDrawColor(...ORO); doc.setLineWidth(0.8); doc.line(blkL, y - 12, blkR, y - 12);
+    const totBoxX = R - 250, totLbl = R - 238, totVal = R - 12;
+    let ty = y;
     const importe = (l, v) => {
       doc.setFont('helvetica', 'normal'); doc.setFontSize(10.5); doc.setTextColor(...GRIS);
-      doc.text(l, blkL, y);
-      doc.setTextColor(...OSC); doc.text(v, blkR, y, { align: 'right' });
-      y += 20;
+      doc.text(l, totBoxX, ty);
+      doc.setTextColor(...OSC); doc.text(v, totVal, ty, { align: 'right' });
+      ty += 19;
     };
     importe('Subtotal', MX(base) + ' MXN');
     importe('IVA (16%)', MX(iva) + ' MXN');
-    // Caja de TOTAL
-    y += 2;
-    doc.setFillColor(...OCEANO); doc.rect(blkL, y - 2, blkR - blkL, 32, 'F');
+    doc.setFillColor(...OCEANO); doc.rect(totBoxX, ty - 2, R - totBoxX, 32, 'F');
     doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(12);
-    doc.text('TOTAL', blkL + 14, y + 19);
+    doc.text('TOTAL', totLbl, ty + 19);
     doc.setTextColor(...ORO); doc.setFontSize(14);
-    doc.text(MX(r.total) + ' MXN', blkR - 12, y + 20, { align: 'right' });
+    doc.text(MX(r.total) + ' MXN', totVal, ty + 20, { align: 'right' });
 
     // ---- Nota legal al pie ----
     doc.setDrawColor(230, 224, 208); doc.setLineWidth(0.8); doc.line(40, H - 96, W - 40, H - 96);
