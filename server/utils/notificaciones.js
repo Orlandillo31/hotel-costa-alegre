@@ -100,16 +100,15 @@ function bloqueComprobante(r) {
         </table>
       </td></tr>
     </table>
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:10px 0 0">
-      ${fila('Subtotal', MX(base))}
-      ${fila('IVA (16%)', MX(iva))}
-    </table>
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:8px;background:#0b3d4e;border-radius:8px">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:10px;background:#0b3d4e;border-radius:8px">
       <tr>
         <td style="padding:14px 18px;color:#fff;font-size:14px;font-weight:bold">TOTAL</td>
         <td style="padding:14px 18px;color:#c9a058;font-size:18px;font-weight:bold;text-align:right">${MX(total)}</td>
       </tr>
-    </table>`;
+    </table>
+    <p style="margin:6px 2px 0;font-size:11px;color:#888;text-align:right">
+      Precio con IVA incluido &nbsp;·&nbsp; Base gravable: ${MX(base)} &nbsp;·&nbsp; IVA (16%): ${MX(iva)}
+    </p>`;
 }
 
 function correoConfirmacion(r) {
@@ -147,7 +146,8 @@ function correoConfirmacion(r) {
       `Villa: ${r.villa}\nLlegada: ${fechaLarga(r.llegada)} (check-in 3:00 PM)\n` +
       `Salida: ${fechaLarga(r.salida)} (check-out 12:00 PM)\n` +
       `Noches: ${r.noches} × ${MX(r.precioNoche)}\n\n` +
-      `Subtotal: ${MX(base)}\nIVA (16%): ${MX(iva)}\nTOTAL: ${MX(total)}\n\n` +
+      `TOTAL: ${MX(total)} (IVA incluido)\n` +
+      `Base gravable: ${MX(base)} · IVA (16%): ${MX(iva)}\n\n` +
       `${RAZON_SOCIAL} · ${DOMICILIO} · Tel. ${TEL_HOTEL}\n` +
       `Comprobante informativo, no es un CFDI. Para factura, solicítela con su RFC.`,
     html: envoltura('Comprobante de reservación', contenido)

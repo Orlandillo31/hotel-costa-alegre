@@ -522,7 +522,7 @@
     doc.setTextColor(...OSC); doc.setFont('helvetica', 'normal'); doc.setFontSize(10.5);
     doc.text('Hospedaje · Villa ' + r.villa, cDesc, y + 16);
     doc.setFontSize(8); doc.setTextColor(...GRIS);
-    doc.text(fechaCorta(r.llegada) + '  →  ' + fechaCorta(r.salida) + '  (' + r.noches + ' noches)', cDesc, y + 28);
+    doc.text(fechaCorta(r.llegada) + ' al ' + fechaCorta(r.salida) + '  (' + r.noches + ' noches)', cDesc, y + 28);
     doc.setFontSize(10.5); doc.setTextColor(...OSC);
     doc.text(String(r.noches), cNoches, y + 16, { align: 'center' });
     doc.text(MX(r.precioNoche), cPU, y + 16, { align: 'right' });
@@ -540,19 +540,17 @@
 
     const totBoxX = R - 250, totLbl = R - 238, totVal = R - 12;
     let ty = y;
-    const importe = (l, v) => {
-      doc.setFont('helvetica', 'normal'); doc.setFontSize(10.5); doc.setTextColor(...GRIS);
-      doc.text(l, totBoxX, ty);
-      doc.setTextColor(...OSC); doc.text(v, totVal, ty, { align: 'right' });
-      ty += 19;
-    };
-    importe('Subtotal', MX(base) + ' MXN');
-    importe('IVA (16%)', MX(iva) + ' MXN');
-    doc.setFillColor(...OCEANO); doc.rect(totBoxX, ty - 2, R - totBoxX, 32, 'F');
+    // Caja de TOTAL (el precio anunciado ya incluye IVA)
+    doc.setFillColor(...OCEANO); doc.rect(totBoxX, ty - 2, R - totBoxX, 34, 'F');
     doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(12);
-    doc.text('TOTAL', totLbl, ty + 19);
-    doc.setTextColor(...ORO); doc.setFontSize(14);
-    doc.text(MX(r.total) + ' MXN', totVal, ty + 20, { align: 'right' });
+    doc.text('TOTAL', totLbl, ty + 16);
+    doc.setTextColor(...ORO); doc.setFontSize(15);
+    doc.text(MX(r.total) + ' MXN', totVal, ty + 17, { align: 'right' });
+    ty += 46;
+    // Desglose informativo: el IVA va incluido en el total, no se suma.
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...GRIS);
+    doc.text('Precio con IVA incluido', totVal, ty, { align: 'right' });
+    doc.text('Base gravable: ' + MX(base) + '  ·  IVA (16%): ' + MX(iva), totVal, ty + 12, { align: 'right' });
 
     // ---- Nota legal al pie ----
     doc.setDrawColor(230, 224, 208); doc.setLineWidth(0.8); doc.line(40, H - 96, W - 40, H - 96);
@@ -565,7 +563,7 @@
     doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(...OCEANO);
     doc.text(RAZON + ' · ' + DOMICILIO, 40, H - 40);
     doc.setFont('helvetica', 'normal'); doc.setTextColor(...GRIS);
-    doc.text('¡Gracias por su preferencia! 🦀', 40, H - 28);
+    doc.text('¡Gracias por su preferencia!', 40, H - 28);
 
     doc.save('Recibo_VillasCangrejo_' + folio + '.pdf');
   }
