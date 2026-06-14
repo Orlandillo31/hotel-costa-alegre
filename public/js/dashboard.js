@@ -440,19 +440,32 @@
     const base = +(r.total / (1 + IVA_RATE)).toFixed(2);
     const iva  = +(r.total - base).toFixed(2);
 
-    // Cargar el logo (si falla, el recibo se genera igual sin él)
-    const logo = await new Promise(res => {
-      const im = new Image();
-      im.onload = () => res(im);
-      im.onerror = () => res(null);
-      im.src = 'img/logo.png';
-    });
+    // Cargar el logo como dataURL PNG (más compatible con jsPDF que pasar
+    // el elemento <img>). Si algo falla, el recibo se genera igual sin él.
+    const logoData = await (async () => {
+      try {
+        const img = await new Promise((ok, no) => {
+          const im = new Image();
+          im.onload = () => ok(im);
+          im.onerror = no;
+          im.src = 'img/logo.png?v=2';
+        });
+        const cv = document.createElement('canvas');
+        cv.width = img.naturalWidth || 512;
+        cv.height = img.naturalHeight || 512;
+        cv.getContext('2d').drawImage(img, 0, 0);
+        return cv.toDataURL('image/png');
+      } catch (e) {
+        console.warn('No se pudo cargar el logo para el recibo:', e);
+        return null;
+      }
+    })();
 
     // ---- Encabezado ----
     doc.setFillColor(...OCEANO); doc.rect(0, 0, W, 110, 'F');
     doc.setFillColor(...ORO);    doc.rect(0, 110, W, 4, 'F');
-    if (logo) doc.addImage(logo, 'PNG', 40, 23, 64, 64);
-    const xT = logo ? 118 : 40;
+    if (logoData) doc.addImage(logoData, 'PNG', 40, 23, 64, 64);
+    const xT = logoData ? 118 : 40;
     doc.setTextColor(...ORO); doc.setFont('helvetica', 'bold'); doc.setFontSize(20);
     doc.text('VILLAS CANGREJO', xT, 46);
     doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
