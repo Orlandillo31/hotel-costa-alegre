@@ -348,11 +348,59 @@
     // INICIALIZACIÓN: Establecer fecha mínima en los campos
     // de fecha para que no se puedan elegir fechas pasadas.
     // -------------------------------------------------------
-    const fechaHoy = new Date().toISOString().split('T')[0];
-    document.getElementById('campo-llegada').min = fechaHoy;
-    document.getElementById('campo-salida').min  = fechaHoy;
+    const fechaHoy     = new Date().toISOString().split('T')[0];
+    const inputLlegada = document.getElementById('campo-llegada');
+    const inputSalida  = document.getElementById('campo-salida');
+    const selVilla     = document.getElementById('campo-villa');
+    const msgVillas    = document.getElementById('villas-disponibles-msg');
+    const VILLAS_TOTAL = 16;
+    inputLlegada.min = fechaHoy;
+    inputSalida.min  = fechaHoy;
 
-    // Cuando cambia la llegada, ajustar el mínimo de salida automáticamente
-    document.getElementById('campo-llegada').addEventListener('change', (e) => {
-      document.getElementById('campo-salida').min = e.target.value;
+    // Reconstruye el desplegable de villas. Si recibe una lista, muestra solo
+    // esas; si recibe null, muestra las 16 (estado inicial sin fechas).
+    function poblarVillas(disponibles) {
+      const previa = selVilla.value;
+      const lista = disponibles || Array.from({ length: VILLAS_TOTAL }, (_, i) => i + 1);
+      selVilla.innerHTML = '<option value="">— Selecciona una villa —</option>' +
+        lista.map(v => `<option value="${v}">Villa ${v}</option>`).join('');
+      if (previa && lista.includes(Number(previa))) selVilla.value = previa;
+    }
+
+    function mensajeVillas(texto, tipo) {
+      if (!msgVillas) return;
+      msgVillas.textContent = texto || '';
+      msgVillas.className = 'villas-msg' + (tipo ? ' ' + tipo : '');
+    }
+
+    // Consulta al backend qué villas están libres en las fechas elegidas
+    // (solo bloquean las reservas CONFIRMADAS por el administrador).
+    async function refrescarDisponibilidad() {
+      const llegada = inputLlegada.value;
+      const salida  = inputSalida.value;
+      if (!llegada || !salida || salida <= llegada) {
+        poblarVillas(null);
+        mensajeVillas('', '');
+        return;
+      }
+      if (typeof window.HCA_disponibilidad !== 'function') return;
+      selVilla.disabled = true;
+      mensajeVillas('Consultando disponibilidad…', 'info');
+      const data = await window.HCA_disponibilidad(llegada, salida);
+      selVilla.disabled = false;
+      if (!data) { poblarVillas(null); mensajeVillas('', ''); return; }
+      poblarVillas(data.disponibles);
+      if (data.disponibles.length === 0) {
+        mensajeVillas('No hay villas disponibles en esas fechas. Prueba con otras fechas.', 'warn');
+      } else {
+        mensajeVillas('✓ ' + data.disponibles.length + ' de ' + data.total +
+                      ' villas disponibles para esas fechas.', 'ok');
+      }
+    }
+
+    // Al cambiar la llegada, ajustar el mínimo de salida y refrescar villas.
+    inputLlegada.addEventListener('change', () => {
+      inputSalida.min = inputLlegada.value;
+      refrescarDisponibilidad();
     });
+    inputSalida.addEventListener('change', refrescarDisponibilidad);

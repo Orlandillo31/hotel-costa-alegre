@@ -21,6 +21,32 @@ const { correoConfirmacion, correoRechazo } = require('../utils/notificaciones')
 
 const FECHA_RE = /^\d{4}-\d{2}-\d{2}$/;
 
+// Devuelve los números de villa OCUPADOS por reservas CONFIRMADAS que se
+// solapan con el rango [llegada, salida). Función reutilizada por varios
+// endpoints. No expone ningún dato del huésped ni fechas ajenas.
+async function villasOcupadas(llegada, salida) {
+  const docs = await Reservacion.find({
+    estado:  'confirmada',
+    llegada: { $lt: salida },   // orden lexicográfico de 'YYYY-MM-DD' = cronológico
+    salida:  { $gt: llegada }
+  }).select('villa -_id');
+  return [...new Set(docs.map(d => d.villa))];
+}
+
+// Disponibilidad pública por fechas (solo villas; sin datos de huéspedes).
+// GET /api/reservaciones/disponibilidad?llegada=YYYY-MM-DD&salida=YYYY-MM-DD
+router.get('/disponibilidad', async (req, res) => {
+  const llegada = (req.query.llegada || '').trim();
+  const salida  = (req.query.salida  || '').trim();
+  if (!FECHA_RE.test(llegada) || !FECHA_RE.test(salida) || salida <= llegada) {
+    return res.status(400).json({ error: 'Fechas inválidas.' });
+  }
+  const ocupadas = (await villasOcupadas(llegada, salida)).sort((a, b) => a - b);
+  const disponibles = [];
+  for (let v = 1; v <= NUM_VILLAS; v++) if (!ocupadas.includes(v)) disponibles.push(v);
+  res.json({ total: NUM_VILLAS, ocupadas, disponibles });
+});
+
 // Crear reservación
 router.post('/', async (req, res) => {
   const nombre   = (req.body.nombre || '').trim();
@@ -50,17 +76,12 @@ router.post('/', async (req, res) => {
     (new Date(salida) - new Date(llegada)) / (1000 * 60 * 60 * 24)
   ));
 
-  // Disponibilidad: ¿esta villa ya está reservada en fechas que se solapan?
-  // (orden lexicográfico de 'YYYY-MM-DD' = orden cronológico)
-  const solapada = await Reservacion.findOne({
-    villa,
-    estado:  { $in: ['pendiente', 'confirmada'] },
-    llegada: { $lt: salida },
-    salida:  { $gt: llegada }
-  });
-  if (solapada) {
+  // Solo una reserva CONFIRMADA por el administrador ocupa la villa. Varias
+  // solicitudes pendientes pueden coexistir; el admin decide cuál confirma.
+  const ocupadas = await villasOcupadas(llegada, salida);
+  if (ocupadas.includes(villa)) {
     return res.status(409).json({
-      error: `La Villa ${villa} ya está reservada en esas fechas. Elige otra villa u otras fechas.`
+      error: `La Villa ${villa} ya no está disponible en esas fechas. Elige otra villa u otras fechas.`
     });
   }
 
@@ -97,12 +118,29 @@ router.patch('/:id', requiereAuth('admin'), async (req, res) => {
   if (!['pendiente', 'confirmada', 'rechazada'].includes(estado)) {
     return res.status(400).json({ error: 'Estado inválido.' });
   }
-  const reservacion = await Reservacion.findByIdAndUpdate(
-    req.params.id,
-    { estado, actualizada: new Date() },
-    { new: true }
-  );
+  const reservacion = await Reservacion.findById(req.params.id);
   if (!reservacion) return res.status(404).json({ error: 'Reservación no encontrada.' });
+
+  // No permitir confirmar una villa que ya tiene OTRA reserva confirmada
+  // en fechas que se solapan (evita doble reserva de la misma villa).
+  if (estado === 'confirmada') {
+    const conflicto = await Reservacion.findOne({
+      _id:     { $ne: reservacion._id },
+      villa:   reservacion.villa,
+      estado:  'confirmada',
+      llegada: { $lt: reservacion.salida },
+      salida:  { $gt: reservacion.llegada }
+    });
+    if (conflicto) {
+      return res.status(409).json({
+        error: `No se puede confirmar: la Villa ${reservacion.villa} ya tiene otra reserva confirmada en esas fechas.`
+      });
+    }
+  }
+
+  reservacion.estado = estado;
+  reservacion.actualizada = new Date();
+  await reservacion.save();
 
   let correo = null;
   let correoError;

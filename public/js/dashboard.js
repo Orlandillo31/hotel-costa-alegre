@@ -660,6 +660,18 @@
     if (sesionActual.rol === 'admin')   mostrarPanelAdmin();
   }
 
+  // Consulta de disponibilidad por fechas (la usa el formulario de reserva
+  // en main.js). Devuelve { total, ocupadas, disponibles } o null si falla.
+  window.HCA_disponibilidad = async function (llegada, salida) {
+    try {
+      return await api('/api/reservaciones/disponibilidad?llegada=' +
+        encodeURIComponent(llegada) + '&salida=' + encodeURIComponent(salida));
+    } catch (err) {
+      console.error('No se pudo consultar disponibilidad:', err.message);
+      return null;
+    }
+  };
+
   // Exponer una función global para que main.js pueda mandar la reserva al backend.
   // Devuelve la reservación creada, o null si falla (avisando al usuario).
   window.HCA_guardarReservaEnBD = async function (datos) {

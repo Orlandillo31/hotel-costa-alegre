@@ -879,6 +879,17 @@
     }
     .campo-error.visible { display: block; }
 
+    /* Mensaje de disponibilidad de villas (bajo el desplegable) */
+    .villas-msg {
+      display: block;
+      font-size: 0.78rem;
+      margin-top: 0.4rem;
+      min-height: 1em;
+    }
+    .villas-msg.info { color: var(--color-gris-suave); }
+    .villas-msg.ok   { color: var(--color-selva); font-weight: 500; }
+    .villas-msg.warn { color: #c0392b; font-weight: 500; }
+
     /* Fila de dos campos en la misma línea */
     .campos-fila { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
