@@ -70,6 +70,7 @@ app.use('/api/auth',          require('./routes/auth.routes'));
 app.use('/api/reservaciones', require('./routes/reservaciones.routes'));
 app.use('/api/clientes',      require('./routes/clientes.routes'));
 app.use('/api/contabilidad',  require('./routes/contabilidad.routes'));
+app.use('/api/resenas',       require('./routes/resenas.routes'));
 
 // 404 para rutas /api desconocidas
 app.use('/api', (req, res) => res.status(404).json({ error: 'Endpoint no encontrado' }));

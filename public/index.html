@@ -47,6 +47,7 @@
       <li><a href="#habitaciones">Villas</a></li>
       <li><a href="#galeria">Galería</a></li>
       <li><a href="#amenidades">Amenidades</a></li>
+      <li><a href="#resenas">Reseñas</a></li>
       <li><a href="#contacto" class="btn-reservar-nav">Reservar</a></li>
       <!-- Botones de sesión: cambian según el estado de login -->
       <li id="nav-sesion-publica">
@@ -188,8 +189,10 @@
     <!-- Tabs del panel admin -->
     <div class="admin-tabs" role="tablist">
       <button class="admin-tab activo" data-admin-tab="reservaciones">Reservaciones</button>
+      <button class="admin-tab" data-admin-tab="calendario">Calendario</button>
       <button class="admin-tab" data-admin-tab="clientes">Clientes</button>
       <button class="admin-tab" data-admin-tab="contabilidad">Contabilidad</button>
+      <button class="admin-tab" data-admin-tab="resenas">Reseñas</button>
     </div>
 
     <!-- Panel: Reservaciones -->
@@ -213,6 +216,28 @@
         </table>
         <p id="admin-reservaciones-vacio" class="tabla-vacia">No hay reservaciones todavía.</p>
       </div>
+    </div>
+
+    <!-- Panel: Calendario de llegadas y salidas -->
+    <div id="admin-panel-calendario" class="admin-panel">
+      <div class="cal-encabezado">
+        <h3 class="panel-subtitulo" style="margin:0">Calendario de ocupación</h3>
+        <div class="cal-nav">
+          <button class="btn-mini" id="cal-prev" aria-label="Mes anterior">‹</button>
+          <span id="cal-titulo" class="cal-titulo">—</span>
+          <button class="btn-mini" id="cal-next" aria-label="Mes siguiente">›</button>
+        </div>
+      </div>
+      <div class="cal-leyenda">
+        <span><span class="cal-punto llegada"></span> Llegada</span>
+        <span><span class="cal-punto salida"></span> Salida</span>
+        <span><span class="cal-punto estancia"></span> En estancia</span>
+        <small style="opacity:.65">(solo reservaciones confirmadas)</small>
+      </div>
+      <div class="cal-grid-dias" id="cal-encabezados">
+        <span>Dom</span><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
     </div>
 
     <!-- Panel: Clientes -->
@@ -277,6 +302,14 @@
           <tbody id="conta-tbody-desglose"></tbody>
         </table>
       </div>
+    </div>
+
+    <!-- Panel: Reseñas (moderación) -->
+    <div id="admin-panel-resenas" class="admin-panel">
+      <h3 class="panel-subtitulo">Reseñas de huéspedes</h3>
+      <p style="opacity:.7;font-size:.9rem;margin-top:-.4rem">Aprueba las reseñas para que aparezcan en la página, o elimínalas.</p>
+      <div id="admin-resenas-lista" class="admin-resenas-lista"></div>
+      <p id="admin-resenas-vacio" class="tabla-vacia">No hay reseñas todavía.</p>
     </div>
   </section>
 
@@ -583,6 +616,49 @@
         <p class="amenidad-descripcion">Excursiones de pesca al pez vela y dorado en las ricas aguas del Pacífico
           mexicano.</p>
       </article>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       SECCIÓN RESEÑAS — opiniones de huéspedes
+  ====================================================== -->
+  <section id="resenas" aria-label="Reseñas de huéspedes">
+    <div class="resenas-encabezado reveal">
+      <span class="seccion-etiqueta">Opiniones</span>
+      <h2 class="seccion-titulo">Lo que dicen nuestros <em>huéspedes</em></h2>
+    </div>
+
+    <div class="resenas-grid" id="resenas-grid"></div>
+    <p id="resenas-vacio" class="tabla-vacia" style="display:none">
+      Aún no hay reseñas. ¡Sé el primero en compartir tu experiencia!
+    </p>
+
+    <!-- Formulario para dejar una reseña -->
+    <div class="resena-form-caja reveal">
+      <h3 class="resena-form-titulo">Deja tu reseña</h3>
+      <form id="form-resena" class="resena-form">
+        <div class="campo-grupo">
+          <label for="resena-nombre">Tu nombre *</label>
+          <input type="text" id="resena-nombre" maxlength="80" required />
+        </div>
+        <div class="campo-grupo">
+          <label>Calificación *</label>
+          <div class="estrellas-input" id="estrellas-input" role="radiogroup" aria-label="Calificación">
+            <button type="button" class="estrella" data-valor="1" aria-label="1 estrella">★</button>
+            <button type="button" class="estrella" data-valor="2" aria-label="2 estrellas">★</button>
+            <button type="button" class="estrella" data-valor="3" aria-label="3 estrellas">★</button>
+            <button type="button" class="estrella" data-valor="4" aria-label="4 estrellas">★</button>
+            <button type="button" class="estrella" data-valor="5" aria-label="5 estrellas">★</button>
+          </div>
+          <input type="hidden" id="resena-calificacion" value="0" />
+        </div>
+        <div class="campo-grupo">
+          <label for="resena-comentario">Tu comentario *</label>
+          <textarea id="resena-comentario" rows="4" maxlength="600" placeholder="Cuéntanos cómo fue tu estancia en Villas Cangrejo…" required></textarea>
+        </div>
+        <button type="submit" class="btn-primario">Enviar reseña</button>
+        <p class="resena-mensaje" id="resena-mensaje"></p>
+      </form>
     </div>
   </section>
 

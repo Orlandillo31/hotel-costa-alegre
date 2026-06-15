@@ -1738,3 +1738,102 @@
       font-size: 1.02rem;
       line-height: 1.6;
     }
+
+    /* =========================================================
+       CALENDARIO DE OCUPACIÓN (panel admin)
+    ========================================================= */
+    .cal-encabezado {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;
+    }
+    .cal-nav { display: flex; align-items: center; gap: 0.8rem; }
+    .cal-titulo {
+      font-family: var(--fuente-titulo); font-size: 1.3rem; font-weight: 600;
+      color: var(--color-oceano); min-width: 170px; text-align: center;
+    }
+    .cal-leyenda {
+      display: flex; flex-wrap: wrap; gap: 1.2rem; align-items: center;
+      font-size: 0.82rem; color: var(--color-gris-suave); margin-bottom: 1rem;
+    }
+    .cal-leyenda > span { display: inline-flex; align-items: center; gap: 0.4rem; }
+    .cal-punto { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+    .cal-punto.llegada  { background: #2e7d32; }
+    .cal-punto.salida   { background: #c0392b; }
+    .cal-punto.estancia { background: #cfe3e6; border: 1px solid var(--color-turquesa); }
+    .cal-grid-dias {
+      display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px;
+      text-align: center; font-size: 0.72rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-gris-suave);
+      margin-bottom: 6px;
+    }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+    .cal-celda {
+      min-height: 78px; border: 1px solid #e7e2d6; border-radius: 8px;
+      padding: 5px 6px; background: var(--color-blanco); overflow: hidden;
+    }
+    .cal-celda.vacia { background: transparent; border: none; }
+    .cal-celda.ocupada { background: #eef6f7; border-color: #cfe3e6; }
+    .cal-dia { font-size: 0.8rem; font-weight: 600; color: var(--color-oceano); }
+    .cal-chips { display: flex; flex-direction: column; gap: 3px; margin-top: 4px; }
+    .cal-chip {
+      font-size: 0.66rem; font-weight: 600; border-radius: 4px;
+      padding: 1px 4px; white-space: nowrap; color: #fff;
+    }
+    .cal-chip.llegada { background: #2e7d32; }
+    .cal-chip.salida  { background: #c0392b; }
+    @media (max-width: 640px) {
+      .cal-celda { min-height: 60px; }
+      .cal-chip { font-size: 0.58rem; }
+    }
+
+    /* =========================================================
+       RESEÑAS — sección pública + formulario
+    ========================================================= */
+    #resenas { padding: 5rem 8% 4rem; background: var(--color-arena); }
+    .resenas-encabezado { text-align: center; margin-bottom: 2.5rem; }
+    .resenas-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem; max-width: 1100px; margin: 0 auto 3rem;
+    }
+    .resena-card {
+      background: var(--color-blanco); border-radius: 14px; padding: 1.6rem;
+      box-shadow: 0 6px 20px rgba(11, 61, 78, 0.08); border: 1px solid #ece6d8;
+    }
+    .resena-estrellas { color: var(--color-dorado); font-size: 1.1rem; letter-spacing: 2px; }
+    .resena-texto {
+      font-style: italic; color: var(--color-oscuro); line-height: 1.6;
+      margin: 0.8rem 0; font-size: 0.98rem;
+    }
+    .resena-autor { font-weight: 600; color: var(--color-oceano); margin: 0; }
+
+    .resena-form-caja {
+      max-width: 620px; margin: 0 auto; background: var(--color-blanco);
+      border-radius: 16px; padding: 2.2rem; box-shadow: 0 8px 28px rgba(11, 61, 78, 0.1);
+    }
+    .resena-form-titulo {
+      font-family: var(--fuente-titulo); font-size: 1.5rem; color: var(--color-oceano);
+      text-align: center; margin: 0 0 1.4rem;
+    }
+    .estrellas-input { display: flex; gap: 0.3rem; }
+    .estrella {
+      background: none; border: none; cursor: pointer; font-size: 2rem;
+      color: #d8d2c4; line-height: 1; padding: 0; transition: color 0.15s, transform 0.15s;
+    }
+    .estrella:hover { transform: scale(1.15); }
+    .estrella.activa { color: var(--color-dorado); }
+    .resena-mensaje { margin-top: 0.8rem; font-size: 0.9rem; text-align: center; }
+    .resena-mensaje.ok { color: var(--color-selva); }
+    .resena-mensaje.error { color: #c0392b; }
+
+    /* Reseñas en el panel admin (moderación) */
+    .admin-resenas-lista { display: flex; flex-direction: column; gap: 0.9rem; }
+    .admin-resena {
+      border: 1px solid #e7e2d6; border-left: 4px solid var(--color-dorado);
+      border-radius: 8px; padding: 0.9rem 1.1rem; background: var(--color-blanco);
+    }
+    .admin-resena.aprobada { border-left-color: var(--color-selva); }
+    .admin-resena-top {
+      display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; margin-bottom: 0.4rem;
+    }
+    .admin-resena-estado { font-size: 0.78rem; color: var(--color-gris-suave); margin-left: auto; }
+    .admin-resena-texto { margin: 0.3rem 0 0.7rem; color: var(--color-oscuro); line-height: 1.5; }

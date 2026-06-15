@@ -346,8 +346,10 @@
     await Promise.all([
       cargarReservacionesAdmin(),
       cargarClientesAdmin(),
-      cargarContabilidad()
+      cargarContabilidad(),
+      cargarResenasAdmin()
     ]);
+    renderCalendario();   // usa reservasAdminCache ya cargado
   }
 
   // Cambiar tabs dentro del panel admin
@@ -729,10 +731,155 @@
     XLSX.writeFile(wb, `Contabilidad_VillasCangrejo_${new Date().toISOString().split('T')[0]}.xlsx`);
   });
 
+  // Escapar HTML en contenido de usuario (reseñas) para evitar XSS.
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g,
+      c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  // =========================================================
+  // CALENDARIO DE OCUPACIÓN (admin) — llegadas y salidas
+  // =========================================================
+  const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+  const calMes = new Date(); calMes.setDate(1);
+
+  function renderCalendario() {
+    const grid = document.getElementById('cal-grid');
+    if (!grid) return;
+    const titulo = document.getElementById('cal-titulo');
+    const anio = calMes.getFullYear(), mes = calMes.getMonth();
+    titulo.textContent = MESES[mes] + ' ' + anio;
+
+    const confirmadas = reservasAdminCache.filter(r => r.estado === 'confirmada');
+    const primerDia = new Date(anio, mes, 1).getDay();          // 0 = Domingo
+    const diasMes = new Date(anio, mes + 1, 0).getDate();
+
+    let html = '';
+    for (let i = 0; i < primerDia; i++) html += '<div class="cal-celda vacia"></div>';
+    for (let d = 1; d <= diasMes; d++) {
+      const fecha = anio + '-' + String(mes + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+      const llegadas = confirmadas.filter(r => r.llegada === fecha);
+      const salidas  = confirmadas.filter(r => r.salida === fecha);
+      const ocupada  = confirmadas.some(r => r.llegada <= fecha && r.salida > fecha);
+      let chips = '';
+      llegadas.forEach(r => chips += `<span class="cal-chip llegada" title="Llegada: ${esc(r.nombre)} — Villa ${r.villa}">↘ V${r.villa}</span>`);
+      salidas.forEach(r => chips += `<span class="cal-chip salida" title="Salida: ${esc(r.nombre)} — Villa ${r.villa}">↗ V${r.villa}</span>`);
+      html += `<div class="cal-celda${ocupada ? ' ocupada' : ''}">` +
+              `<span class="cal-dia">${d}</span><div class="cal-chips">${chips}</div></div>`;
+    }
+    grid.innerHTML = html;
+  }
+
+  (function initCalendarioNav() {
+    const prev = document.getElementById('cal-prev'), next = document.getElementById('cal-next');
+    if (prev) prev.addEventListener('click', () => { calMes.setMonth(calMes.getMonth() - 1); renderCalendario(); });
+    if (next) next.addEventListener('click', () => { calMes.setMonth(calMes.getMonth() + 1); renderCalendario(); });
+  })();
+
+  // =========================================================
+  // RESEÑAS — moderación (admin) y vista pública
+  // =========================================================
+  async function cargarResenasAdmin() {
+    const cont = document.getElementById('admin-resenas-lista');
+    if (!cont) return;
+    try {
+      const resenas = await api('/api/resenas/todas');
+      const vacio = document.getElementById('admin-resenas-vacio');
+      cont.innerHTML = '';
+      if (!resenas.length) { if (vacio) vacio.style.display = 'block'; return; }
+      if (vacio) vacio.style.display = 'none';
+      resenas.forEach(r => {
+        const div = document.createElement('div');
+        div.className = 'admin-resena' + (r.aprobada ? ' aprobada' : '');
+        div.innerHTML = `
+          <div class="admin-resena-top">
+            <strong>${esc(r.nombre)}</strong>
+            <span class="resena-estrellas">${'★'.repeat(r.calificacion)}${'☆'.repeat(5 - r.calificacion)}</span>
+            <span class="admin-resena-estado">${r.aprobada ? '✓ Publicada' : '⏳ Pendiente'}</span>
+          </div>
+          <p class="admin-resena-texto">${esc(r.comentario)}</p>
+          <div class="acciones-celda">
+            ${!r.aprobada ? `<button class="btn-mini confirmar" data-id="${r.id}">✓ Aprobar</button>` : ''}
+            <button class="btn-mini eliminar" data-id="${r.id}">🗑 Eliminar</button>
+          </div>`;
+        cont.appendChild(div);
+      });
+      cont.querySelectorAll('.btn-mini.confirmar').forEach(b => b.addEventListener('click', () => aprobarResena(b.dataset.id)));
+      cont.querySelectorAll('.btn-mini.eliminar').forEach(b => b.addEventListener('click', () => eliminarResena(b.dataset.id)));
+    } catch (err) {
+      console.error('Error cargando reseñas:', err.message);
+    }
+  }
+
+  async function aprobarResena(id) {
+    try { await api('/api/resenas/' + id, { method: 'PATCH' }); cargarResenasAdmin(); cargarResenasPublicas(); }
+    catch (err) { alert('Error: ' + err.message); }
+  }
+  async function eliminarResena(id) {
+    if (!confirm('¿Eliminar esta reseña de forma permanente?')) return;
+    try { await api('/api/resenas/' + id, { method: 'DELETE' }); cargarResenasAdmin(); cargarResenasPublicas(); }
+    catch (err) { alert('Error: ' + err.message); }
+  }
+
+  async function cargarResenasPublicas() {
+    const grid = document.getElementById('resenas-grid');
+    if (!grid) return;
+    const vacio = document.getElementById('resenas-vacio');
+    try {
+      const resenas = await api('/api/resenas');
+      grid.innerHTML = '';
+      if (!resenas.length) { if (vacio) vacio.style.display = 'block'; return; }
+      if (vacio) vacio.style.display = 'none';
+      resenas.forEach(r => {
+        const div = document.createElement('div');
+        div.className = 'resena-card';
+        div.innerHTML = `
+          <div class="resena-estrellas">${'★'.repeat(r.calificacion)}${'☆'.repeat(5 - r.calificacion)}</div>
+          <p class="resena-texto">“${esc(r.comentario)}”</p>
+          <p class="resena-autor">— ${esc(r.nombre)}</p>`;
+        grid.appendChild(div);
+      });
+    } catch (err) {
+      console.error('Error cargando reseñas públicas:', err.message);
+    }
+  }
+
+  // Formulario público de reseña (estrellas + envío)
+  (function initFormResena() {
+    const form = document.getElementById('form-resena');
+    if (!form) return;
+    const estrellas = document.querySelectorAll('#estrellas-input .estrella');
+    const inputCalif = document.getElementById('resena-calificacion');
+    const msg = document.getElementById('resena-mensaje');
+    estrellas.forEach(est => est.addEventListener('click', () => {
+      const v = Number(est.dataset.valor);
+      inputCalif.value = v;
+      estrellas.forEach(e => e.classList.toggle('activa', Number(e.dataset.valor) <= v));
+    }));
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nombre = document.getElementById('resena-nombre').value.trim();
+      const comentario = document.getElementById('resena-comentario').value.trim();
+      const calificacion = Number(inputCalif.value);
+      if (!calificacion) { msg.textContent = 'Elige una calificación (estrellas).'; msg.className = 'resena-mensaje error'; return; }
+      try {
+        const data = await api('/api/resenas', { method: 'POST', body: JSON.stringify({ nombre, comentario, calificacion }) });
+        msg.textContent = data.mensaje || '¡Gracias por tu reseña!';
+        msg.className = 'resena-mensaje ok';
+        form.reset(); inputCalif.value = '0';
+        estrellas.forEach(e => e.classList.remove('activa'));
+      } catch (err) {
+        msg.textContent = err.message; msg.className = 'resena-mensaje error';
+      }
+    });
+  })();
+
   // =========================================================
   // INICIALIZACIÓN — restaurar sesión al recargar
   // =========================================================
   aplicarSesion();
+  cargarResenasPublicas();   // reseñas aprobadas para la sección pública
   const sesionActual = getSesion();
   if (sesionActual) {
     if (sesionActual.rol === 'cliente') mostrarPanelCliente();
