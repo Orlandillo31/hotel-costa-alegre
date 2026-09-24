@@ -93,6 +93,9 @@
   function cerrarModal() {
     modal.style.display = 'none';
     document.body.style.overflow = '';
+    // Cerrar el modal (✕, clic fuera o tras entrar) borra las contraseñas
+    // escritas, aunque no se haya enviado el formulario.
+    modal.querySelectorAll('input[type="password"]').forEach(i => { i.value = ''; });
   }
   function mostrarMsg(texto, esError) {
     modalMsg.textContent = texto;
@@ -165,9 +168,11 @@
           password: document.getElementById('reg-pass').value
         })
       });
+      const emailNuevo = document.getElementById('reg-email').value.trim();
+      e.target.reset();   // no dejar escrita la contraseña del registro
       // Cambiar a la pestaña de login (el clic limpia el mensaje, así que va después)
       document.querySelector('.modal-tab[data-modal-tab="login"]').click();
-      document.getElementById('login-usuario').value = document.getElementById('reg-email').value.trim();
+      document.getElementById('login-usuario').value = emailNuevo;
       mostrarMsg('✅ Cuenta creada. Ahora inicia sesión.', false);
     } catch (err) {
       mostrarMsg(err.message, true);
@@ -235,6 +240,7 @@
         method: 'POST',
         body: JSON.stringify({ email, codigo, nuevaPassword })
       });
+      e.target.reset();   // borrar el código y la nueva contraseña del formulario
       setTimeout(() => {
         document.querySelector('.modal-tab[data-modal-tab="login"]').click();
         document.getElementById('login-usuario').value = email;
