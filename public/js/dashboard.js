@@ -111,38 +111,42 @@
       const objetivo = tab.dataset.modalTab;
       modalForms.forEach(f => f.classList.remove('activo'));
       const map = {
-        'login-cliente':    'form-login-cliente',
-        'registro-cliente': 'form-registro-cliente',
-        'login-admin':      'form-login-admin'
+        'login':            'form-login',
+        'registro-cliente': 'form-registro-cliente'
       };
       document.getElementById(map[objetivo]).classList.add('activo');
       modalMsg.textContent = '';
     });
   });
 
-  // ----- Login cliente -----
+  // ----- Login único -----
+  // El servidor identifica en la BD si la cuenta es de un huésped o del
+  // administrador y devuelve el rol; aquí solo se abre el panel que toca.
   // Cuenta los fallos para sugerir la recuperación tras varios intentos.
-  let fallosLoginCliente = 0;
-  document.getElementById('form-login-cliente').addEventListener('submit', async (e) => {
+  let fallosLogin = 0;
+  document.getElementById('form-login').addEventListener('submit', async (e) => {
     e.preventDefault();
     try {
       const data = await api('/api/auth/login', {
         method: 'POST',
         body: JSON.stringify({
-          usuario:  document.getElementById('login-cli-email').value.trim(),
-          password: document.getElementById('login-cli-pass').value,
-          rol: 'cliente'
+          usuario:  document.getElementById('login-usuario').value.trim(),
+          password: document.getElementById('login-pass').value
         })
       });
-      fallosLoginCliente = 0;
+      fallosLogin = 0;
+      // No dejar las credenciales escritas: tras cerrar sesión, en un equipo
+      // compartido (p. ej. recepción) bastaría con volver a pulsar "Entrar".
+      e.target.reset();
       setSesion({ token: data.token, rol: data.rol, nombre: data.nombre, email: data.email });
       cerrarModal();
       aplicarSesion();
-      mostrarPanelCliente();
+      if (data.rol === 'admin') mostrarPanelAdmin();
+      else mostrarPanelCliente();
     } catch (err) {
-      fallosLoginCliente++;
+      fallosLogin++;
       // Tras 3 fallos (o si el backend bloqueó la cuenta) destacar la recuperación.
-      const sugerir = fallosLoginCliente >= 3 || /bloquead/i.test(err.message);
+      const sugerir = fallosLogin >= 3 || /bloquead/i.test(err.message);
       mostrarMsg(err.message + (sugerir ? ' — ¿Olvidaste tu contraseña? Usa el enlace de abajo.' : ''), true);
       if (sugerir) document.getElementById('link-olvide').classList.add('resaltado');
     }
@@ -161,30 +165,10 @@
           password: document.getElementById('reg-pass').value
         })
       });
+      // Cambiar a la pestaña de login (el clic limpia el mensaje, así que va después)
+      document.querySelector('.modal-tab[data-modal-tab="login"]').click();
+      document.getElementById('login-usuario').value = document.getElementById('reg-email').value.trim();
       mostrarMsg('✅ Cuenta creada. Ahora inicia sesión.', false);
-      // Cambiar a la pestaña de login
-      document.querySelector('.modal-tab[data-modal-tab="login-cliente"]').click();
-    } catch (err) {
-      mostrarMsg(err.message, true);
-    }
-  });
-
-  // ----- Login admin -----
-  document.getElementById('form-login-admin').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    try {
-      const data = await api('/api/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({
-          usuario:  document.getElementById('login-admin-usuario').value.trim(),
-          password: document.getElementById('login-admin-pass').value,
-          rol: 'admin'
-        })
-      });
-      setSesion({ token: data.token, rol: data.rol, nombre: data.nombre });
-      cerrarModal();
-      aplicarSesion();
-      mostrarPanelAdmin();
     } catch (err) {
       mostrarMsg(err.message, true);
     }
@@ -205,14 +189,15 @@
     modalTabs.forEach(t => t.classList.remove('activo'));
     document.getElementById('reset-paso-1').style.display = '';
     document.getElementById('reset-paso-2').style.display = 'none';
-    document.getElementById('reset-email').value = document.getElementById('login-cli-email').value.trim();
+    const escrito = document.getElementById('login-usuario').value.trim();
+    document.getElementById('reset-email').value = escrito.includes('@') ? escrito : '';
     mostrarSoloForm('form-recuperar');
   });
 
   // Volver al login
   document.getElementById('link-volver-login').addEventListener('click', (e) => {
     e.preventDefault();
-    document.querySelector('.modal-tab[data-modal-tab="login-cliente"]').click();
+    document.querySelector('.modal-tab[data-modal-tab="login"]').click();
   });
 
   // Paso 1: solicitar el código de recuperación
@@ -251,8 +236,8 @@
         body: JSON.stringify({ email, codigo, nuevaPassword })
       });
       setTimeout(() => {
-        document.querySelector('.modal-tab[data-modal-tab="login-cliente"]').click();
-        document.getElementById('login-cli-email').value = email;
+        document.querySelector('.modal-tab[data-modal-tab="login"]').click();
+        document.getElementById('login-usuario').value = email;
         mostrarMsg(data.mensaje || 'Contraseña actualizada. Inicia sesión.', false);
       }, 1200);
       mostrarMsg(data.mensaje || 'Contraseña actualizada.', false);

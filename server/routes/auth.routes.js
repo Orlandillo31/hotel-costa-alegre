@@ -57,15 +57,20 @@ router.post('/registro', limiterAuth, async (req, res) => {
 });
 
 // ----------------------------------------------------------------
-// Login (cliente o admin)
+// Login único: la cuenta se identifica en la BD por lo que se escriba
+// (usuario del administrador o correo del huésped); el rol no lo decide
+// el formulario.
 // ----------------------------------------------------------------
 router.post('/login', limiterAuth, async (req, res) => {
-  const { password, rol } = req.body;
+  const { password } = req.body;
   const usuario = (req.body.usuario || '').trim();
 
-  const doc = rol === 'admin'
-    ? await Admin.findOne({ usuario })
-    : await Cliente.findOne({ email: usuario.toLowerCase() });
+  let rol = 'admin';
+  let doc = usuario ? await Admin.findOne({ usuario }) : null;
+  if (!doc) {
+    rol = 'cliente';
+    doc = usuario ? await Cliente.findOne({ email: usuario.toLowerCase() }) : null;
+  }
 
   // Usuario inexistente → mensaje genérico (sin revelar si existe)
   if (!doc) return res.status(401).json({ error: 'Credenciales inválidas.' });

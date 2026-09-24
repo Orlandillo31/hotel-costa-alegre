@@ -75,20 +75,19 @@
 
       <!-- Tabs del modal -->
       <div class="modal-tabs" role="tablist">
-        <button class="modal-tab activo" data-modal-tab="login-cliente">Cliente</button>
+        <button class="modal-tab activo" data-modal-tab="login">Iniciar sesión</button>
         <button class="modal-tab" data-modal-tab="registro-cliente">Registro</button>
-        <button class="modal-tab" data-modal-tab="login-admin">Administrador</button>
       </div>
 
       <!-- Mensaje de feedback -->
       <p class="modal-mensaje" id="modal-mensaje"></p>
 
-      <!-- Formulario: Login de Cliente -->
-      <form id="form-login-cliente" class="modal-form activo">
-        <label>Correo electrónico</label>
-        <input type="email" id="login-cli-email" required />
-        <label>Contraseña</label>
-        <input type="password" id="login-cli-pass" required />
+      <!-- Formulario: Login único (huésped o administrador; lo identifica el servidor) -->
+      <form id="form-login" class="modal-form activo">
+        <label for="login-usuario">Correo o usuario</label>
+        <input type="text" id="login-usuario" autocomplete="username" required />
+        <label for="login-pass">Contraseña</label>
+        <input type="password" id="login-pass" autocomplete="current-password" required />
         <button type="submit" class="btn-enviar">Entrar</button>
         <p class="modal-link-wrap">
           <a href="#" id="link-olvide" class="modal-link">¿Olvidaste tu contraseña?</a>
@@ -126,19 +125,9 @@
         <input type="email" id="reg-email" required />
         <label>Teléfono (opcional)</label>
         <input type="tel" id="reg-telefono" />
-        <label>Contraseña (mín. 6 caracteres)</label>
-        <input type="password" id="reg-pass" minlength="6" required />
+        <label>Contraseña (mín. 8 caracteres)</label>
+        <input type="password" id="reg-pass" minlength="8" required />
         <button type="submit" class="btn-enviar">Crear cuenta</button>
-      </form>
-
-      <!-- Formulario: Login de Administrador -->
-      <form id="form-login-admin" class="modal-form">
-        <label>Usuario administrador</label>
-        <input type="text" id="login-admin-usuario" required placeholder="Tu usuario" />
-        <label>Contraseña</label>
-        <input type="password" id="login-admin-pass" required />
-        <button type="submit" class="btn-enviar">Entrar como admin</button>
-        <p class="modal-hint">Acceso restringido al administrador del hotel.</p>
       </form>
     </div>
   </div>

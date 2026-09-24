@@ -1340,23 +1340,6 @@
     .modal-mensaje.ok    { color: var(--color-selva); }
     .modal-mensaje.error { color: #c0392b; }
 
-    .modal-hint {
-      font-size: 0.75rem;
-      color: var(--color-gris-suave);
-      text-align: center;
-      margin-top: 1rem;
-      padding-top: 1rem;
-      border-top: 1px dashed #e5dfd0;
-    }
-    .modal-hint code {
-      background: var(--color-arena);
-      color: var(--color-oceano);
-      padding: 0.15rem 0.5rem;
-      border-radius: 3px;
-      font-family: 'Courier New', monospace;
-      font-weight: 600;
-    }
-
     /* =====================================================
        PANELES DE USUARIO (cliente / admin)
     ===================================================== */
