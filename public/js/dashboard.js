@@ -67,7 +67,14 @@
 
   // -------- Formateadores --------
   const fmtDinero = n => '$' + (n || 0).toLocaleString('es-MX');
-  const fmtFecha  = s => s ? new Date(s).toLocaleDateString('es-MX') : '';
+  // 'YYYY-MM-DD' se lee como medianoche LOCAL; sin la 'T00:00:00' JS la toma
+  // como hora UTC y en México la fecha salía un día antes.
+  const aFecha    = s => new Date(/^\d{4}-\d{2}-\d{2}$/.test(s) ? s + 'T00:00:00' : s);
+  const fmtFecha  = s => s ? aFecha(s).toLocaleDateString('es-MX') : '';
+  // Traducción de textos para la versión en inglés (js/i18n.js); el panel
+  // de administración se queda en español.
+  const tx        = s => (window.VC_t ? window.VC_t(s) : s);
+  const enIngles  = () => !!(window.VC_idioma && window.VC_idioma() === 'en');
   const fmtVilla  = v => 'Villa ' + v;
   const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
@@ -103,7 +110,7 @@
     modal.querySelectorAll('input[type="password"]').forEach(i => { i.value = ''; });
   }
   function mostrarMsg(texto, esError) {
-    modalMsg.textContent = texto;
+    modalMsg.textContent = tx(texto);
     modalMsg.className = 'modal-mensaje ' + (esError ? 'error' : 'ok');
   }
 
@@ -155,7 +162,7 @@
       fallosLogin++;
       // Tras 3 fallos (o si el backend bloqueó la cuenta) destacar la recuperación.
       const sugerir = fallosLogin >= 3 || /bloquead/i.test(err.message);
-      mostrarMsg(err.message + (sugerir ? ' — ¿Olvidaste tu contraseña? Usa el enlace de abajo.' : ''), true);
+      mostrarMsg(tx(err.message) + (sugerir ? tx(' — ¿Olvidaste tu contraseña? Usa el enlace de abajo.') : ''), true);
       if (sugerir) document.getElementById('link-olvide').classList.add('resaltado');
     }
   });
@@ -219,9 +226,9 @@
         method: 'POST',
         body: JSON.stringify({ email })
       });
-      let msg = data.mensaje || 'Si el correo está registrado, enviamos un código.';
+      let msg = tx(data.mensaje || 'Si el correo está registrado, enviamos un código.');
       if (data.codigoDev) {            // modo desarrollo sin correo configurado
-        msg += ' (código de prueba: ' + data.codigoDev + ')';
+        msg += tx(' (código de prueba: ' + data.codigoDev + ')');
         document.getElementById('reset-codigo').value = data.codigoDev;
       }
       mostrarMsg(msg, false);
@@ -288,7 +295,15 @@
     panel.style.display = 'block';
     document.getElementById('panel-admin').style.display = 'none';
     panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    await cargarReservasCliente();
+  }
 
+  // Tabla "Tus reservaciones" (también se redibuja al cambiar de idioma).
+  async function cargarReservasCliente() {
+    // En inglés, fecha con el mes en letras para que no se confunda día y mes.
+    const fecha = s => enIngles()
+      ? aFecha(s).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
+      : fmtFecha(s);
     try {
       const reservas = await api('/api/reservaciones/mis');
       const tbody = document.getElementById('cliente-tbody');
@@ -302,17 +317,17 @@
           const tr = document.createElement('tr');
           tr.innerHTML = `
             <td>${fmtVilla(r.villa)}</td>
-            <td>${fmtFecha(r.llegada)}</td>
-            <td>${fmtFecha(r.salida)}</td>
+            <td>${fecha(r.llegada)}</td>
+            <td>${fecha(r.salida)}</td>
             <td>${r.noches}</td>
             <td>${fmtDinero(r.total)}</td>
-            <td><span class="badge ${COLOR_ESTADO[r.estado]}">${r.estado}</span></td>
+            <td><span class="badge ${COLOR_ESTADO[r.estado]}">${tx(r.estado)}</span></td>
           `;
           tbody.appendChild(tr);
         });
       }
     } catch (err) {
-      alert('Error cargando reservaciones: ' + err.message);
+      alert(tx('Error cargando reservaciones: ') + tx(err.message));
     }
   }
 
@@ -864,7 +879,8 @@
     if (!grid) return;
     const vacio = document.getElementById('resenas-vacio');
     try {
-      const resenas = await api('/api/resenas');
+      const [resenas, resumen] = await Promise.all([api('/api/resenas'), api('/api/resenas/resumen')]);
+      pintarResumenResenas(resumen);
       grid.innerHTML = '';
       if (!resenas.length) { if (vacio) vacio.style.display = 'block'; return; }
       if (vacio) vacio.style.display = 'none';
@@ -881,6 +897,24 @@
       console.error('Error cargando reseñas públicas:', err.message);
     }
   }
+
+  // "★★★★★ 4.8 de 5 · 12 reseñas" arriba de la sección (oculto si no hay).
+  function pintarResumenResenas(s) {
+    const el = document.getElementById('resenas-resumen');
+    if (!el) return;
+    if (!s || !s.total) { el.hidden = true; return; }
+    // Estrellas doradas llenas en proporción exacta (4.5 → cuatro y media).
+    const relleno = Math.max(0, Math.min(100, (s.promedio / 5) * 100));
+    el.innerHTML = `<span class="estrellas-promedio" style="--relleno:${relleno}%" aria-hidden="true">★★★★★</span>
+      <strong>${s.promedio.toFixed(1)}</strong> ${tx('de 5')} · ${s.total} ${tx(s.total === 1 ? 'reseña' : 'reseñas')}`;
+    el.hidden = false;
+  }
+
+  // Al cambiar de idioma, redibujar lo que arma este archivo para el huésped.
+  document.addEventListener('vc:idioma', () => {
+    cargarResenasPublicas();
+    if (document.getElementById('panel-cliente').style.display === 'block') cargarReservasCliente();
+  });
 
   // Formulario público de reseña (estrellas + envío)
   (function initFormResena() {
@@ -899,15 +933,15 @@
       const nombre = document.getElementById('resena-nombre').value.trim();
       const comentario = document.getElementById('resena-comentario').value.trim();
       const calificacion = Number(inputCalif.value);
-      if (!calificacion) { msg.textContent = 'Elige una calificación (estrellas).'; msg.className = 'resena-mensaje error'; return; }
+      if (!calificacion) { msg.textContent = tx('Elige una calificación (estrellas).'); msg.className = 'resena-mensaje error'; return; }
       try {
         const data = await api('/api/resenas', { method: 'POST', body: JSON.stringify({ nombre, comentario, calificacion }) });
-        msg.textContent = data.mensaje || '¡Gracias por tu reseña!';
+        msg.textContent = tx(data.mensaje || '¡Gracias por tu reseña!');
         msg.className = 'resena-mensaje ok';
         form.reset(); inputCalif.value = '0';
         estrellas.forEach(e => e.classList.remove('activa'));
       } catch (err) {
-        msg.textContent = err.message; msg.className = 'resena-mensaje error';
+        msg.textContent = tx(err.message); msg.className = 'resena-mensaje error';
       }
     });
   })();
@@ -949,7 +983,7 @@
       return data.reservacion;
     } catch (err) {
       // Mostrar el motivo (p. ej. villa ya reservada en esas fechas).
-      alert('No se pudo registrar la reserva:\n' + err.message);
+      alert(tx('No se pudo registrar la reserva:') + '\n' + tx(err.message));
       return null;
     }
   };

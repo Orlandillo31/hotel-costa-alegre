@@ -5,6 +5,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Villas Cangrejo | Jalisco, México</title>
+  <meta name="description"
+    content="Villas Cangrejo: 16 villas en Melaque, en la Bahía de Navidad de la Costa Alegre de Jalisco. Alberca, restaurante, spa y acceso a la playa. Reserva en línea." />
+
+  <!-- Vista previa al compartir el enlace (WhatsApp, Facebook, X).
+       Si se compra un dominio propio, cambiar og:url por la nueva dirección. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Villas Cangrejo" />
+  <meta property="og:title" content="Villas Cangrejo · Melaque, Jalisco" />
+  <meta property="og:description"
+    content="16 villas en la Bahía de Navidad, Costa Alegre de Jalisco. Alberca, restaurante, spa y acceso a la playa. Reserva en línea." />
+  <meta property="og:url" content="https://hotel-costa-alegre-7wl2.onrender.com/" />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1519046904884-53103b34b206?w=1200&h=630&fit=crop&q=80" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Bahía de Navidad vista desde la playa de Melaque, Jalisco" />
+  <meta property="og:locale" content="es_MX" />
+  <meta property="og:locale:alternate" content="en_US" />
+  <meta name="twitter:card" content="summary_large_image" />
 
   <!-- Google Fonts: Cormorant Garamond (display) + Jost (body) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -35,6 +53,9 @@
         <span>Jalisco, México</span>
       </span>
     </div>
+
+    <!-- Cambio de idioma ES/EN (lo controla js/i18n.js) -->
+    <button id="btn-idioma" type="button" aria-label="View this page in English">EN</button>
 
     <!-- Botón hamburguesa (visible en mobile) -->
     <button id="boton-hamburguesa" aria-label="Abrir menú" aria-expanded="false">
@@ -139,7 +160,7 @@
     <div class="panel-encabezado">
       <div>
         <span class="seccion-etiqueta">Tu cuenta</span>
-        <h2 class="seccion-titulo">Hola, <em id="cliente-nombre">cliente</em></h2>
+        <h2 class="seccion-titulo"><span id="cliente-saludo">Hola</span>, <em id="cliente-nombre">cliente</em></h2>
       </div>
       <button class="btn-secundario" id="btn-logout-cliente">Cerrar sesión</button>
     </div>
@@ -635,6 +656,8 @@
     <div class="resenas-encabezado reveal">
       <span class="seccion-etiqueta">Opiniones</span>
       <h2 class="seccion-titulo">Lo que dicen nuestros <em>huéspedes</em></h2>
+      <!-- Calificación promedio de las reseñas aprobadas (la llena dashboard.js) -->
+      <p class="resenas-resumen" id="resenas-resumen" hidden></p>
     </div>
 
     <div class="resenas-grid" id="resenas-grid"></div>
@@ -922,6 +945,9 @@
 
   <!-- jsPDF — generación de recibos en PDF (solo lo usa el panel admin) -->
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+  <!-- Versión en inglés (ES/EN): va antes que main.js y dashboard.js porque ellos usan sus traducciones -->
+  <script src="js/i18n.js"></script>
 
   <!-- JavaScript principal (validación, navbar, animaciones) -->
   <script src="js/main.js"></script>

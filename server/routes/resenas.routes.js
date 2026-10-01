@@ -2,6 +2,7 @@
  * resenas.routes.js — Reseñas de huéspedes.
  *   POST   /api/resenas         Crear reseña (público; queda pendiente de aprobar)
  *   GET    /api/resenas         Listar reseñas APROBADAS (público)
+ *   GET    /api/resenas/resumen Calificación promedio y total de aprobadas (público)
  *   GET    /api/resenas/todas   Listar todas (admin, para moderar)
  *   PATCH  /api/resenas/:id     Aprobar (admin)
  *   DELETE /api/resenas/:id     Eliminar (admin)
@@ -43,6 +44,18 @@ router.post('/', limiterAuth, async (req, res) => {
 router.get('/', async (_req, res) => {
   const resenas = await Resena.find({ aprobada: true }).sort({ creada: -1 }).limit(60);
   res.json(resenas);
+});
+
+// Calificación promedio y total de reseñas aprobadas (público)
+router.get('/resumen', async (_req, res) => {
+  const [r] = await Resena.aggregate([
+    { $match: { aprobada: true } },
+    { $group: { _id: null, promedio: { $avg: '$calificacion' }, total: { $sum: 1 } } }
+  ]);
+  res.json({
+    promedio: r ? Math.round(r.promedio * 10) / 10 : 0,
+    total:    r ? r.total : 0
+  });
 });
 
 // Todas las reseñas (admin)

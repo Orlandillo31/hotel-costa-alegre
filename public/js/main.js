@@ -7,6 +7,10 @@
    formulario de reserva.
 ======================================================= */
 
+// Traduce los textos que arma este archivo cuando la página está en inglés
+// (js/i18n.js define window.VC_t; si no está, deja el español).
+const traducir = s => (window.VC_t ? window.VC_t(s) : s);
+
 // -------------------------------------------------------
     // 1. NAVBAR — Se vuelve sólida al hacer scroll
     // -------------------------------------------------------
@@ -188,12 +192,12 @@
         if (audioAmbiental.paused) {
           audioAmbiental.play();
           btnAudio.textContent = '❚❚';
-          btnAudio.setAttribute('aria-label', 'Pausar música ambiental');
+          btnAudio.setAttribute('aria-label', traducir('Pausar música ambiental'));
           ondaAudio.classList.remove('pausada');
         } else {
           audioAmbiental.pause();
           btnAudio.textContent = '▶';
-          btnAudio.setAttribute('aria-label', 'Reproducir música ambiental');
+          btnAudio.setAttribute('aria-label', traducir('Reproducir música ambiental'));
           ondaAudio.classList.add('pausada');
         }
       });
@@ -362,14 +366,14 @@
     function poblarVillas(disponibles) {
       const previa = selVilla.value;
       const lista = disponibles || Array.from({ length: VILLAS_TOTAL }, (_, i) => i + 1);
-      selVilla.innerHTML = '<option value="">— Selecciona una villa —</option>' +
+      selVilla.innerHTML = '<option value="">' + traducir('— Selecciona una villa —') + '</option>' +
         lista.map(v => `<option value="${v}">Villa ${v}</option>`).join('');
       if (previa && lista.includes(Number(previa))) selVilla.value = previa;
     }
 
     function mensajeVillas(texto, tipo) {
       if (!msgVillas) return;
-      msgVillas.textContent = texto || '';
+      msgVillas.textContent = traducir(texto || '');
       msgVillas.className = 'villas-msg' + (tipo ? ' ' + tipo : '');
     }
 
@@ -397,6 +401,9 @@
                       ' villas disponibles para esas fechas.', 'ok');
       }
     }
+
+    // Al cambiar de idioma, rehacer la lista de villas y su mensaje.
+    document.addEventListener('vc:idioma', refrescarDisponibilidad);
 
     // Al cambiar la llegada, ajustar el mínimo de salida y refrescar villas.
     inputLlegada.addEventListener('change', () => {

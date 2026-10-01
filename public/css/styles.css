@@ -1841,3 +1841,48 @@
     body.modo-admin .navbar-menu,
     body.modo-admin #boton-hamburguesa { display: none !important; }
     body.modo-admin #panel-admin { min-height: 100vh; }
+    body.modo-admin #btn-idioma { display: none; }   /* el panel de admin va en español */
+
+    /* Botón de idioma ES/EN en la barra (a la derecha, junto al menú) */
+    #btn-idioma {
+      margin-left: auto;
+      margin-right: 1.8rem;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      color: var(--color-blanco);
+      font-family: var(--fuente-cuerpo);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      padding: 0.4rem 0.75rem;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+    #btn-idioma:hover { background: rgba(255, 255, 255, 0.15); border-color: var(--color-dorado); }
+    @media (max-width: 900px) { #btn-idioma { margin-right: 1rem; } }
+
+    /* Calificación promedio arriba de las reseñas */
+    .resenas-resumen {
+      margin: 1rem 0 0;
+      font-size: 1rem;
+      color: var(--color-oceano);
+    }
+    /* Cinco estrellas grises con una capa dorada recortada al promedio */
+    .estrellas-promedio {
+      position: relative;
+      display: inline-block;
+      margin-right: 0.4rem;
+      font-size: 1.15rem;
+      letter-spacing: 2px;
+      color: #d8d2c4;
+    }
+    .estrellas-promedio::before {
+      content: '★★★★★';
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: var(--relleno, 0%);
+      overflow: hidden;
+      white-space: nowrap;
+      color: var(--color-dorado);
+    }
