@@ -69,6 +69,11 @@
   const fmtDinero = n => '$' + (n || 0).toLocaleString('es-MX');
   const fmtFecha  = s => s ? new Date(s).toLocaleDateString('es-MX') : '';
   const fmtVilla  = v => 'Villa ' + v;
+  const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+  const fmtMes    = ym => MESES[Number(ym.slice(5, 7)) - 1] + ' ' + ym.slice(0, 4);   // '2026-06' → 'Junio 2026'
+  const IVA_RATE  = 0.16;                                    // se suma al subtotal (recibos y contabilidad)
+  const ivaDe     = n => +(n * IVA_RATE).toFixed(2);
   const COLOR_ESTADO = {
     pendiente:  'estado-pendiente',
     confirmada: 'estado-confirmada',
@@ -319,6 +324,7 @@
     limpiarSesion();
     document.getElementById('panel-cliente').style.display = 'none';
     document.getElementById('panel-admin').style.display = 'none';
+    modoAdmin(false);
     aplicarSesion();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -326,13 +332,25 @@
   // =========================================================
   // PANEL ADMIN
   // =========================================================
+  // Modo administrador: con la clase en <body>, el CSS oculta el sitio
+  // público (portada, villas, galería, reseñas, contacto…) y deja solo el panel.
+  function modoAdmin(activo) {
+    document.body.classList.toggle('modo-admin', activo);
+    if (activo) {
+      // Su botón de pausa queda oculto junto con la galería.
+      const audio = document.getElementById('audio-ambiental');
+      if (audio && !audio.paused) audio.pause();
+    }
+  }
+
   async function mostrarPanelAdmin() {
     const s = getSesion();
     if (!s || s.rol !== 'admin') return;
 
     document.getElementById('panel-admin').style.display = 'block';
     document.getElementById('panel-cliente').style.display = 'none';
-    document.getElementById('panel-admin').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    modoAdmin(true);
+    window.scrollTo({ top: 0 });
 
     await Promise.all([
       cargarReservacionesAdmin(),
@@ -426,9 +444,8 @@
     const TEL = '+52 315 100 7106', CORREO = 'joseangel.hotel68@gmail.com';
     const folio = String(r.id || '').slice(-8).toUpperCase();
     const MX = n => '$' + Number(n || 0).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    const IVA_RATE = 0.16;
     const subtotal  = r.total;                              // noches × precio
-    const iva       = +(subtotal * IVA_RATE).toFixed(2);    // 16% sobre el subtotal
+    const iva       = ivaDe(subtotal);                      // 16% sobre el subtotal
     const granTotal = +(subtotal + iva).toFixed(2);         // total a pagar
 
     // Cargar el logo como dataURL PNG (más compatible con jsPDF que pasar
@@ -626,6 +643,25 @@
       document.getElementById('conta-ingreso').textContent = fmtDinero(c.ingresoTotal);
       document.getElementById('conta-promedio').textContent = fmtDinero(c.promedioPorReserva);
 
+      // Ingresos por mes (+ fila de TOTAL que coincide con las tarjetas)
+      const tbodyMes = document.getElementById('conta-tbody-mes');
+      const tfootMes = document.getElementById('conta-tfoot-mes');
+      const filaMes = (celdas) => '<tr>' + celdas.map(v => `<td>${v}</td>`).join('') + '</tr>';
+      const meses = c.porMes || [];
+      tfootMes.innerHTML = '';
+      if (!meses.length) {
+        tbodyMes.innerHTML = '<tr><td colspan="6" style="text-align:center;opacity:.6">Aún no hay reservaciones confirmadas.</td></tr>';
+      } else {
+        const tot = { reservas: 0, noches: 0, ingresos: 0 };
+        tbodyMes.innerHTML = meses.map(m => {
+          tot.reservas += m.reservas; tot.noches += m.noches; tot.ingresos += m.ingresos;
+          return filaMes([fmtMes(m.mes), m.reservas, m.noches, fmtDinero(m.ingresos),
+            fmtDinero(ivaDe(m.ingresos)), fmtDinero(m.ingresos + ivaDe(m.ingresos))]);
+        }).join('');
+        tfootMes.innerHTML = filaMes(['TOTAL', tot.reservas, tot.noches, fmtDinero(tot.ingresos),
+          fmtDinero(ivaDe(tot.ingresos)), fmtDinero(tot.ingresos + ivaDe(tot.ingresos))]);
+      }
+
       const tbody = document.getElementById('conta-tbody-desglose');
       tbody.innerHTML = '';
       const villas = Object.keys(c.porVilla || {});
@@ -693,7 +729,19 @@
     ];
     XLSX.utils.book_append_sheet(wb, wsResumen, 'Resumen');
 
-    // ---------- Hoja 2: Detalle de reservaciones ----------
+    // ---------- Hoja 2: Ingresos por mes (mes de llegada) ----------
+    const hojaMes = [['Mes', 'Reservas', 'Noches', 'Ingresos sin IVA (MXN)', 'IVA 16% (MXN)', 'Total con IVA (MXN)']];
+    const tm = { reservas: 0, noches: 0, ingresos: 0 };
+    (c.porMes || []).forEach(m => {
+      tm.reservas += m.reservas; tm.noches += m.noches; tm.ingresos += m.ingresos;
+      hojaMes.push([fmtMes(m.mes), m.reservas, m.noches, m.ingresos, ivaDe(m.ingresos), m.ingresos + ivaDe(m.ingresos)]);
+    });
+    hojaMes.push(['TOTAL', tm.reservas, tm.noches, tm.ingresos, ivaDe(tm.ingresos), tm.ingresos + ivaDe(tm.ingresos)]);
+    const wsMes = XLSX.utils.aoa_to_sheet(hojaMes);
+    wsMes['!cols'] = [{ wch: 16 }, { wch: 10 }, { wch: 9 }, { wch: 22 }, { wch: 16 }, { wch: 20 }];
+    XLSX.utils.book_append_sheet(wb, wsMes, 'Por mes');
+
+    // ---------- Hoja 3: Detalle de reservaciones ----------
     const encabezados = [
       'Folio', 'Cliente', 'Correo', 'Teléfono', 'Villa', 'Huéspedes',
       'Llegada', 'Salida', 'Noches', 'Precio/noche (MXN)', 'Total (MXN)', 'Estado', 'Fecha de solicitud'
@@ -731,8 +779,6 @@
   // =========================================================
   // CALENDARIO DE OCUPACIÓN (admin) — llegadas y salidas
   // =========================================================
-  const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
   const calMes = new Date(); calMes.setDate(1);
 
   function renderCalendario() {

@@ -277,6 +277,26 @@
         <button class="btn-primario" id="btn-exportar-excel">📊 Exportar a Excel (.xlsx)</button>
       </div>
 
+      <!-- Ingresos por mes -->
+      <h4 class="panel-subtitulo" style="margin-top:2rem">Ingresos por mes</h4>
+      <p class="conta-nota">Cada reservación cuenta en el mes de su llegada. El IVA (16%) se suma al subtotal, igual que en los recibos.</p>
+      <div class="tabla-wrapper">
+        <table class="tabla-reservaciones">
+          <thead>
+            <tr>
+              <th>Mes</th>
+              <th>Reservas</th>
+              <th>Noches</th>
+              <th>Ingresos sin IVA</th>
+              <th>IVA (16%)</th>
+              <th>Total con IVA</th>
+            </tr>
+          </thead>
+          <tbody id="conta-tbody-mes"></tbody>
+          <tfoot id="conta-tfoot-mes"></tfoot>
+        </table>
+      </div>
+
       <!-- Desglose por villa -->
       <h4 class="panel-subtitulo" style="margin-top:2rem">Desglose por villa</h4>
       <div class="tabla-wrapper">

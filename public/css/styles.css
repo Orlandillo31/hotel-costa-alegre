@@ -1820,3 +1820,24 @@
     }
     .admin-resena-estado { font-size: 0.78rem; color: var(--color-gris-suave); margin-left: auto; }
     .admin-resena-texto { margin: 0.3rem 0 0.7rem; color: var(--color-oscuro); line-height: 1.5; }
+
+    /* Contabilidad: nota y fila de TOTAL de "Ingresos por mes" */
+    .conta-nota { font-size: 0.85rem; color: var(--color-gris-suave); margin: -0.4rem 0 1rem; }
+    .tabla-reservaciones tfoot td {
+      font-weight: 600; color: var(--color-oceano); background: #f5ead6;
+      border-top: 2px solid var(--color-dorado); border-bottom: 0;
+    }
+
+    /* =========================================================
+       MODO ADMINISTRADOR — con la sesión de admin solo se ve el
+       panel; el sitio público queda oculto (la clase la pone dashboard.js)
+    ========================================================= */
+    body.modo-admin > :not(#navbar):not(#panel-admin):not(#modal-login) { display: none !important; }
+    body.modo-admin #navbar {
+      background: var(--color-oceano);
+      box-shadow: var(--sombra-suave);
+      padding: 0.75rem 5%;
+    }
+    body.modo-admin .navbar-menu,
+    body.modo-admin #boton-hamburguesa { display: none !important; }
+    body.modo-admin #panel-admin { min-height: 100vh; }

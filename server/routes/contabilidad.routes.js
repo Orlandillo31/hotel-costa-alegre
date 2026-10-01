@@ -24,12 +24,25 @@ router.get('/', requiereAuth('admin'), async (req, res) => {
     porVilla[clave].ingresos += r.total;
   });
 
+  // Ingresos por mes: cada reservación cuenta en el mes de su LLEGADA
+  // ('YYYY-MM'), así la suma de todos los meses coincide con el total.
+  const meses = {};
+  confirmadas.forEach(r => {
+    const mes = String(r.llegada).slice(0, 7);
+    (meses[mes] ||= { mes, reservas: 0, noches: 0, ingresos: 0 });
+    meses[mes].reservas += 1;
+    meses[mes].noches   += r.noches || 0;
+    meses[mes].ingresos += r.total  || 0;
+  });
+  const porMes = Object.values(meses).sort((a, b) => a.mes.localeCompare(b.mes));
+
   res.json({
     totalReservacionesConfirmadas: confirmadas.length,
     nochesTotales,
     ingresoTotal,
     promedioPorReserva: confirmadas.length ? Math.round(ingresoTotal / confirmadas.length) : 0,
     porVilla,
+    porMes,
     reservaciones: confirmadas
   });
 });
