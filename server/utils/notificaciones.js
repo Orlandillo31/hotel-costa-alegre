@@ -19,6 +19,9 @@ const LOGO_URL     = SITE_URL + '/img/logo.png?v=3';
 const IVA_RATE     = 0.16;   // IVA general en México
 
 // ---- Helpers ----
+// Los datos del huésped los escribe cualquier visitante: se escapan antes de
+// meterlos al HTML del correo para que no puedan inyectar enlaces o formato.
+const { escHTML: e } = require('./entrada');
 const folio = r => String(r.id || r._id || '').slice(-8).toUpperCase();
 const fechaLarga = s =>
   new Date(s + 'T00:00:00').toLocaleDateString('es-MX',
@@ -96,7 +99,7 @@ function bloqueComprobante(r) {
           ${fila('Llegada', fechaLarga(r.llegada))}
           ${fila('Salida',  fechaLarga(r.salida))}
           ${fila('Noches × precio', r.noches + ' × ' + MX(r.precioNoche))}
-          ${fila('Huéspedes', r.huespedes || '—')}
+          ${fila('Huéspedes', e(r.huespedes) || '—')}
         </table>
       </td></tr>
     </table>
@@ -125,12 +128,12 @@ function correoConfirmacion(r) {
       </tr>
     </table>
     <p style="font-size:14px;line-height:1.6;margin:6px 0 16px">
-      Hola <strong>${r.nombre}</strong>, confirmamos tu reservación en Villas Cangrejo.
+      Hola <strong>${e(r.nombre)}</strong>, confirmamos tu reservación en Villas Cangrejo.
       A continuación tu comprobante:
     </p>
     <p style="font-size:12px;color:#666;margin:0 0 14px">
-      <strong>Cliente:</strong> ${r.nombre} &nbsp;·&nbsp; <strong>Correo:</strong> ${r.email}
-      ${r.telefono ? ' &nbsp;·&nbsp; <strong>Tel.:</strong> ' + r.telefono : ''}
+      <strong>Cliente:</strong> ${e(r.nombre)} &nbsp;·&nbsp; <strong>Correo:</strong> ${e(r.email)}
+      ${r.telefono ? ' &nbsp;·&nbsp; <strong>Tel.:</strong> ' + e(r.telefono) : ''}
     </p>
     ${bloqueComprobante(r)}
     <p style="font-size:13px;color:#444;margin-top:18px;line-height:1.6">
@@ -163,7 +166,7 @@ function correoRechazo(r) {
       </tr>
     </table>
     <p style="font-size:14px;line-height:1.6">
-      Hola <strong>${r.nombre}</strong>, lamentamos informarte que <strong>no pudimos confirmar</strong>
+      Hola <strong>${e(r.nombre)}</strong>, lamentamos informarte que <strong>no pudimos confirmar</strong>
       tu solicitud para la <strong>Villa ${r.villa}</strong> del ${fechaLarga(r.llegada)} al
       ${fechaLarga(r.salida)}.
     </p>

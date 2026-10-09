@@ -1,7 +1,7 @@
 /**
  * auth.routes.js — Autenticación y recuperación de contraseña.
  *   POST /api/auth/registro      Crear cuenta de cliente
- *   POST /api/auth/login         Login (cliente o admin según body.rol)
+ *   POST /api/auth/login         Login único (la BD identifica si es cliente o admin)
  *   POST /api/auth/logout        Cerrar sesión
  *   POST /api/auth/recuperar     Solicitar código de recuperación por email
  *   POST /api/auth/restablecer   Cambiar contraseña usando el código
@@ -21,24 +21,28 @@ const router  = express.Router();
 const Cliente = require('../models/Cliente');
 const Admin   = require('../models/Admin');
 const { BCRYPT_ROUNDS } = require('../config/db');
-const { crearSesion, eliminarSesion, requiereAuth } = require('../auth');
+const { crearSesion, eliminarSesion, cerrarSesionesDe, requiereAuth } = require('../auth');
 const { validarPassword } = require('../utils/password');
 const { limiterAuth } = require('../utils/seguridad');
+const { EMAIL_RE, texto, clave, correo, escHTML } = require('../utils/entrada');
 const mailer = require('../utils/mailer');
 
 const MAX_INTENTOS = 5;
 const BLOQUEO_MS   = 15 * 60 * 1000;
 const RESET_TTL_MS = 15 * 60 * 1000;
-const EMAIL_RE     = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Hash de relleno: si la cuenta no existe se compara contra él igualmente,
+// así el login tarda lo mismo y no delata qué correos están registrados.
+const HASH_RELLENO = bcrypt.hashSync('relleno-no-es-una-cuenta', 12);
 
 // ----------------------------------------------------------------
 // Registro de cliente
 // ----------------------------------------------------------------
 router.post('/registro', limiterAuth, async (req, res) => {
-  const nombre   = (req.body.nombre   || '').trim();
-  const email    = (req.body.email    || '').trim().toLowerCase();
-  const telefono = (req.body.telefono || '').trim();
-  const password = req.body.password  || '';
+  const nombre   = texto(req.body.nombre, 120);
+  const email    = correo(req.body.email);
+  const telefono = texto(req.body.telefono, 30);
+  const password = clave(req.body.password);
 
   if (!nombre || !email)          return res.status(400).json({ error: 'Faltan campos obligatorios.' });
   if (!EMAIL_RE.test(email))      return res.status(400).json({ error: 'El correo electrónico no es válido.' });
@@ -62,8 +66,8 @@ router.post('/registro', limiterAuth, async (req, res) => {
 // el formulario.
 // ----------------------------------------------------------------
 router.post('/login', limiterAuth, async (req, res) => {
-  const { password } = req.body;
-  const usuario = (req.body.usuario || '').trim();
+  const password = clave(req.body.password);
+  const usuario  = texto(req.body.usuario, 254);
 
   let rol = 'admin';
   let doc = usuario ? await Admin.findOne({ usuario }) : null;
@@ -72,8 +76,12 @@ router.post('/login', limiterAuth, async (req, res) => {
     doc = usuario ? await Cliente.findOne({ email: usuario.toLowerCase() }) : null;
   }
 
-  // Usuario inexistente → mensaje genérico (sin revelar si existe)
-  if (!doc) return res.status(401).json({ error: 'Credenciales inválidas.' });
+  // Usuario inexistente → mismo trabajo y mismo mensaje que una contraseña
+  // equivocada (no se revela si la cuenta existe).
+  if (!doc) {
+    await bcrypt.compare(password, HASH_RELLENO);
+    return res.status(401).json({ error: 'Credenciales inválidas.' });
+  }
 
   // ¿Cuenta bloqueada temporalmente?
   if (doc.bloqueadoHasta && doc.bloqueadoHasta > new Date()) {
@@ -84,7 +92,7 @@ router.post('/login', limiterAuth, async (req, res) => {
     });
   }
 
-  const ok = await bcrypt.compare(password || '', doc.passwordHash);
+  const ok = await bcrypt.compare(password, doc.passwordHash);
 
   if (!ok) {
     doc.intentosFallidos = (doc.intentosFallidos || 0) + 1;
@@ -126,7 +134,7 @@ router.post('/logout', requiereAuth(), (req, res) => {
 // Recuperación: solicitar código por correo
 // ----------------------------------------------------------------
 router.post('/recuperar', limiterAuth, async (req, res) => {
-  const email = (req.body.email || '').trim().toLowerCase();
+  const email = correo(req.body.email);
 
   // Respuesta SIEMPRE genérica para no revelar si el correo existe.
   const generica = { ok: true, mensaje: 'Si el correo está registrado, enviamos un código de recuperación.' };
@@ -151,7 +159,7 @@ router.post('/recuperar', limiterAuth, async (req, res) => {
       subject: 'Código de recuperación — Villas Cangrejo',
       text: `Hola ${cliente.nombre},\n\nTu código de recuperación es: ${codigo}\n` +
             `Vence en 15 minutos. Si no solicitaste esto, ignora este mensaje.\n\n— Villas Cangrejo`,
-      html: `<p>Hola <strong>${cliente.nombre}</strong>,</p>` +
+      html: `<p>Hola <strong>${escHTML(cliente.nombre)}</strong>,</p>` +
             `<p>Tu código de recuperación es:</p>` +
             `<p style="font-size:1.8rem;letter-spacing:4px;font-weight:bold">${codigo}</p>` +
             `<p>Vence en 15 minutos. Si no solicitaste esto, ignora este mensaje.</p><p>— Villas Cangrejo</p>`
@@ -172,9 +180,9 @@ router.post('/recuperar', limiterAuth, async (req, res) => {
 // Recuperación: restablecer contraseña con el código
 // ----------------------------------------------------------------
 router.post('/restablecer', limiterAuth, async (req, res) => {
-  const email  = (req.body.email  || '').trim().toLowerCase();
-  const codigo = (req.body.codigo || '').trim();
-  const nueva  = req.body.nuevaPassword || '';
+  const email  = correo(req.body.email);
+  const codigo = texto(req.body.codigo, 10);
+  const nueva  = clave(req.body.nuevaPassword);
 
   const cliente = await Cliente.findOne({ email });
   if (!cliente || !cliente.resetCodeHash || !cliente.resetExpira) {
@@ -208,6 +216,7 @@ router.post('/restablecer', limiterAuth, async (req, res) => {
   cliente.intentosFallidos = 0;
   cliente.bloqueadoHasta  = null;
   await cliente.save();
+  cerrarSesionesDe(cliente._id);   // quien tuviera la contraseña vieja queda fuera
 
   res.json({ ok: true, mensaje: 'Contraseña actualizada. Ya puedes iniciar sesión.' });
 });

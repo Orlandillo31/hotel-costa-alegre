@@ -11,6 +11,9 @@ const router  = express.Router();
 
 const Cliente = require('../models/Cliente');
 const { requiereAuth } = require('../auth');
+const { validarId } = require('../utils/entrada');
+
+router.param('id', validarId);
 
 router.get('/', requiereAuth('admin'), async (req, res) => {
   const clientes = await Cliente.find().sort({ creado: -1 });

@@ -1,0 +1,29 @@
+# Corre en GitHub cada vez que se sube un cambio a main o se abre un PR:
+#  1) Revisa que ninguna dependencia tenga vulnerabilidades graves.
+#  2) Ejecuta las pruebas automáticas (test/), con una base en memoria.
+# Si algo falla, GitHub lo marca con ❌ y te avisa por correo.
+name: Pruebas y seguridad
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Auditoría de dependencias
+        run: npm audit --omit=dev --audit-level=high
+      - name: Pruebas automáticas
+        run: npm test

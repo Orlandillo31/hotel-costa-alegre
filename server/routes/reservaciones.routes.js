@@ -18,8 +18,11 @@ const { PRECIO_NOCHE, NUM_VILLAS } = require('../config/db');
 const { obtenerSesion, requiereAuth } = require('../auth');
 const mailer = require('../utils/mailer');
 const { correoConfirmacion, correoRechazo } = require('../utils/notificaciones');
+const { EMAIL_RE, texto, correo, validarId } = require('../utils/entrada');
+const { limiterReservas } = require('../utils/seguridad');
 
 const FECHA_RE = /^\d{4}-\d{2}-\d{2}$/;
+router.param('id', validarId);
 
 // Devuelve los números de villa OCUPADOS por reservas CONFIRMADAS que se
 // solapan con el rango [llegada, salida). Función reutilizada por varios
@@ -36,8 +39,8 @@ async function villasOcupadas(llegada, salida) {
 // Disponibilidad pública por fechas (solo villas; sin datos de huéspedes).
 // GET /api/reservaciones/disponibilidad?llegada=YYYY-MM-DD&salida=YYYY-MM-DD
 router.get('/disponibilidad', async (req, res) => {
-  const llegada = (req.query.llegada || '').trim();
-  const salida  = (req.query.salida  || '').trim();
+  const llegada = texto(req.query.llegada, 10);
+  const salida  = texto(req.query.salida, 10);
   if (!FECHA_RE.test(llegada) || !FECHA_RE.test(salida) || salida <= llegada) {
     return res.status(400).json({ error: 'Fechas inválidas.' });
   }
@@ -48,19 +51,22 @@ router.get('/disponibilidad', async (req, res) => {
 });
 
 // Crear reservación
-router.post('/', async (req, res) => {
-  const nombre   = (req.body.nombre || '').trim();
-  const email    = (req.body.email  || '').trim().toLowerCase();
-  const telefono = (req.body.telefono || '').trim();
-  const huespedes = String(req.body.huespedes || '').trim();
-  const comentarios = (req.body.comentarios || '').trim();
-  const llegada  = (req.body.llegada || '').trim();
-  const salida   = (req.body.salida  || '').trim();
-  const villa    = parseInt(req.body.villa, 10);
+router.post('/', limiterReservas, async (req, res) => {
+  const nombre   = texto(req.body.nombre, 120);
+  const email    = correo(req.body.email);
+  const telefono = texto(req.body.telefono, 30);
+  const huespedes = texto(String(req.body.huespedes ?? ''), 10);
+  const comentarios = texto(req.body.comentarios, 1000);
+  const llegada  = texto(req.body.llegada, 10);
+  const salida   = texto(req.body.salida, 10);
+  const villa    = Number(req.body.villa);
 
   // Validaciones de entrada
   if (!nombre || !email || !llegada || !salida || !villa) {
     return res.status(400).json({ error: 'Faltan campos obligatorios.' });
+  }
+  if (!EMAIL_RE.test(email)) {
+    return res.status(400).json({ error: 'El correo electrónico no es válido.' });
   }
   if (!Number.isInteger(villa) || villa < 1 || villa > NUM_VILLAS) {
     return res.status(400).json({ error: 'Número de villa inválido.' });
@@ -114,7 +120,7 @@ router.get('/', requiereAuth('admin'), async (req, res) => {
 // por correo automáticamente; si el envío falla, el cambio de estado se
 // mantiene y se informa al admin en la respuesta (correo: 'fallo').
 router.patch('/:id', requiereAuth('admin'), async (req, res) => {
-  const { estado } = req.body;
+  const estado = texto(req.body.estado, 20);
   if (!['pendiente', 'confirmada', 'rechazada'].includes(estado)) {
     return res.status(400).json({ error: 'Estado inválido.' });
   }

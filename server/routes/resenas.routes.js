@@ -13,12 +13,15 @@ const router  = express.Router();
 const Resena = require('../models/Resena');
 const { requiereAuth } = require('../auth');
 const { limiterAuth } = require('../utils/seguridad');
+const { texto, validarId } = require('../utils/entrada');
+
+router.param('id', validarId);
 
 // Crear reseña (público). limiterAuth para frenar spam.
 router.post('/', limiterAuth, async (req, res) => {
-  const nombre     = (req.body.nombre || '').trim();
-  const comentario = (req.body.comentario || '').trim();
-  const calificacion = parseInt(req.body.calificacion, 10);
+  const nombre     = texto(req.body.nombre, 80);
+  const comentario = texto(req.body.comentario, 2000);
+  const calificacion = Number(req.body.calificacion);
 
   if (!nombre || !comentario) {
     return res.status(400).json({ error: 'Escribe tu nombre y tu comentario.' });

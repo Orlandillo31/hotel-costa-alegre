@@ -21,4 +21,14 @@ const limiterAuth = rateLimit({
   message: { error: 'Demasiados intentos desde esta red. Espera unos minutos e inténtalo de nuevo.' }
 });
 
-module.exports = { limiterGlobal, limiterAuth };
+// Limitador para crear reservaciones (público): frena el envío masivo de
+// solicitudes falsas que llenarían la base de datos y el panel del admin.
+const limiterReservas = rateLimit({
+  windowMs: 60 * 60 * 1000,   // 1 hora
+  max: 15,                    // 15 solicitudes por IP por hora
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Demasiadas solicitudes desde esta red. Espera un rato e inténtalo de nuevo.' }
+});
+
+module.exports = { limiterGlobal, limiterAuth, limiterReservas };

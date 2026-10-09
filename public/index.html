@@ -941,10 +941,15 @@
   ====================================================== -->
 
   <!-- SheetJS (xlsx) — librería para generar archivos Excel en el navegador -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <!-- integrity (SRI): si el archivo del CDN fuera alterado, el navegador no lo ejecuta -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"
+    integrity="sha384-vtjasyidUo0kW94K5MXDXntzOJpQgBKXmE7e2Ga4LG0skTTLeBi97eFAXsqewJjw"
+    crossorigin="anonymous"></script>
 
   <!-- jsPDF — generación de recibos en PDF (solo lo usa el panel admin) -->
-  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"
+    integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk"
+    crossorigin="anonymous"></script>
 
   <!-- Versión en inglés (ES/EN): va antes que main.js y dashboard.js porque ellos usan sus traducciones -->
   <script src="js/i18n.js"></script>

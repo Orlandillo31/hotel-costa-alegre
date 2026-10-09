@@ -405,9 +405,9 @@
       reservas.forEach(r => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>${r.nombre}</td>
-          <td>${r.email}<br><small>${r.telefono || '—'}</small></td>
-          <td>${fmtVilla(r.villa)}<br><small>${r.huespedes} huésped(es)</small></td>
+          <td>${esc(r.nombre)}</td>
+          <td>${esc(r.email)}<br><small>${esc(r.telefono) || '—'}</small></td>
+          <td>${fmtVilla(r.villa)}<br><small>${esc(r.huespedes)} huésped(es)</small></td>
           <td>${fmtFecha(r.llegada)} →<br>${fmtFecha(r.salida)}</td>
           <td>${r.noches}</td>
           <td>${fmtDinero(r.total)}</td>
@@ -635,9 +635,9 @@
       clientes.forEach(c => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>${c.nombre}</td>
-          <td>${c.email}</td>
-          <td>${c.telefono || '—'}</td>
+          <td>${esc(c.nombre)}</td>
+          <td>${esc(c.email)}</td>
+          <td>${esc(c.telefono) || '—'}</td>
           <td>${fmtFecha(c.creado)}</td>
         `;
         tbody.appendChild(tr);

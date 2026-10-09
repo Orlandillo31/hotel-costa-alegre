@@ -37,6 +37,12 @@ function eliminarSesion(req) {
   sesiones.delete(obtenerToken(req));
 }
 
+// Cierra TODAS las sesiones de una cuenta (p. ej. al cambiar la contraseña,
+// para expulsar a quien la estuviera usando en otro equipo).
+function cerrarSesionesDe(id) {
+  for (const [token, s] of sesiones) if (s.id === String(id)) sesiones.delete(token);
+}
+
 // Middleware: exige token válido y, opcionalmente, un rol concreto.
 function requiereAuth(rolNecesario) {
   return (req, res, next) => {
@@ -48,4 +54,4 @@ function requiereAuth(rolNecesario) {
   };
 }
 
-module.exports = { crearSesion, obtenerToken, obtenerSesion, eliminarSesion, requiereAuth };
+module.exports = { crearSesion, obtenerToken, obtenerSesion, eliminarSesion, cerrarSesionesDe, requiereAuth };
