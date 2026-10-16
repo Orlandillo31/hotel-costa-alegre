@@ -21,7 +21,7 @@
     "express-rate-limit": "^8.5.2",
     "helmet": "^8.2.0",
     "mongoose": "^9.11.1",
-    "nodemailer": "^10.0.16"
+    "nodemailer": "^10.1.0"
   },
   "author": "Angel Leonor",
   "license": "MIT",
