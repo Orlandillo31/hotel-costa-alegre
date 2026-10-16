@@ -11,7 +11,7 @@
 
 // ---- Datos del establecimiento ----
 const RAZON_SOCIAL = 'Villas Cangrejo';
-const DOMICILIO    = 'Km 72, Carretera Federal 200, San Patricio-Melaque, Jalisco, México';
+const DOMICILIO    = '14 C. Palmas, San Patricio-Melaque, Jalisco, México';
 const TEL_HOTEL    = '+52 315 100 7106';
 const EMAIL_HOTEL  = process.env.HOTEL_EMAIL || 'joseangel.hotel68@gmail.com';
 const SITE_URL     = process.env.SITE_URL || 'https://hotel-costa-alegre-7wl2.onrender.com';
@@ -28,6 +28,12 @@ const fechaLarga = s =>
     { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 const MX = n => '$' + Number(n || 0).toLocaleString('es-MX',
   { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' MXN';
+
+// ['Noches × precio', '3 × $1,850.00 MXN'] o, en estancias largas,
+// ['Tarifa mensual', '90 noches · $16,000.00 MXN por mes'].
+const lineaPrecio = r => r.tarifa === 'mensual'
+  ? ['Tarifa mensual', `${r.noches} noches · ${MX(r.tarifaMensual)} por mes`]
+  : ['Noches × precio', `${r.noches} × ${MX(r.precioNoche)}`];
 
 // El subtotal (noches × precio) más el 16% de IVA da el total a pagar.
 function desgloseIVA(subtotal) {
@@ -98,7 +104,7 @@ function bloqueComprobante(r) {
           ${fila('Hospedaje · Villa ' + r.villa, '')}
           ${fila('Llegada', fechaLarga(r.llegada))}
           ${fila('Salida',  fechaLarga(r.salida))}
-          ${fila('Noches × precio', r.noches + ' × ' + MX(r.precioNoche))}
+          ${fila(...lineaPrecio(r))}
           ${fila('Huéspedes', e(r.huespedes) || '—')}
         </table>
       </td></tr>
@@ -149,7 +155,7 @@ function correoConfirmacion(r) {
       `Cliente: ${r.nombre} (${r.email})\n` +
       `Villa: ${r.villa}\nLlegada: ${fechaLarga(r.llegada)} (check-in 3:00 PM)\n` +
       `Salida: ${fechaLarga(r.salida)} (check-out 12:00 PM)\n` +
-      `Noches: ${r.noches} × ${MX(r.precioNoche)}\n\n` +
+      `${lineaPrecio(r).join(': ')}\n\n` +
       `Subtotal: ${MX(subtotal)}\nIVA (16%): ${MX(iva)}\nTOTAL: ${MX(total)}\n\n` +
       `${RAZON_SOCIAL} · ${DOMICILIO} · Tel. ${TEL_HOTEL}\n` +
       `Comprobante informativo, no es un CFDI. Para factura, solicítela con su RFC.`,

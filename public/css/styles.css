@@ -726,9 +726,9 @@
     /* Grid de tarjetas de amenidades */
     .amenidades-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 1.5rem;
-      max-width: 1200px;
+      max-width: 1100px;
       margin: 0 auto;
     }
     @media (max-width: 1100px) { .amenidades-grid { grid-template-columns: repeat(2, 1fr); } }
@@ -1908,6 +1908,85 @@
     }
     #btn-idioma:hover { background: rgba(255, 255, 255, 0.15); border-color: var(--color-dorado); }
     @media (max-width: 900px) { #btn-idioma { margin-right: 1rem; } }
+
+    /* ---------- Estancias largas (sección de villas) ---------- */
+    .estancias-largas {
+      margin: 1.6rem 0;
+      padding: 1.2rem 1.4rem;
+      border: 1px solid #ece4d3;
+      border-left: 3px solid var(--color-dorado);
+      border-radius: 10px;
+      background: var(--color-blanco);
+    }
+    .estancias-largas .el-titulo {
+      font-family: var(--fuente-titulo); font-size: 1.2rem; color: var(--color-oceano); margin-bottom: 0.6rem;
+    }
+    .estancias-largas ul { list-style: none; padding: 0; margin: 0 0 0.4rem; }
+    .estancias-largas li {
+      display: flex; gap: 0.5rem; align-items: baseline; padding: 0.3rem 0;
+      border-bottom: 1px dashed #ece4d3; font-size: 0.92rem;
+    }
+    .estancias-largas li:last-child { border-bottom: 0; }
+    .estancias-largas .el-plazo { flex: 1; color: var(--color-gris-suave); }
+    .estancias-largas strong { color: var(--color-oceano); }
+    .estancias-largas .el-por, .estancias-largas .el-nota { font-size: 0.8rem; color: var(--color-gris-suave); }
+
+    /* Precio estimado en el formulario de reserva */
+    .precio-estimado {
+      margin: -0.4rem 0 1.2rem;
+      padding: 0.7rem 0.9rem;
+      border-radius: 8px;
+      background: rgba(26, 138, 148, 0.08);
+      color: var(--color-oceano);
+      font-size: 0.88rem;
+    }
+    .nota-privacidad { margin-top: 0.8rem; font-size: 0.78rem; color: var(--color-gris-suave); text-align: center; }
+    .nota-privacidad a { color: var(--color-turquesa); text-decoration: underline; }
+
+    /* ---------- Panel admin: registrar reservación y precios ---------- */
+    .admin-barra { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+    .form-admin {
+      background: var(--color-blanco); border: 1px solid #ece4d3; border-radius: 12px;
+      padding: 1.4rem 1.5rem; margin-bottom: 1.6rem;
+    }
+    .form-admin-ayuda { font-size: 0.86rem; color: var(--color-gris-suave); margin-bottom: 1rem; }
+    .form-admin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 0.9rem 1rem; margin-bottom: 0.9rem; }
+    .form-admin label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.8rem; font-weight: 500; color: var(--color-oceano); }
+    .form-admin label small { font-weight: 400; color: var(--color-gris-suave); }
+    .form-admin input, .form-admin select, .form-admin textarea {
+      font: inherit; font-size: 0.9rem; font-weight: 400; color: var(--color-oscuro);
+      padding: 0.55rem 0.7rem; border: 1px solid #ddd5c3; border-radius: 6px; background: #fff;
+    }
+    .form-admin .form-admin-check { flex-direction: row; align-items: center; gap: 0.5rem; margin: 0.8rem 0 0.4rem; }
+    .form-admin-botones { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 0.8rem; }
+    .form-tarifas { max-width: 900px; }
+
+    /* Estado del pago en la tabla de reservaciones */
+    .badge.pago-sin      { background: #ececec; color: #555; }
+    .badge.pago-anticipo { background: #fff3cd; color: #856404; }
+    .badge.pago-completo { background: #d4f0db; color: #155724; }
+    .btn-mini.cancelar { background: #fff; color: #c0392b; border: 1px solid #e8b4ae; }
+    .btn-mini.cancelar:hover { background: #c0392b; color: #fff; }
+    .btn-mini.pago { background: var(--color-turquesa); color: #fff; }
+    .btn-mini.pago:hover { background: var(--color-oceano); }
+
+    /* ---------- Páginas legales (aviso de privacidad) ---------- */
+    .pagina-legal { background: var(--color-arena); }
+    .legal-encabezado { background: var(--color-oceano); padding: 0.9rem 5%; }
+    .legal-encabezado .navbar-logo { text-decoration: none; }
+    .legal-contenido {
+      max-width: 780px; margin: 2.5rem auto 4rem; padding: 2.5rem 2.2rem;
+      background: var(--color-blanco); border-radius: 14px; box-shadow: 0 6px 24px rgba(11, 61, 78, 0.08);
+      color: var(--color-oscuro); line-height: 1.7;
+    }
+    .legal-contenido h1 { font-family: var(--fuente-titulo); font-size: 2.3rem; color: var(--color-oceano); margin-bottom: 0.2rem; }
+    .legal-contenido h2 { font-family: var(--fuente-titulo); font-size: 1.35rem; color: var(--color-oceano); margin: 1.8rem 0 0.5rem; }
+    .legal-contenido p, .legal-contenido li { font-size: 0.95rem; }
+    .legal-contenido ul { padding-left: 1.2rem; margin: 0.4rem 0 0.8rem; }
+    .legal-contenido a { color: var(--color-turquesa); }
+    .legal-fecha { color: var(--color-gris-suave); font-size: 0.85rem; }
+    .legal-volver { margin-top: 2rem; }
+    @media (max-width: 600px) { .legal-contenido { margin: 1.2rem 1rem 3rem; padding: 1.6rem 1.2rem; } }
 
     /* Calificación promedio arriba de las reseñas */
     .resenas-resumen {

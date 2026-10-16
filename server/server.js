@@ -22,7 +22,13 @@ const PORT = process.env.PORT || 3000;
   try {
     mailer.init();
     await db.conectar();
-    app.listen(PORT, () => {
+    // Express 5 llama a esta función también cuando NO se pudo abrir el
+    // puerto (con el error como argumento): hay que revisarlo.
+    app.listen(PORT, (err) => {
+      if (err) {
+        console.error('❌ No se pudo abrir el puerto ' + PORT + ':', err.message);
+        process.exit(1);
+      }
       console.log('');
       console.log('🦀 Villas Cangrejo — servidor en marcha');
       console.log('   → http://localhost:' + PORT);

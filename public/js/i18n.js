@@ -84,12 +84,16 @@
     ['#habitaciones .seccion-titulo', 'Our <em>villas</em>'],
     ['.habitaciones-intro', 'We have <strong>16 identical villas</strong>, all with the same design, ' +
       'amenities and price. Pick the one you like: every villa offers the same luxury experience by the Pacific.'],
-    ['.habitacion-precio', '<strong>$1,850</strong> MXN / night'],
-    ['.habitacion-descripcion', 'A private villa with its own garden, a fully equipped kitchen and beach ' +
-      'access, surrounded by wild nature. Designed for couples, families or groups looking for comfort and ' +
-      'privacy. All 16 villas are identical in design, amenities and price.'],
-    ['.comodidad-item', ['Comfortable bedrooms', 'Fully equipped kitchen', 'High-speed Wi-Fi',
-      'A/C & fan', 'Private terrace', 'Access to all hotel services']],
+    // data-tarifa: dashboard.js vuelve a poner el precio vigente tras traducir
+    ['.habitacion-precio', '<strong data-tarifa="precioNoche">$1,850</strong> MXN / night'],
+    ['.habitacion-descripcion', 'A private, fully equipped villa in San Patricio-Melaque, designed for ' +
+      'couples, families and long stays. All 16 villas are identical in design, amenities and price.'],
+    ['.comodidad-item', ['Air conditioning', 'Television', 'Wi-Fi internet', 'Hot water',
+      'Induction stove', 'Pool access']],
+    ['.estancias-largas .el-titulo', 'Long stays'],
+    ['.estancias-largas .el-plazo', ['1 month', '2 months', '3 months or more']],
+    ['.estancias-largas .el-por', 'per month'],
+    ['.estancias-largas .el-nota', 'Prices in Mexican pesos, plus VAT (16%).'],
     ['.habitacion-info .btn-primario', 'Book a villa'],
 
     // ---------- Galería ----------
@@ -109,19 +113,17 @@
 
     // ---------- Amenidades ----------
     ['#amenidades .seccion-etiqueta', 'What awaits you'],
-    ['#amenidades .seccion-titulo', 'Amenities <em>by the sea</em>'],
-    ['.amenidad-nombre', ['The Peanut Pool', 'Bahía Restaurant', 'Selva Mar Spa', 'Water Sports',
-      'Ecotourism', 'Bar El Pelícano', 'Gym & Yoga', 'Sport Fishing']],
+    ['#amenidades .seccion-titulo', 'Comforts <em>for your stay</em>'],
+    ['.amenidad-nombre', ['The Peanut Pool', 'Air conditioning', 'Television', 'Wi-Fi internet',
+      'Hot water', 'Induction stove']],
     ['.amenidad-descripcion', [
       'Our pool boasts a rather peculiar peanut shape —yes, a peanut— with curves for swimming and ' +
-      'nooks for floating. Pacific views, open 24 hours.',
-      'Seafood cuisine made with local ingredients. Fresh catch from the Jalisco Pacific every day.',
-      'Ancestral rituals with medicinal plants from the region. Massages, temazcal and aromatherapy.',
-      'Kayak, paddle board, snorkeling and diving on the coral reefs of Chamela Bay.',
-      'Whale watching tours, sea turtle releases and hiking in the Chamela Reserve.',
-      'Craft cocktails with Jalisco spirits in front of the most beautiful sunset on the Pacific.',
-      'Fully equipped gym and sunrise yoga classes by the sea. Total wellbeing, guaranteed.',
-      'Fishing trips for sailfish and mahi-mahi in the rich waters of the Mexican Pacific.'
+      'nooks for floating.',
+      'Every villa has air conditioning so you can rest cool even on the hottest days on the coast.',
+      'A TV in every villa to relax after a day at the beach.',
+      'Internet in your villa: ideal for long stays or for working remotely.',
+      'Hot water at all times for your comfort.',
+      'Cook like at home with an induction stove: safe, fast and efficient.'
     ]],
 
     // ---------- Reseñas ----------
@@ -139,9 +141,9 @@
     ['#contacto .seccion-etiqueta', 'Contact'],
     ['#contacto .seccion-titulo', 'Let\'s talk and <em>plan</em><br>your getaway'],
     ['.contacto-info > p', 'Our team is available every day to help you plan the perfect getaway to the ' +
-      'Costa Alegre. Write to us, call us or visit us on Federal Highway 200.'],
+      'Costa Alegre. Write to us, call us or visit us in San Patricio-Melaque.'],
     ['.detalle-texto strong', ['Address', 'Phone', 'Email', 'Hours']],
-    ['.detalle-texto span', ['Km 72, Federal Highway 200, Costa Alegre, Jalisco, Mexico', null, null, null]],
+    ['.detalle-texto span', ['14 C. Palmas, San Patricio-Melaque, Jalisco, Mexico', null, null, null]],
     ['.formulario-titulo', '✦ Request your reservation'],
     ['label[for="campo-nombre"]', 'Full name *'],
     ['#campo-nombre', 'e.g. Ana García López', 'placeholder'],
@@ -154,7 +156,7 @@
     ['#error-llegada', 'Select your check-in date.'],
     ['label[for="campo-salida"]', 'Check-out date *'],
     ['#error-salida', 'Check-out must be after check-in.'],
-    ['label[for="campo-villa"]', 'Choose your villa * <small style="font-weight:400;opacity:.7">(all $1,850 MXN/night)</small>'],
+    ['label[for="campo-villa"]', 'Choose your villa * <small style="font-weight:400;opacity:.7">(all identical)</small>'],
     ['#campo-villa option[value=""]', '— Select a villa —'],
     ['#error-villa', 'Select a villa.'],
     ['label[for="campo-huespedes"]', 'Number of guests *'],
@@ -169,10 +171,15 @@
     // ---------- Pie de página ----------
     ['.footer-marca p', 'Your home on the most beautiful coast of the Mexican Pacific. ' +
       'Nature, luxury and warmth in perfect harmony.'],
-    ['.footer-columna h4', ['The Hotel', 'Experiences', 'Information']],
-    ['.footer-columna li a', ['About', 'Villas', 'Amenities', 'Gallery',
-      'Spa & Wellness', 'Diving & Snorkeling', 'Whale Watching', 'Local Cuisine',
-      'Reservations', 'Cancellation policy', 'Getting here', 'FAQ']],
+    ['.footer-columna h4', ['The Hotel', 'Services', 'Information']],
+    ['.footer-columna li a', ['About', 'Villas', 'Comforts', 'Gallery',
+      'Pool', 'Air conditioning', 'Wi-Fi internet', 'Long stays',
+      'Reservations', 'Getting here', 'Privacy notice (Spanish)']],
+    // Orden en la página: primero el registro (modal), luego el formulario de reserva
+    ['.nota-privacidad', [
+      'By creating an account you accept our <a href="aviso-privacidad.html" target="_blank">privacy notice</a> (in Spanish).',
+      'By sending you accept our <a href="aviso-privacidad.html" target="_blank">privacy notice</a> (in Spanish).'
+    ]],
     ['.footer-inferior p', ['© 2026 Villas Cangrejo. All rights reserved.',
       'Designed with enthusiasm for the <a href="#">Costa Alegre, Jalisco</a>']]
   ];
@@ -218,7 +225,11 @@
     'Error cargando reservaciones: ': 'Error loading reservations: ',
     'No se pudo conectar con el servidor. Asegúrate de que el servidor Node esté corriendo (npm start) y abre la página en http://localhost:3000':
       'Could not connect to the server. Please check your connection and try again.',
-    'pendiente': 'pending', 'confirmada': 'confirmed', 'rechazada': 'declined',
+    'pendiente': 'pending', 'confirmada': 'confirmed', 'rechazada': 'declined', 'cancelada': 'cancelled',
+    'Demasiadas solicitudes desde esta red. Espera un rato e inténtalo de nuevo.':
+      'Too many requests from this network. Please wait a while and try again.',
+    'Petición inválida.': 'Invalid request.',
+    'La petición es demasiado grande.': 'The request is too large.',
     // Reseñas
     'Escribe tu nombre y tu comentario.': 'Please write your name and your comment.',
     'La calificación debe ser de 1 a 5 estrellas.': 'The rating must be from 1 to 5 stars.',

@@ -13,6 +13,10 @@ npm-debug.log*
 # Plantillas de trabajo con datos reales de clientes (no subir al repo público)
 plantillas/
 
+# Respaldos de la base de datos (aunque van cifrados, nunca al repo)
+respaldos/
+*.vcbk
+
 # Configuración local de IDE / Claude
 .vscode/
 .idea/

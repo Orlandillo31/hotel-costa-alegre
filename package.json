@@ -7,6 +7,8 @@
   "scripts": {
     "start": "node server/server.js",
     "test": "node --test",
+    "respaldo": "node server/scripts/respaldo.js",
+    "restaurar": "node server/scripts/restaurar.js",
     "actualizar-admin": "node server/scripts/actualizar-admin.js"
   },
   "engines": {

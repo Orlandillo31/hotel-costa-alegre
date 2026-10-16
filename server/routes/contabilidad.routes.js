@@ -14,6 +14,10 @@ router.get('/', requiereAuth('admin'), async (req, res) => {
 
   const ingresoTotal  = confirmadas.reduce((s, r) => s + (r.total  || 0), 0);
   const nochesTotales = confirmadas.reduce((s, r) => s + (r.noches || 0), 0);
+  // Pagos registrados (con IVA) y lo que falta por cobrar de las confirmadas.
+  const cobrado    = confirmadas.reduce((s, r) => s + (r.montoPagado || 0), 0);
+  const totalConIva = confirmadas.reduce((s, r) => s + +((r.total || 0) * 1.16).toFixed(2), 0);
+  const porCobrar  = Math.max(0, +(totalConIva - cobrado).toFixed(2));
 
   // Desglose por villa (cuáles se reservan más y cuánto generan)
   const porVilla = {};
@@ -41,6 +45,8 @@ router.get('/', requiereAuth('admin'), async (req, res) => {
     nochesTotales,
     ingresoTotal,
     promedioPorReserva: confirmadas.length ? Math.round(ingresoTotal / confirmadas.length) : 0,
+    cobrado,
+    porCobrar,
     porVilla,
     porMes,
     reservaciones: confirmadas

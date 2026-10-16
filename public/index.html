@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Villas Cangrejo | Jalisco, México</title>
   <meta name="description"
-    content="Villas Cangrejo: 16 villas en Melaque, en la Bahía de Navidad de la Costa Alegre de Jalisco. Alberca, restaurante, spa y acceso a la playa. Reserva en línea." />
+    content="Villas Cangrejo: 16 villas en San Patricio-Melaque, Bahía de Navidad, Jalisco. Alberca, aire acondicionado, internet y cocina. Estancias por noche o por mes. Reserva en línea." />
 
   <!-- Vista previa al compartir el enlace (WhatsApp, Facebook, X).
        Si se compra un dominio propio, cambiar og:url por la nueva dirección. -->
@@ -14,7 +14,7 @@
   <meta property="og:site_name" content="Villas Cangrejo" />
   <meta property="og:title" content="Villas Cangrejo · Melaque, Jalisco" />
   <meta property="og:description"
-    content="16 villas en la Bahía de Navidad, Costa Alegre de Jalisco. Alberca, restaurante, spa y acceso a la playa. Reserva en línea." />
+    content="16 villas en San Patricio-Melaque, Bahía de Navidad. Alberca, aire acondicionado e internet. Estancias por noche o por mes." />
   <meta property="og:url" content="https://hotel-costa-alegre-7wl2.onrender.com/" />
   <meta property="og:image" content="https://images.unsplash.com/photo-1519046904884-53103b34b206?w=1200&h=630&fit=crop&q=80" />
   <meta property="og:image:width" content="1200" />
@@ -149,6 +149,7 @@
         <label>Contraseña (mín. 8 caracteres)</label>
         <input type="password" id="reg-pass" minlength="8" required />
         <button type="submit" class="btn-enviar">Crear cuenta</button>
+        <p class="nota-privacidad">Al crear tu cuenta aceptas nuestro <a href="aviso-privacidad.html" target="_blank">aviso de privacidad</a>.</p>
       </form>
     </div>
   </div>
@@ -203,11 +204,50 @@
       <button class="admin-tab" data-admin-tab="clientes">Clientes</button>
       <button class="admin-tab" data-admin-tab="contabilidad">Contabilidad</button>
       <button class="admin-tab" data-admin-tab="resenas">Reseñas</button>
+      <button class="admin-tab" data-admin-tab="precios">Precios</button>
     </div>
 
     <!-- Panel: Reservaciones -->
     <div id="admin-panel-reservaciones" class="admin-panel activo">
-      <h3 class="panel-subtitulo">Solicitudes de reservación</h3>
+      <div class="admin-barra">
+        <h3 class="panel-subtitulo" style="margin:0">Reservaciones</h3>
+        <button class="btn-primario" id="btn-nueva-reserva" type="button">+ Registrar reservación</button>
+      </div>
+
+      <!-- Registrar una reserva ya acordada (pagada, de Booking, por teléfono…) -->
+      <form id="form-reserva-admin" class="form-admin" hidden>
+        <p class="form-admin-ayuda">Para reservas ya acordadas: pagadas, de Booking, por teléfono o WhatsApp.
+          Quedan <strong>confirmadas</strong> y la villa se bloquea en la página para esas fechas.</p>
+        <div class="form-admin-grid">
+          <label>Nombre del huésped *<input type="text" id="ra-nombre" maxlength="120" required /></label>
+          <label>Correo<input type="email" id="ra-email" maxlength="254" /></label>
+          <label>Teléfono<input type="tel" id="ra-telefono" maxlength="30" /></label>
+          <label>Villa *<select id="ra-villa" required></select></label>
+          <label>Huéspedes<input type="text" id="ra-huespedes" maxlength="10" placeholder="Ej. 2" /></label>
+          <label>Origen
+            <select id="ra-origen">
+              <option value="telefono">Teléfono</option>
+              <option value="whatsapp">WhatsApp</option>
+              <option value="booking">Booking</option>
+              <option value="web">Página web</option>
+              <option value="otro">Otro</option>
+            </select>
+          </label>
+          <label>Llegada *<input type="date" id="ra-llegada" required /></label>
+          <label>Salida *<input type="date" id="ra-salida" required /></label>
+          <label>Total acordado sin IVA (MXN)<input type="number" id="ra-total" min="1" step="1" placeholder="Vacío = según tarifas" /></label>
+          <label>Ya pagó, con IVA (MXN)<input type="number" id="ra-pagado" min="0" step="0.01" placeholder="0" /></label>
+        </div>
+        <label>Notas<textarea id="ra-comentarios" maxlength="1000" rows="2"></textarea></label>
+        <label class="form-admin-check"><input type="checkbox" id="ra-correo" /> Enviar correo de confirmación al huésped</label>
+        <p id="ra-estimado" class="villas-msg info"></p>
+        <div class="form-admin-botones">
+          <button type="submit" class="btn-primario">Guardar reservación</button>
+          <button type="button" class="btn-secundario" id="ra-cancelar">Cancelar</button>
+        </div>
+        <p id="ra-mensaje" class="resena-mensaje"></p>
+      </form>
+
       <div class="tabla-wrapper">
         <table class="tabla-reservaciones">
           <thead>
@@ -218,6 +258,7 @@
               <th>Fechas</th>
               <th>Noches</th>
               <th>Total</th>
+              <th>Pago</th>
               <th>Estado</th>
               <th>Acciones</th>
             </tr>
@@ -291,6 +332,14 @@
           <span class="conta-label">Promedio por reserva</span>
           <span class="conta-valor" id="conta-promedio">$0</span>
         </div>
+        <div class="conta-card">
+          <span class="conta-label">Cobrado (con IVA)</span>
+          <span class="conta-valor" id="conta-cobrado">$0</span>
+        </div>
+        <div class="conta-card">
+          <span class="conta-label">Por cobrar (con IVA)</span>
+          <span class="conta-valor" id="conta-por-cobrar">$0</span>
+        </div>
       </div>
 
       <!-- Botón exportar a Excel -->
@@ -340,6 +389,23 @@
       <p style="opacity:.7;font-size:.9rem;margin-top:-.4rem">Aprueba las reseñas para que aparezcan en la página, o elimínalas.</p>
       <div id="admin-resenas-lista" class="admin-resenas-lista"></div>
       <p id="admin-resenas-vacio" class="tabla-vacia">No hay reseñas todavía.</p>
+    </div>
+
+    <!-- Panel: Precios (editables) -->
+    <div id="admin-panel-precios" class="admin-panel">
+      <h3 class="panel-subtitulo">Precios</h3>
+      <p class="conta-nota">Precios antes de IVA, en pesos. Se aplican a las reservaciones nuevas; las que ya existen
+        conservan el precio con el que se hicieron.</p>
+      <form id="form-tarifas" class="form-admin form-tarifas">
+        <div class="form-admin-grid">
+          <label>Por noche <small>(menos de 30 noches)</small><input type="number" id="t-noche" min="1" step="1" required /></label>
+          <label>1 mes, por mes <small>(30 a 59 noches)</small><input type="number" id="t-mes1" min="1" step="1" required /></label>
+          <label>2 meses, por mes <small>(60 a 89 noches)</small><input type="number" id="t-mes2" min="1" step="1" required /></label>
+          <label>3 meses o más, por mes <small>(90 noches o más)</small><input type="number" id="t-mes3" min="1" step="1" required /></label>
+        </div>
+        <div class="form-admin-botones"><button type="submit" class="btn-primario">Guardar precios</button></div>
+        <p id="t-mensaje" class="resena-mensaje"></p>
+      </form>
     </div>
   </section>
 
@@ -449,20 +515,30 @@
         alt="Villa frente al mar en Villas Cangrejo" class="habitacion-imagen" />
       <div class="habitacion-info">
         <h3 class="habitacion-nombre">Villa Cangrejo</h3>
-        <p class="habitacion-precio"><strong>$1,850</strong> MXN / noche</p>
+        <!-- Los precios con data-tarifa los llena dashboard.js desde /api/tarifas -->
+        <p class="habitacion-precio"><strong data-tarifa="precioNoche">$1,850</strong> MXN / noche</p>
         <p class="habitacion-descripcion">
-          Una villa independiente con jardín propio, cocina equipada y acceso a la playa,
-          rodeada de naturaleza salvaje. Diseñada para parejas, familias o grupos que buscan
-          confort y privacidad. Las 16 villas son idénticas en diseño, comodidades y precio.
+          Una villa independiente y totalmente equipada en San Patricio-Melaque, pensada para
+          parejas, familias y estancias largas. Las 16 villas son idénticas en diseño,
+          comodidades y precio.
         </p>
         <ul class="habitacion-comodidades">
-          <li class="comodidad-item">Recámaras cómodas</li>
-          <li class="comodidad-item">Cocina equipada</li>
-          <li class="comodidad-item">Wi-Fi de alta velocidad</li>
-          <li class="comodidad-item">A/C & Ventilador</li>
-          <li class="comodidad-item">Terraza privada</li>
-          <li class="comodidad-item">Acceso a todos los servicios</li>
+          <li class="comodidad-item">Aire acondicionado</li>
+          <li class="comodidad-item">Televisión</li>
+          <li class="comodidad-item">Internet Wi-Fi</li>
+          <li class="comodidad-item">Agua caliente</li>
+          <li class="comodidad-item">Estufa de inducción</li>
+          <li class="comodidad-item">Acceso a la alberca</li>
         </ul>
+        <div class="estancias-largas">
+          <h4 class="el-titulo">Estancias largas</h4>
+          <ul>
+            <li><span class="el-plazo">1 mes</span> <strong data-tarifa="mes1">$20,000</strong> <span class="el-por">por mes</span></li>
+            <li><span class="el-plazo">2 meses</span> <strong data-tarifa="mes2">$18,000</strong> <span class="el-por">por mes</span></li>
+            <li><span class="el-plazo">3 meses o más</span> <strong data-tarifa="mes3">$16,000</strong> <span class="el-por">por mes</span></li>
+          </ul>
+          <small class="el-nota">Precios en pesos mexicanos, más IVA (16%).</small>
+        </div>
         <a href="#contacto" class="btn-primario">Reservar una villa</a>
       </div>
     </div>
@@ -586,65 +662,45 @@
   <section id="amenidades" aria-label="Amenidades y servicios del hotel">
     <div class="amenidades-encabezado reveal">
       <span class="seccion-etiqueta">Lo que te espera</span>
-      <h2 class="seccion-titulo">Amenidades <em>frente al mar</em></h2>
+      <h2 class="seccion-titulo">Comodidades <em>para tu estancia</em></h2>
     </div>
 
-    <!-- Grid de tarjetas de amenidades -->
+    <!-- Grid de tarjetas de amenidades (servicios reales del hotel) -->
     <div class="amenidades-grid">
       <article class="amenidad-tarjeta reveal">
         <span class="amenidad-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 15V5.5a2 2 0 0 1 4 0M15 15V5.5a2 2 0 0 1 4 0M8 9h7M8 12.5h7"/><path d="M2.5 17.5c1.6 1.1 3.2 1.1 4.8 0s3.2-1.1 4.7 0 3.2 1.1 4.8 0 3.1-1.1 4.7 0M2.5 21c1.6 1.1 3.2 1.1 4.8 0s3.2-1.1 4.7 0 3.2 1.1 4.8 0 3.1-1.1 4.7 0"/></svg></span>
         <h3 class="amenidad-nombre">Alberca Cacahuate</h3>
-        <p class="amenidad-descripcion">Nuestra alberca presume una peculiar forma de cacahuate —sí, de cacahuate—
-          con curvas para nadar y rincones para flotar. Vista al Pacífico y abierta las 24 horas.</p>
+        <p class="amenidad-descripcion">Nuestra alberca presume una peculiar forma de cacahuate —sí, de cacahuate— con curvas para nadar y rincones para flotar.</p>
       </article>
 
       <article class="amenidad-tarjeta reveal reveal-delay-1">
-        <span class="amenidad-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4.5 3v5a2.5 2.5 0 0 0 5 0V3M7 3v18"/><path d="M18 21V3c-2.2 1.6-3.5 4.6-3.5 8.5H18"/></svg></span>
-        <h3 class="amenidad-nombre">Restaurante Bahía</h3>
-        <p class="amenidad-descripcion">Cocina de mar con ingredientes locales. Mariscos frescos del Pacífico jaliciense
-          cada día.</p>
+        <span class="amenidad-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2.5v19M3.8 7.25l16.4 9.5M3.8 16.75l16.4-9.5"/><path d="M9.6 3.9 12 5.8l2.4-1.9M9.6 20.1 12 18.2l2.4 1.9M3.9 10.4l2.9-.9-.5-3M20.1 13.6l-2.9.9.5 3M3.9 13.6l2.9.9-.5 3M20.1 10.4l-2.9-.9.5-3"/></svg></span>
+        <h3 class="amenidad-nombre">Aire acondicionado</h3>
+        <p class="amenidad-descripcion">Todas las villas tienen aire acondicionado para descansar fresco aun en los días más calurosos de la costa.</p>
       </article>
 
       <article class="amenidad-tarjeta reveal reveal-delay-2">
-        <span class="amenidad-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21.5c-5 0-9-3.6-9-9 3.8 0 7 1.9 9 5.2 2-3.3 5.2-5.2 9-5.2 0 5.4-4 9-9 9z"/><path d="M12 17.8c-2-2.6-2.6-5.7-2-8.8.5-3 2-4.9 2-4.9s1.5 1.9 2 4.9c.6 3.1 0 6.2-2 8.8z"/></svg></span>
-        <h3 class="amenidad-nombre">Spa Selva Mar</h3>
-        <p class="amenidad-descripcion">Rituales ancestrales con plantas medicinales de la región. Masajes, temazcal y
-          aromaterapia.</p>
-      </article>
-
-      <article class="amenidad-tarjeta reveal reveal-delay-3">
-        <span class="amenidad-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="8" width="15.5" height="8.5" rx="3.2"/><path d="M9.75 8v3.2M9.75 16.5V14"/><path d="M21 3.5v10.5a4.5 4.5 0 0 1-4.5 4.5h-1"/></svg></span>
-        <h3 class="amenidad-nombre">Deportes Acuáticos</h3>
-        <p class="amenidad-descripcion">Kayak, paddle board, snorkel y buceo en los arrecifes de coral de la bahía de
-          Chamela.</p>
+        <span class="amenidad-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.5" y="4.5" width="19" height="13" rx="2"/><path d="M8.5 21h7M12 17.5V21"/></svg></span>
+        <h3 class="amenidad-nombre">Televisión</h3>
+        <p class="amenidad-descripcion">Pantalla en cada villa para relajarte después de un día de playa.</p>
       </article>
 
       <article class="amenidad-tarjeta reveal">
-        <span class="amenidad-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="13" rx="5.5" ry="6.5"/><circle cx="12" cy="4" r="1.8"/><path d="M7.4 9.2 5 7.6M16.6 9.2 19 7.6M7.4 16.8 5 18.4M16.6 16.8 19 18.4M12 19.5V21.5"/><path d="M12 9.5v7M9 13h6"/></svg></span>
-        <h3 class="amenidad-nombre">Ecoturismo</h3>
-        <p class="amenidad-descripcion">Tours de avistamiento de ballenas, liberación de tortugas y senderismo en la
-          Reserva de Chamela.</p>
+        <span class="amenidad-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.5a9.5 9.5 0 0 1 13 0M8.6 15.8a5 5 0 0 1 6.8 0"/><circle cx="12" cy="19" r="1.1" class="relleno"/></svg></span>
+        <h3 class="amenidad-nombre">Internet Wi-Fi</h3>
+        <p class="amenidad-descripcion">Conexión a internet en tu villa: ideal para estancias largas o para trabajar a distancia.</p>
       </article>
 
       <article class="amenidad-tarjeta reveal reveal-delay-1">
-        <span class="amenidad-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16l-8 8.5z"/><path d="M12 13.5V20M8 20.5h8M7 8.2h10"/><path d="M14.5 5 17.5 2"/><circle cx="18.2" cy="6.2" r="1.8"/></svg></span>
-        <h3 class="amenidad-nombre">Bar El Pelícano</h3>
-        <p class="amenidad-descripcion">Cócteles artesanales con destilados jaliscienses frente al atardecer más hermoso
-          del Pacífico.</p>
+        <span class="amenidad-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3s-6 6.6-6 11a6 6 0 0 0 12 0c0-4.4-6-11-6-11z"/><path d="M9.3 14.3c.9-.8 1.8-.8 2.7 0s1.8.8 2.7 0"/></svg></span>
+        <h3 class="amenidad-nombre">Agua caliente</h3>
+        <p class="amenidad-descripcion">Agua caliente en todo momento para tu comodidad.</p>
       </article>
 
       <article class="amenidad-tarjeta reveal reveal-delay-2">
-        <span class="amenidad-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4.5" y="6" width="3.5" height="12" rx="1.2"/><rect x="16" y="6" width="3.5" height="12" rx="1.2"/><path d="M8 12h8M2 9.5v5M22 9.5v5"/></svg></span>
-        <h3 class="amenidad-nombre">Gimnasio & Yoga</h3>
-        <p class="amenidad-descripcion">Gimnasio equipado y clases de yoga al amanecer frente al mar. Bienestar integral
-          garantizado.</p>
-      </article>
-
-      <article class="amenidad-tarjeta reveal reveal-delay-3">
-        <span class="amenidad-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2.5 12c3-4.6 9-6.1 13.2-2.6L21 5.8v12.4l-5.3-3.6C11.5 18.1 5.5 16.6 2.5 12z"/><circle cx="7.6" cy="11.4" r=".9" class="relleno"/></svg></span>
-        <h3 class="amenidad-nombre">Pesca Deportiva</h3>
-        <p class="amenidad-descripcion">Excursiones de pesca al pez vela y dorado en las ricas aguas del Pacífico
-          mexicano.</p>
+        <span class="amenidad-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="8.5" cy="10" r="2.6"/><circle cx="15.5" cy="10" r="2.6"/><path d="M7 16.5h3M14 16.5h3"/></svg></span>
+        <h3 class="amenidad-nombre">Estufa de inducción</h3>
+        <p class="amenidad-descripcion">Cocina como en casa con estufa de inducción: segura, rápida y eficiente.</p>
       </article>
     </div>
   </section>
@@ -709,7 +765,7 @@
       <p class="reveal reveal-delay-1">
         Nuestro equipo está disponible todos los días para ayudarte a diseñar
         la escapada perfecta a la Costa Alegre. Escríbenos, llámanos o
-        visítanos directamente en la carretera federal 200.
+        visítanos en San Patricio-Melaque.
       </p>
 
       <div class="contacto-detalle reveal reveal-delay-2">
@@ -717,7 +773,7 @@
           <div class="detalle-icono">📍</div>
           <div class="detalle-texto">
             <strong>Dirección</strong>
-            <span>Km 72, Carretera Federal 200, Costa Alegre, Jalisco, México</span>
+            <span>14 C. Palmas, San Patricio-Melaque, Jalisco, México</span>
           </div>
         </div>
         <div class="detalle-item">
@@ -786,9 +842,12 @@
           </div>
         </div>
 
-        <!-- Selección de villa (las 16 son idénticas, $1,850/noche) -->
+        <!-- Precio estimado según las fechas (lo calcula dashboard.js con las tarifas vigentes) -->
+        <p id="precio-estimado" class="precio-estimado" hidden></p>
+
+        <!-- Selección de villa (las 16 son idénticas) -->
         <div class="campo-grupo">
-          <label for="campo-villa">Elige tu villa * <small style="font-weight:400;opacity:.7">(todas $1,850 MXN/noche)</small></label>
+          <label for="campo-villa">Elige tu villa * <small style="font-weight:400;opacity:.7">(todas son iguales)</small></label>
           <select id="campo-villa">
             <option value="">— Selecciona una villa (1 a 16) —</option>
             <option value="1">Villa 1</option>
@@ -834,6 +893,7 @@
         </div>
 
         <button type="submit" class="btn-enviar">Enviar solicitud de reserva</button>
+        <p class="nota-privacidad">Al enviar aceptas nuestro <a href="aviso-privacidad.html" target="_blank">aviso de privacidad</a>.</p>
       </form>
 
       <!-- Mensaje de confirmación (oculto hasta que el formulario se envía con éxito) -->
@@ -879,20 +939,20 @@
         <h4>El Hotel</h4>
         <ul>
           <li><a href="#nosotros">Nosotros</a></li>
-          <li><a href="#habitaciones">Habitaciones</a></li>
-          <li><a href="#amenidades">Amenidades</a></li>
+          <li><a href="#habitaciones">Villas</a></li>
+          <li><a href="#amenidades">Comodidades</a></li>
           <li><a href="#galeria">Galería</a></li>
         </ul>
       </div>
 
-      <!-- Columna: Experiencias -->
+      <!-- Columna: Servicios (los reales del hotel) -->
       <div class="footer-columna">
-        <h4>Experiencias</h4>
+        <h4>Servicios</h4>
         <ul>
-          <li><a href="#amenidades">Spa & Bienestar</a></li>
-          <li><a href="#amenidades">Buceo y Snorkel</a></li>
-          <li><a href="#amenidades">Avistamiento de Ballenas</a></li>
-          <li><a href="#amenidades">Gastronomía Local</a></li>
+          <li><a href="#amenidades">Alberca</a></li>
+          <li><a href="#amenidades">Aire acondicionado</a></li>
+          <li><a href="#amenidades">Internet Wi-Fi</a></li>
+          <li><a href="#habitaciones">Estancias largas</a></li>
         </ul>
       </div>
 
@@ -901,9 +961,9 @@
         <h4>Información</h4>
         <ul>
           <li><a href="#contacto">Reservaciones</a></li>
-          <li><a href="#contacto">Política de cancelación</a></li>
-          <li><a href="#contacto">Cómo llegar</a></li>
-          <li><a href="#contacto">Preguntas frecuentes</a></li>
+          <li><a href="https://www.google.com/maps/search/?api=1&amp;query=14+C.+Palmas,+San+Patricio,+Jalisco"
+              target="_blank" rel="noopener">Cómo llegar</a></li>
+          <li><a href="aviso-privacidad.html">Aviso de privacidad</a></li>
         </ul>
       </div>
     </div>

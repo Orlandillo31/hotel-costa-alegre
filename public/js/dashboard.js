@@ -84,8 +84,39 @@
   const COLOR_ESTADO = {
     pendiente:  'estado-pendiente',
     confirmada: 'estado-confirmada',
-    rechazada:  'estado-rechazada'
+    rechazada:  'estado-rechazada',
+    cancelada:  'estado-rechazada'
   };
+  const ORIGEN = { web: 'Página web', booking: 'Booking', telefono: 'Teléfono', whatsapp: 'WhatsApp', otro: 'Otro' };
+
+  // -------- Precios (misma regla que server/utils/precios.js) --------
+  // < 30 noches: por noche. 30+ noches: tarifa mensual prorrateada
+  // (30–59 → mes1, 60–89 → mes2, 90+ → mes3; un mes = 30 noches).
+  const NOCHES_MES = 30;
+  let tarifas = { precioNoche: 1850, mes1: 20000, mes2: 18000, mes3: 16000 };
+  function calcularPrecio(noches) {
+    if (noches >= NOCHES_MES) {
+      const mensual = noches >= 90 ? tarifas.mes3 : noches >= 60 ? tarifas.mes2 : tarifas.mes1;
+      return { tarifa: 'mensual', tarifaMensual: mensual, total: Math.round(noches * mensual / NOCHES_MES) };
+    }
+    return { tarifa: 'noche', total: tarifas.precioNoche * noches };
+  }
+  // Noches entre dos fechas 'YYYY-MM-DD' (0 si no son válidas).
+  const nochesEntre = (a, b) => (a && b && b > a)
+    ? Math.round((new Date(b + 'T00:00:00Z') - new Date(a + 'T00:00:00Z')) / 86400000) : 0;
+  // Texto del precio estimado, en el idioma de la página.
+  function textoEstimado(noches) {
+    const p = calcularPrecio(noches);
+    const $ = fmtDinero;
+    if (p.tarifa === 'mensual') {
+      return enIngles()
+        ? `Long stay (${noches} nights): ${$(p.tarifaMensual)} per month = <strong>${$(p.total)} MXN</strong> + VAT`
+        : `Estancia larga (${noches} noches): ${$(p.tarifaMensual)} por mes = <strong>${$(p.total)} MXN</strong> + IVA`;
+    }
+    return enIngles()
+      ? `Estimated price: ${noches} night${noches === 1 ? '' : 's'} × ${$(tarifas.precioNoche)} = <strong>${$(p.total)} MXN</strong> + VAT`
+      : `Precio estimado: ${noches} noche${noches === 1 ? '' : 's'} × ${$(tarifas.precioNoche)} = <strong>${$(p.total)} MXN</strong> + IVA`;
+  }
 
   // =========================================================
   // MODAL DE LOGIN
@@ -403,18 +434,22 @@
       reservas.sort((a, b) => new Date(b.creada) - new Date(a.creada));
 
       reservas.forEach(r => {
+        const activa = r.estado === 'pendiente' || r.estado === 'confirmada';
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>${esc(r.nombre)}</td>
-          <td>${esc(r.email)}<br><small>${esc(r.telefono) || '—'}</small></td>
-          <td>${fmtVilla(r.villa)}<br><small>${esc(r.huespedes)} huésped(es)</small></td>
+          <td>${esc(r.email) || '—'}<br><small>${esc(r.telefono) || '—'}</small></td>
+          <td>${fmtVilla(r.villa)}<br><small>${r.huespedes ? esc(r.huespedes) + ' huésped(es)' : 'Huéspedes: —'}</small></td>
           <td>${fmtFecha(r.llegada)} →<br>${fmtFecha(r.salida)}</td>
           <td>${r.noches}</td>
-          <td>${fmtDinero(r.total)}</td>
-          <td><span class="badge ${COLOR_ESTADO[r.estado]}">${r.estado}</span></td>
+          <td>${fmtDinero(r.total)}${r.tarifa === 'mensual' ? `<br><small>${fmtDinero(r.tarifaMensual)}/mes</small>` : ''}</td>
+          <td>${celdaPago(r)}</td>
+          <td><span class="badge ${COLOR_ESTADO[r.estado]}">${r.estado}</span><br><small>${ORIGEN[r.origen] || 'Página web'}</small></td>
           <td class="acciones-celda">
             ${r.estado !== 'confirmada' ? `<button class="btn-mini confirmar" data-id="${r.id}">✓ Confirmar</button>` : ''}
-            ${r.estado !== 'rechazada'  ? `<button class="btn-mini rechazar"  data-id="${r.id}">✗ Rechazar</button>` : ''}
+            ${r.estado === 'pendiente'  ? `<button class="btn-mini rechazar"  data-id="${r.id}">✗ Rechazar</button>` : ''}
+            ${r.estado === 'confirmada' ? `<button class="btn-mini cancelar"  data-id="${r.id}">⊘ Cancelar</button>` : ''}
+            ${activa ? `<button class="btn-mini pago" data-id="${r.id}">💳 Pago</button>` : ''}
             <button class="btn-mini recibo" data-id="${r.id}">🧾 Recibo</button>
             <button class="btn-mini eliminar" data-id="${r.id}">🗑</button>
           </td>
@@ -435,9 +470,41 @@
       tbody.querySelectorAll('.btn-mini.recibo').forEach(b => {
         b.addEventListener('click', () => generarRecibo(b.dataset.id));
       });
+      tbody.querySelectorAll('.btn-mini.cancelar').forEach(b => {
+        b.addEventListener('click', () => {
+          if (confirm('¿Cancelar esta reservación? La villa quedará libre para esas fechas.')) cambiarEstado(b.dataset.id, 'cancelada');
+        });
+      });
+      tbody.querySelectorAll('.btn-mini.pago').forEach(b => {
+        b.addEventListener('click', () => registrarPago(b.dataset.id));
+      });
+      renderCalendario();
     } catch (err) {
       alert('Error cargando reservaciones: ' + err.message);
     }
+  }
+
+  // ----- Pagos (montos con IVA) -----
+  const totalConIva = r => +(r.total + ivaDe(r.total)).toFixed(2);
+  function celdaPago(r) {
+    const pagado = r.montoPagado || 0, total = totalConIva(r);
+    const [clase, texto] = pagado <= 0 ? ['pago-sin', 'Sin pago']
+      : pagado < total ? ['pago-anticipo', 'Anticipo'] : ['pago-completo', 'Pagado'];
+    return `<span class="badge ${clase}">${texto}</span><br><small>${fmtDinero(pagado)} de ${fmtDinero(total)}</small>`;
+  }
+  async function registrarPago(id) {
+    const r = reservasAdminCache.find(x => x.id === id);
+    if (!r) return;
+    const respuesta = prompt(
+      `Total pagado hasta ahora por ${r.nombre} (con IVA).\nTotal de la reservación: ${fmtDinero(totalConIva(r))} MXN`,
+      String(r.montoPagado || 0));
+    if (respuesta === null) return;
+    const monto = Number(respuesta.replace(/[$,\s]/g, ''));
+    if (!Number.isFinite(monto) || monto < 0) { alert('Escribe una cantidad válida, por ejemplo 5000.'); return; }
+    try {
+      await api('/api/reservaciones/' + id + '/pago', { method: 'PATCH', body: JSON.stringify({ montoPagado: monto }) });
+      await Promise.all([cargarReservacionesAdmin(), cargarContabilidad()]);
+    } catch (err) { alert('Error: ' + err.message); }
   }
 
   // ----- Generar recibo premium de una reservación en PDF (admin) -----
@@ -455,7 +522,7 @@
 
     const OCEANO = [11, 61, 78], ORO = [201, 160, 88], GRIS = [110, 110, 110], OSC = [25, 25, 25];
     const RAZON = 'Villas Cangrejo';
-    const DOMICILIO = 'Km 72, Carr. Federal 200, San Patricio-Melaque, Jalisco';
+    const DOMICILIO = '14 C. Palmas, San Patricio-Melaque, Jalisco';
     const TEL = '+52 315 100 7106', CORREO = 'joseangel.hotel68@gmail.com';
     const folio = String(r.id || '').slice(-8).toUpperCase();
     const MX = n => '$' + Number(n || 0).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -546,7 +613,8 @@
     doc.text('IMPORTE', cImp, y + 14, { align: 'right' });
     y += 22;
     doc.setTextColor(...OSC); doc.setFont('helvetica', 'normal'); doc.setFontSize(10.5);
-    doc.text('Hospedaje · Villa ' + r.villa, cDesc, y + 16);
+    doc.text('Hospedaje · Villa ' + r.villa +
+      (r.tarifa === 'mensual' ? ' · tarifa mensual ' + MX(r.tarifaMensual) : ''), cDesc, y + 16);
     doc.setFontSize(8); doc.setTextColor(...GRIS);
     doc.text(fechaCorta(r.llegada) + ' al ' + fechaCorta(r.salida) + '  (' + r.noches + ' noches)', cDesc, y + 28);
     doc.setFontSize(10.5); doc.setTextColor(...OSC);
@@ -657,6 +725,8 @@
       document.getElementById('conta-noches').textContent = c.nochesTotales;
       document.getElementById('conta-ingreso').textContent = fmtDinero(c.ingresoTotal);
       document.getElementById('conta-promedio').textContent = fmtDinero(c.promedioPorReserva);
+      document.getElementById('conta-cobrado').textContent = fmtDinero(c.cobrado);
+      document.getElementById('conta-por-cobrar').textContent = fmtDinero(c.porCobrar);
 
       // Ingresos por mes (+ fila de TOTAL que coincide con las tarjetas)
       const tbodyMes = document.getElementById('conta-tbody-mes');
@@ -759,7 +829,8 @@
     // ---------- Hoja 3: Detalle de reservaciones ----------
     const encabezados = [
       'Folio', 'Cliente', 'Correo', 'Teléfono', 'Villa', 'Huéspedes',
-      'Llegada', 'Salida', 'Noches', 'Precio/noche (MXN)', 'Total (MXN)', 'Estado', 'Fecha de solicitud'
+      'Llegada', 'Salida', 'Noches', 'Precio/noche (MXN)', 'Total (MXN)', 'Estado', 'Fecha de solicitud',
+      'Origen', 'Pagado con IVA (MXN)'
     ];
     const filas = c.reservaciones.map(r => ([
       String(r.id || '').slice(-8).toUpperCase(),
@@ -767,19 +838,22 @@
       'Villa ' + r.villa, r.huespedes,
       fechaCorta(r.llegada), fechaCorta(r.salida),
       r.noches, r.precioNoche, r.total, cap(r.estado),
-      new Date(r.creada).toLocaleDateString('es-MX')
+      new Date(r.creada).toLocaleDateString('es-MX'),
+      ORIGEN[r.origen] || 'Página web', r.montoPagado || 0
     ]));
     const totNoches  = c.reservaciones.reduce((s, r) => s + (r.noches || 0), 0);
     const totIngreso = c.reservaciones.reduce((s, r) => s + (r.total  || 0), 0);
-    const filaTotales = ['', '', '', '', '', '', '', 'TOTALES', totNoches, '', totIngreso, '', ''];
+    const totPagado  = c.reservaciones.reduce((s, r) => s + (r.montoPagado || 0), 0);
+    const filaTotales = ['', '', '', '', '', '', '', 'TOTALES', totNoches, '', totIngreso, '', '', '', totPagado];
 
     const wsDetalle = XLSX.utils.aoa_to_sheet([encabezados, ...filas, [], filaTotales]);
     wsDetalle['!cols'] = [
       { wch: 10 }, { wch: 24 }, { wch: 28 }, { wch: 16 }, { wch: 10 }, { wch: 11 },
-      { wch: 12 }, { wch: 12 }, { wch: 8 }, { wch: 18 }, { wch: 14 }, { wch: 12 }, { wch: 16 }
+      { wch: 12 }, { wch: 12 }, { wch: 8 }, { wch: 18 }, { wch: 14 }, { wch: 12 }, { wch: 16 },
+      { wch: 12 }, { wch: 20 }
     ];
     // Autofiltro en los encabezados para ordenar/filtrar fácilmente
-    wsDetalle['!autofilter'] = { ref: 'A1:M' + (filas.length + 1) };
+    wsDetalle['!autofilter'] = { ref: 'A1:O' + (filas.length + 1) };
     XLSX.utils.book_append_sheet(wb, wsDetalle, 'Reservaciones');
 
     XLSX.writeFile(wb, `Contabilidad_VillasCangrejo_${new Date().toISOString().split('T')[0]}.xlsx`);
@@ -947,10 +1021,116 @@
   })();
 
   // =========================================================
+  // TARIFAS — precios en la página y precio estimado del formulario
+  // =========================================================
+  function pintarTarifas() {
+    document.querySelectorAll('[data-tarifa]').forEach(el => {
+      const v = tarifas[el.dataset.tarifa];
+      if (v) el.textContent = fmtDinero(v);
+    });
+  }
+  async function cargarTarifas() {
+    try { tarifas = await api('/api/tarifas'); } catch { /* se quedan las predeterminadas */ }
+    pintarTarifas();
+    actualizarEstimado();
+  }
+  function actualizarEstimado() {
+    const el = document.getElementById('precio-estimado');
+    if (!el) return;
+    const noches = nochesEntre(document.getElementById('campo-llegada').value, document.getElementById('campo-salida').value);
+    el.hidden = !noches;
+    if (noches) el.innerHTML = textoEstimado(noches);
+  }
+  ['campo-llegada', 'campo-salida'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', actualizarEstimado);
+  });
+  document.addEventListener('vc:idioma', () => { pintarTarifas(); actualizarEstimado(); });
+
+  // =========================================================
+  // REGISTRAR RESERVACIÓN DESDE EL PANEL (admin)
+  // =========================================================
+  (function initReservaAdmin() {
+    const form = document.getElementById('form-reserva-admin');
+    if (!form) return;
+    const $ = id => document.getElementById(id);
+    const msg = $('ra-mensaje');
+    $('ra-villa').innerHTML = Array.from({ length: 16 }, (_, i) => `<option value="${i + 1}">Villa ${i + 1}</option>`).join('');
+
+    const estimado = () => {
+      const noches = nochesEntre($('ra-llegada').value, $('ra-salida').value);
+      $('ra-estimado').innerHTML = noches
+        ? textoEstimado(noches) + ($('ra-total').value ? ' — <em>se usará el total acordado</em>' : '')
+        : '';
+    };
+    ['ra-llegada', 'ra-salida', 'ra-total'].forEach(id => $(id).addEventListener('input', estimado));
+
+    $('btn-nueva-reserva').addEventListener('click', () => { form.hidden = !form.hidden; msg.textContent = ''; });
+    $('ra-cancelar').addEventListener('click', () => { form.hidden = true; form.reset(); estimado(); });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msg.textContent = ''; msg.className = 'resena-mensaje';
+      try {
+        const data = await api('/api/reservaciones/admin', {
+          method: 'POST',
+          body: JSON.stringify({
+            nombre: $('ra-nombre').value, email: $('ra-email').value, telefono: $('ra-telefono').value,
+            villa: $('ra-villa').value, huespedes: $('ra-huespedes').value, origen: $('ra-origen').value,
+            llegada: $('ra-llegada').value, salida: $('ra-salida').value,
+            totalAcordado: $('ra-total').value, montoPagado: $('ra-pagado').value,
+            comentarios: $('ra-comentarios').value, enviarCorreo: $('ra-correo').checked
+          })
+        });
+        form.reset(); estimado();
+        msg.className = 'resena-mensaje ok';
+        msg.textContent = `✅ Reservación de ${data.reservacion.nombre} guardada y confirmada (Villa ${data.reservacion.villa}).` +
+          (data.correo === 'enviado' ? ' Se envió el correo de confirmación.' : '') +
+          (data.correo === 'fallo' ? ' ⚠ El correo de confirmación NO se pudo enviar.' : '');
+        await Promise.all([cargarReservacionesAdmin(), cargarContabilidad()]);
+      } catch (err) {
+        msg.className = 'resena-mensaje error';
+        msg.textContent = err.message;
+      }
+    });
+  })();
+
+  // =========================================================
+  // PESTAÑA PRECIOS (admin)
+  // =========================================================
+  (function initPrecios() {
+    const form = document.getElementById('form-tarifas');
+    if (!form) return;
+    const campos = { precioNoche: 't-noche', mes1: 't-mes1', mes2: 't-mes2', mes3: 't-mes3' };
+    const msg = document.getElementById('t-mensaje');
+    // Rellenar con los precios vigentes al abrir la pestaña.
+    document.querySelector('.admin-tab[data-admin-tab="precios"]').addEventListener('click', () => {
+      for (const [k, id] of Object.entries(campos)) document.getElementById(id).value = tarifas[k];
+      msg.textContent = '';
+    });
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const cuerpo = {};
+      for (const [k, id] of Object.entries(campos)) cuerpo[k] = Number(document.getElementById(id).value);
+      try {
+        const data = await api('/api/tarifas', { method: 'PUT', body: JSON.stringify(cuerpo) });
+        tarifas = data.tarifas;
+        pintarTarifas();
+        msg.className = 'resena-mensaje ok';
+        msg.textContent = '✅ Precios guardados. La página ya muestra los nuevos precios.';
+      } catch (err) {
+        msg.className = 'resena-mensaje error';
+        msg.textContent = err.message;
+      }
+    });
+  })();
+
+  // =========================================================
   // INICIALIZACIÓN — restaurar sesión al recargar
   // =========================================================
   aplicarSesion();
   cargarResenasPublicas();   // reseñas aprobadas para la sección pública
+  cargarTarifas();           // precios vigentes en la página
   const sesionActual = getSesion();
   if (sesionActual) {
     if (sesionActual.rol === 'cliente') mostrarPanelCliente();

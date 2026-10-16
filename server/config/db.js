@@ -13,8 +13,7 @@ const mongoose = require('mongoose');
 const bcrypt   = require('bcryptjs');
 const Admin    = require('../models/Admin');
 
-// Constantes del negocio: 16 villas idénticas a precio fijo.
-const PRECIO_NOCHE  = 1850;
+// 16 villas idénticas. Los precios están en la colección Tarifas (utils/precios.js).
 const NUM_VILLAS    = 16;
 const BCRYPT_ROUNDS = 12;          // factor de costo recomendado (OWASP)
 
@@ -59,4 +58,4 @@ async function desconectar() {
   if (memServer) await memServer.stop();
 }
 
-module.exports = { conectar, desconectar, PRECIO_NOCHE, NUM_VILLAS, BCRYPT_ROUNDS };
+module.exports = { conectar, desconectar, NUM_VILLAS, BCRYPT_ROUNDS };
