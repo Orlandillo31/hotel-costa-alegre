@@ -768,30 +768,39 @@
         visítanos en San Patricio-Melaque.
       </p>
 
+      <!-- El orden de los 4 elementos importa: i18n.js los traduce por posición -->
       <div class="contacto-detalle reveal reveal-delay-2">
         <div class="detalle-item">
-          <div class="detalle-icono">📍</div>
+          <div class="detalle-icono" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+          </div>
           <div class="detalle-texto">
             <strong>Dirección</strong>
             <span>14 C. Palmas, San Patricio-Melaque, Jalisco, México</span>
           </div>
         </div>
         <div class="detalle-item">
-          <div class="detalle-icono">📞</div>
+          <div class="detalle-icono" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>
+          </div>
           <div class="detalle-texto">
             <strong>Teléfono</strong>
-            <span>+52 (315) 100 7106</span>
+            <span><a href="tel:+523151007106">+52 (315) 100 7106</a></span>
           </div>
         </div>
         <div class="detalle-item">
-          <div class="detalle-icono">✉️</div>
+          <div class="detalle-icono" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          </div>
           <div class="detalle-texto">
             <strong>Email</strong>
-            <span>joseangel.hotel68@gmail.com</span>
+            <span><a href="mailto:joseangel.hotel68@gmail.com">joseangel.hotel68@gmail.com</a></span>
           </div>
         </div>
         <div class="detalle-item">
-          <div class="detalle-icono">🕐</div>
+          <div class="detalle-icono" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          </div>
           <div class="detalle-texto">
             <strong>Atención</strong>
             <span>Check-in: 3:00 PM | Check-out: 12:00 PM</span>
@@ -802,95 +811,115 @@
 
     <!-- Columna derecha: formulario de reserva -->
     <div class="formulario-reserva reveal reveal-delay-2">
-      <h3 class="formulario-titulo">✦ Solicita tu reservación</h3>
+      <div class="formulario-cabecera">
+        <h3 class="formulario-titulo">Solicita tu reservación</h3>
+        <p class="formulario-subtitulo">Te respondemos en menos de 24 horas por correo o WhatsApp.</p>
+      </div>
 
       <!-- El atributo novalidate desactiva la validación nativa del browser;
            JS hace la validación personalizada. -->
       <form id="formulario-reservacion" novalidate>
 
-        <!-- Nombre completo -->
-        <div class="campo-grupo">
-          <label for="campo-nombre">Nombre completo *</label>
-          <input type="text" id="campo-nombre" placeholder="Ej: Ana García López" />
-          <span class="campo-error" id="error-nombre">Por favor ingresa tu nombre completo.</span>
-        </div>
+        <!-- Paso 1: datos del huésped -->
+        <fieldset class="form-paso">
+          <legend><span class="paso-num">1</span><span class="paso-texto">Tus datos</span></legend>
 
-        <!-- Email -->
-        <div class="campo-grupo">
-          <label for="campo-email">Correo electrónico *</label>
-          <input type="email" id="campo-email" placeholder="correo@ejemplo.com" />
-          <span class="campo-error" id="error-email">Ingresa un correo electrónico válido.</span>
-        </div>
-
-        <!-- Teléfono (opcional) -->
-        <div class="campo-grupo">
-          <label for="campo-telefono">Teléfono de contacto</label>
-          <input type="tel" id="campo-telefono" placeholder="+52 315 112 1201" />
-        </div>
-
-        <!-- Fechas de llegada y salida en la misma fila -->
-        <div class="campos-fila">
+          <!-- Nombre completo -->
           <div class="campo-grupo">
-            <label for="campo-llegada">Fecha de llegada *</label>
-            <input type="date" id="campo-llegada" />
-            <span class="campo-error" id="error-llegada">Selecciona tu fecha de llegada.</span>
+            <label for="campo-nombre">Nombre completo *</label>
+            <input type="text" id="campo-nombre" autocomplete="name" placeholder="Ej: Ana García López" />
+            <span class="campo-error" id="error-nombre">Por favor ingresa tu nombre completo.</span>
           </div>
+
+          <div class="campos-fila">
+            <!-- Email -->
+            <div class="campo-grupo">
+              <label for="campo-email">Correo electrónico *</label>
+              <input type="email" id="campo-email" autocomplete="email" placeholder="correo@ejemplo.com" />
+              <span class="campo-error" id="error-email">Ingresa un correo electrónico válido.</span>
+            </div>
+
+            <!-- Teléfono (opcional) -->
+            <div class="campo-grupo">
+              <label for="campo-telefono">Teléfono de contacto</label>
+              <input type="tel" id="campo-telefono" autocomplete="tel" placeholder="+52 315 112 1201" />
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Paso 2: fechas, villa y huéspedes -->
+        <fieldset class="form-paso">
+          <legend><span class="paso-num">2</span><span class="paso-texto">Tu estancia</span></legend>
+
+          <!-- Fechas de llegada y salida en la misma fila -->
+          <div class="campos-fila">
+            <div class="campo-grupo">
+              <label for="campo-llegada">Fecha de llegada *</label>
+              <input type="date" id="campo-llegada" />
+              <span class="campo-error" id="error-llegada">Selecciona tu fecha de llegada.</span>
+            </div>
+            <div class="campo-grupo">
+              <label for="campo-salida">Fecha de salida *</label>
+              <input type="date" id="campo-salida" />
+              <span class="campo-error" id="error-salida">La salida debe ser posterior a la llegada.</span>
+            </div>
+          </div>
+
+          <!-- Precio estimado según las fechas (lo calcula dashboard.js con las tarifas vigentes) -->
+          <p id="precio-estimado" class="precio-estimado" hidden></p>
+
+          <div class="campos-fila fila-villa">
+            <!-- Selección de villa (las 16 son idénticas) -->
+            <div class="campo-grupo">
+              <label for="campo-villa">Elige tu villa * <small style="font-weight:400;opacity:.7">(todas son iguales)</small></label>
+              <select id="campo-villa">
+                <option value="">— Selecciona una villa (1 a 16) —</option>
+                <option value="1">Villa 1</option>
+                <option value="2">Villa 2</option>
+                <option value="3">Villa 3</option>
+                <option value="4">Villa 4</option>
+                <option value="5">Villa 5</option>
+                <option value="6">Villa 6</option>
+                <option value="7">Villa 7</option>
+                <option value="8">Villa 8</option>
+                <option value="9">Villa 9</option>
+                <option value="10">Villa 10</option>
+                <option value="11">Villa 11</option>
+                <option value="12">Villa 12</option>
+                <option value="13">Villa 13</option>
+                <option value="14">Villa 14</option>
+                <option value="15">Villa 15</option>
+                <option value="16">Villa 16</option>
+              </select>
+              <span class="campo-error" id="error-villa">Selecciona una villa.</span>
+              <small id="villas-disponibles-msg" class="villas-msg"></small>
+            </div>
+
+            <!-- Número de huéspedes -->
+            <div class="campo-grupo">
+              <label for="campo-huespedes">Número de huéspedes *</label>
+              <select id="campo-huespedes">
+                <option value="">— Número de huéspedes —</option>
+                <option value="1">1 huésped</option>
+                <option value="2">2 huéspedes</option>
+                <option value="3">3 huéspedes</option>
+                <option value="4">4 huéspedes</option>
+                <option value="5">5+ huéspedes</option>
+              </select>
+              <span class="campo-error" id="error-huespedes">Indica cuántos huéspedes serán.</span>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Paso 3: peticiones especiales -->
+        <fieldset class="form-paso">
+          <legend><span class="paso-num">3</span><span class="paso-texto">Algo más</span></legend>
           <div class="campo-grupo">
-            <label for="campo-salida">Fecha de salida *</label>
-            <input type="date" id="campo-salida" />
-            <span class="campo-error" id="error-salida">La salida debe ser posterior a la llegada.</span>
+            <label for="campo-comentarios">Peticiones especiales</label>
+            <textarea id="campo-comentarios"
+              placeholder="Alergias alimentarias, luna de miel, celebración especial, etc."></textarea>
           </div>
-        </div>
-
-        <!-- Precio estimado según las fechas (lo calcula dashboard.js con las tarifas vigentes) -->
-        <p id="precio-estimado" class="precio-estimado" hidden></p>
-
-        <!-- Selección de villa (las 16 son idénticas) -->
-        <div class="campo-grupo">
-          <label for="campo-villa">Elige tu villa * <small style="font-weight:400;opacity:.7">(todas son iguales)</small></label>
-          <select id="campo-villa">
-            <option value="">— Selecciona una villa (1 a 16) —</option>
-            <option value="1">Villa 1</option>
-            <option value="2">Villa 2</option>
-            <option value="3">Villa 3</option>
-            <option value="4">Villa 4</option>
-            <option value="5">Villa 5</option>
-            <option value="6">Villa 6</option>
-            <option value="7">Villa 7</option>
-            <option value="8">Villa 8</option>
-            <option value="9">Villa 9</option>
-            <option value="10">Villa 10</option>
-            <option value="11">Villa 11</option>
-            <option value="12">Villa 12</option>
-            <option value="13">Villa 13</option>
-            <option value="14">Villa 14</option>
-            <option value="15">Villa 15</option>
-            <option value="16">Villa 16</option>
-          </select>
-          <span class="campo-error" id="error-villa">Selecciona una villa.</span>
-          <small id="villas-disponibles-msg" class="villas-msg"></small>
-        </div>
-
-        <!-- Número de huéspedes -->
-        <div class="campo-grupo">
-          <label for="campo-huespedes">Número de huéspedes *</label>
-          <select id="campo-huespedes">
-            <option value="">— Número de huéspedes —</option>
-            <option value="1">1 huésped</option>
-            <option value="2">2 huéspedes</option>
-            <option value="3">3 huéspedes</option>
-            <option value="4">4 huéspedes</option>
-            <option value="5">5+ huéspedes</option>
-          </select>
-          <span class="campo-error" id="error-huespedes">Indica cuántos huéspedes serán.</span>
-        </div>
-
-        <!-- Peticiones especiales -->
-        <div class="campo-grupo">
-          <label for="campo-comentarios">Peticiones especiales</label>
-          <textarea id="campo-comentarios"
-            placeholder="Alergias alimentarias, luna de miel, celebración especial, etc."></textarea>
-        </div>
+        </fieldset>
 
         <button type="submit" class="btn-enviar">Enviar solicitud de reserva</button>
         <p class="nota-privacidad">Al enviar aceptas nuestro <a href="aviso-privacidad.html" target="_blank">aviso de privacidad</a>.</p>
@@ -898,7 +927,9 @@
 
       <!-- Mensaje de confirmación (oculto hasta que el formulario se envía con éxito) -->
       <div id="formulario-exito" role="alert">
-        <div class="exito-icono">🌊</div>
+        <div class="exito-icono" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>
+        </div>
         <p><strong>¡Gracias por tu solicitud!</strong><br>
           Nuestro equipo de reservaciones te contactará en las próximas 24 horas para
           confirmar tu estadía en Villas Cangrejo.</p>
