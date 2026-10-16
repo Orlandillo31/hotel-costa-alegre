@@ -26,6 +26,6 @@
   "author": "Angel Leonor",
   "license": "MIT",
   "devDependencies": {
-    "mongodb-memory-server": "^11.2.0"
+    "mongodb-memory-server": "^11.3.0"
   }
 }
