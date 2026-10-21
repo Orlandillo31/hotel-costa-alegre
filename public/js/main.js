@@ -3,8 +3,8 @@
    Archivo: js/main.js
    Descripción: Interactividad de la página: navbar, menú
    hamburguesa, parallax, scroll reveal, contadores,
-   lightbox de galería, audio ambiental y validación del
-   formulario de reserva.
+   lightbox de galería, audio ambiental, precio estimado y
+   formulario de reserva por WhatsApp.
 ======================================================= */
 
 // Traduce los textos que arma este archivo cuando la página está en inglés
@@ -211,13 +211,21 @@ const traducir = s => (window.VC_t ? window.VC_t(s) : s);
 
 
     // -------------------------------------------------------
-    // 9. VALIDACIÓN DEL FORMULARIO DE RESERVA
-    //    Valida todos los campos al hacer submit.
-    //    Si hay errores, los muestra debajo de cada campo.
-    //    Si todo es válido, muestra el mensaje de éxito.
+    // 9. FORMULARIO DE RESERVA → WHATSAPP
+    //    Valida los campos y abre WhatsApp con el mensaje armado.
+    //    No se guarda nada en un servidor: el hotel atiende las
+    //    reservaciones directamente por WhatsApp.
     // -------------------------------------------------------
-    const formulario = document.getElementById('formulario-reservacion');
+    const formulario   = document.getElementById('formulario-reservacion');
     const mensajeExito = document.getElementById('formulario-exito');
+    const TELEFONO_HOTEL = '523151007106';
+    const enlaceWhatsApp = texto => `https://wa.me/${TELEFONO_HOTEL}?text=${encodeURIComponent(texto)}`;
+
+    // Fecha local 'YYYY-MM-DD' (toISOString daría la de UTC: en México,
+    // después de las 6 de la tarde ya sería "mañana").
+    function fechaLocal(d = new Date()) {
+      return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    }
 
     // Función auxiliar: mostrar o quitar error de un campo
     function mostrarError(campoId, errorId, mostrar) {
@@ -232,7 +240,7 @@ const traducir = s => (window.VC_t ? window.VC_t(s) : s);
       }
     }
 
-    formulario.addEventListener('submit', async (e) => {
+    formulario.addEventListener('submit', (e) => {
       e.preventDefault(); // Evitar recarga de página
       let formularioValido = true;
 
@@ -242,17 +250,15 @@ const traducir = s => (window.VC_t ? window.VC_t(s) : s);
       mostrarError('campo-nombre', 'error-nombre', nombreInvalido);
       if (nombreInvalido) formularioValido = false;
 
-      // --- Validar email (expresión regular básica) ---
+      // --- Validar email (opcional; si lo escribe, que sea válido) ---
       const email = document.getElementById('campo-email').value.trim();
-      const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const emailInvalido = !regexEmail.test(email);
+      const emailInvalido = email !== '' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
       mostrarError('campo-email', 'error-email', emailInvalido);
       if (emailInvalido) formularioValido = false;
 
       // --- Validar fecha de llegada (no puede ser vacía ni en el pasado) ---
       const llegada = document.getElementById('campo-llegada').value;
-      const hoy = new Date().toISOString().split('T')[0]; // YYYY-MM-DD de hoy
-      const llegadaInvalida = !llegada || llegada < hoy;
+      const llegadaInvalida = !llegada || llegada < fechaLocal();
       mostrarError('campo-llegada', 'error-llegada', llegadaInvalida);
       if (llegadaInvalida) formularioValido = false;
 
@@ -262,66 +268,46 @@ const traducir = s => (window.VC_t ? window.VC_t(s) : s);
       mostrarError('campo-salida', 'error-salida', salidaInvalida);
       if (salidaInvalida) formularioValido = false;
 
-      // --- Validar villa seleccionada ---
-      const villa = document.getElementById('campo-villa').value;
-      const villaInvalida = !villa;
-      mostrarError('campo-villa', 'error-villa', villaInvalida);
-      if (villaInvalida) formularioValido = false;
-
       // --- Validar número de huéspedes ---
-      const huespedes = document.getElementById('campo-huespedes').value;
-      const huespedesInvalido = !huespedes;
+      const campoHues = document.getElementById('campo-huespedes');
+      const huespedesInvalido = !campoHues.value;
       mostrarError('campo-huespedes', 'error-huespedes', huespedesInvalido);
       if (huespedesInvalido) formularioValido = false;
 
       if (!formularioValido) return;
 
-      // ---------- Recolectar datos del formulario ----------
-      const campoVilla = document.getElementById('campo-villa');
-      const campoHues  = document.getElementById('campo-huespedes');
-      const telefono    = document.getElementById('campo-telefono').value.trim() || 'No proporcionado';
-      const comentarios = document.getElementById('campo-comentarios').value.trim() || 'Ninguna';
-      const villaTxt    = 'Villa ' + campoVilla.value;
-      const huespedesTxt = campoHues.options[campoHues.selectedIndex].text;
+      // ---------- Armar el mensaje (siempre en español: lo lee el hotel) ----------
+      const telefono    = document.getElementById('campo-telefono').value.trim();
+      const comentarios = document.getElementById('campo-comentarios').value.trim();
+      const huespedes   = campoHues.value === '5' ? '5 o más' : campoHues.value;
+      const noches      = nochesEntre(llegada, salida);
+      const lineas = [
+        '*🦀 SOLICITUD DE RESERVA - Villas Cangrejo*',
+        '',
+        `Hola, soy *${nombre}* y me gustaría reservar una villa.`,
+        '',
+        `• Llegada: ${llegada}`,
+        `• Salida: ${salida} (${noches} noche${noches === 1 ? '' : 's'})`,
+        `• Huéspedes: ${huespedes}`
+      ];
+      if (email)       lineas.push(`• Correo: ${email}`);
+      if (telefono)    lineas.push(`• Teléfono: ${telefono}`);
+      if (comentarios) lineas.push('', `📝 ${comentarios}`);
+      lineas.push('', '¿Tienen disponibilidad? ¡Gracias!');
+      const url = enlaceWhatsApp(lineas.join('\n'));
 
-      // 1) Guardar en la base de datos vía backend (dashboard.js expone HCA_guardarReservaEnBD)
-      //    Si el cliente está logueado, la reserva queda ligada a su cuenta.
-      //    Devuelve null si el backend rechaza (p. ej. villa ya ocupada).
-      let guardada = true;
-      if (typeof window.HCA_guardarReservaEnBD === 'function') {
-        const r = await window.HCA_guardarReservaEnBD({
-          nombre, email, telefono,
-          villa: campoVilla.value,
-          huespedes: campoHues.value,
-          llegada, salida, comentarios
-        });
-        guardada = !!r;
-      }
-      if (!guardada) return;   // el helper ya avisó del error (p. ej. doble booking)
+      // Se abre en el mismo clic del botón para que el navegador no lo bloquee
+      window.open(url, '_blank', 'noopener');
 
-      // 2) Abrir WhatsApp con un mensaje pre-armado al teléfono del hotel
-      const telefonoHotel = '523151007106';
-      const mensajeWA =
-        `*🦀 NUEVA SOLICITUD DE RESERVA - Villas Cangrejo*\n\n` +
-        `Hola, soy *${nombre}* y me gustaría reservar una estadía.\n\n` +
-        `👤 *DATOS DEL CLIENTE*\n` +
-        `• Nombre: ${nombre}\n• Correo: ${email}\n• Teléfono: ${telefono}\n\n` +
-        `🏖️ *DETALLES DE LA RESERVA*\n` +
-        `• ${villaTxt}\n• Huéspedes: ${huespedesTxt}\n` +
-        `• Llegada: ${llegada}\n• Salida: ${salida}\n\n` +
-        `📝 *PETICIONES ESPECIALES*\n${comentarios}\n\n` +
-        `Quedo atento a la confirmación. ¡Gracias!`;
-      window.open(`https://wa.me/${telefonoHotel}?text=${encodeURIComponent(mensajeWA)}`, '_blank');
-
-      // 3) Mostrar el mensaje de éxito y ocultar el formulario
+      // Mostrar el mensaje de éxito (con enlace de respaldo) y ocultar el formulario
+      document.getElementById('exito-whatsapp').href = url;
       formulario.style.display   = 'none';
       mensajeExito.style.display = 'block';
       mensajeExito.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
 
     // Limpiar error de un campo en tiempo real cuando el usuario empieza a escribir
-    ['campo-nombre', 'campo-email', 'campo-llegada', 'campo-salida',
-     'campo-villa', 'campo-huespedes'].forEach(id => {
+    ['campo-nombre', 'campo-email', 'campo-llegada', 'campo-salida', 'campo-huespedes'].forEach(id => {
       const campo = document.getElementById(id);
       campo.addEventListener('input', () => {
         campo.classList.remove('error');
@@ -330,6 +316,61 @@ const traducir = s => (window.VC_t ? window.VC_t(s) : s);
         if (errorEl) errorEl.classList.remove('visible');
       });
     });
+
+    // -------------------------------------------------------
+    // 10. PRECIO ESTIMADO
+    //     < 30 noches: por noche. 30+ noches: tarifa mensual prorrateada
+    //     (30–59 → 1 mes, 60–89 → 2 meses, 90+ → 3 meses; un mes = 30 noches).
+    //     Los precios se leen de la sección de villas (data-tarifa), así
+    //     solo hay que cambiarlos en un lugar del HTML.
+    // -------------------------------------------------------
+    const NOCHES_MES = 30;
+    const tarifas = {};
+    document.querySelectorAll('[data-tarifa]').forEach(el => {
+      tarifas[el.dataset.tarifa] = Number(el.textContent.replace(/[^\d]/g, ''));
+    });
+    const fmtDinero = n => '$' + n.toLocaleString('es-MX');
+
+    // Noches entre dos fechas 'YYYY-MM-DD' (0 si no son válidas)
+    function nochesEntre(a, b) {
+      return (a && b && b > a)
+        ? Math.round((new Date(b + 'T00:00:00Z') - new Date(a + 'T00:00:00Z')) / 86400000) : 0;
+    }
+
+    function textoEstimado(noches) {
+      const enIngles = !!(window.VC_idioma && window.VC_idioma() === 'en');
+      if (noches >= NOCHES_MES) {
+        const mensual = noches >= 90 ? tarifas.mes3 : noches >= 60 ? tarifas.mes2 : tarifas.mes1;
+        const total = Math.round(noches * mensual / NOCHES_MES);
+        return enIngles
+          ? `Long stay (${noches} nights): ${fmtDinero(mensual)} per month = <strong>${fmtDinero(total)} MXN</strong> + VAT`
+          : `Estancia larga (${noches} noches): ${fmtDinero(mensual)} por mes = <strong>${fmtDinero(total)} MXN</strong> + IVA`;
+      }
+      const total = tarifas.precioNoche * noches;
+      return enIngles
+        ? `Estimated price: ${noches} night${noches === 1 ? '' : 's'} × ${fmtDinero(tarifas.precioNoche)} = <strong>${fmtDinero(total)} MXN</strong> + VAT`
+        : `Precio estimado: ${noches} noche${noches === 1 ? '' : 's'} × ${fmtDinero(tarifas.precioNoche)} = <strong>${fmtDinero(total)} MXN</strong> + IVA`;
+    }
+
+    const inputLlegada = document.getElementById('campo-llegada');
+    const inputSalida  = document.getElementById('campo-salida');
+    const precioEstimado = document.getElementById('precio-estimado');
+
+    function actualizarEstimado() {
+      const noches = nochesEntre(inputLlegada.value, inputSalida.value);
+      precioEstimado.hidden = !noches;
+      if (noches) precioEstimado.innerHTML = textoEstimado(noches);
+    }
+
+    // No se pueden elegir fechas pasadas; la salida, después de la llegada.
+    inputLlegada.min = fechaLocal();
+    inputSalida.min  = fechaLocal();
+    inputLlegada.addEventListener('change', () => {
+      inputSalida.min = inputLlegada.value || fechaLocal();
+      actualizarEstimado();
+    });
+    inputSalida.addEventListener('change', actualizarEstimado);
+    document.addEventListener('vc:idioma', actualizarEstimado);
 
     // -------------------------------------------------------
     // BONUS: Smooth scroll personalizado para links del navbar
@@ -347,67 +388,3 @@ const traducir = s => (window.VC_t ? window.VC_t(s) : s);
         }
       });
     });
-
-    // -------------------------------------------------------
-    // INICIALIZACIÓN: Establecer fecha mínima en los campos
-    // de fecha para que no se puedan elegir fechas pasadas.
-    // -------------------------------------------------------
-    const fechaHoy     = new Date().toISOString().split('T')[0];
-    const inputLlegada = document.getElementById('campo-llegada');
-    const inputSalida  = document.getElementById('campo-salida');
-    const selVilla     = document.getElementById('campo-villa');
-    const msgVillas    = document.getElementById('villas-disponibles-msg');
-    const VILLAS_TOTAL = 16;
-    inputLlegada.min = fechaHoy;
-    inputSalida.min  = fechaHoy;
-
-    // Reconstruye el desplegable de villas. Si recibe una lista, muestra solo
-    // esas; si recibe null, muestra las 16 (estado inicial sin fechas).
-    function poblarVillas(disponibles) {
-      const previa = selVilla.value;
-      const lista = disponibles || Array.from({ length: VILLAS_TOTAL }, (_, i) => i + 1);
-      selVilla.innerHTML = '<option value="">' + traducir('— Selecciona una villa —') + '</option>' +
-        lista.map(v => `<option value="${v}">Villa ${v}</option>`).join('');
-      if (previa && lista.includes(Number(previa))) selVilla.value = previa;
-    }
-
-    function mensajeVillas(texto, tipo) {
-      if (!msgVillas) return;
-      msgVillas.textContent = traducir(texto || '');
-      msgVillas.className = 'villas-msg' + (tipo ? ' ' + tipo : '');
-    }
-
-    // Consulta al backend qué villas están libres en las fechas elegidas
-    // (solo bloquean las reservas CONFIRMADAS por el administrador).
-    async function refrescarDisponibilidad() {
-      const llegada = inputLlegada.value;
-      const salida  = inputSalida.value;
-      if (!llegada || !salida || salida <= llegada) {
-        poblarVillas(null);
-        mensajeVillas('', '');
-        return;
-      }
-      if (typeof window.HCA_disponibilidad !== 'function') return;
-      selVilla.disabled = true;
-      mensajeVillas('Consultando disponibilidad…', 'info');
-      const data = await window.HCA_disponibilidad(llegada, salida);
-      selVilla.disabled = false;
-      if (!data) { poblarVillas(null); mensajeVillas('', ''); return; }
-      poblarVillas(data.disponibles);
-      if (data.disponibles.length === 0) {
-        mensajeVillas('No hay villas disponibles en esas fechas. Prueba con otras fechas.', 'warn');
-      } else {
-        mensajeVillas('✓ ' + data.disponibles.length + ' de ' + data.total +
-                      ' villas disponibles para esas fechas.', 'ok');
-      }
-    }
-
-    // Al cambiar de idioma, rehacer la lista de villas y su mensaje.
-    document.addEventListener('vc:idioma', refrescarDisponibilidad);
-
-    // Al cambiar la llegada, ajustar el mínimo de salida y refrescar villas.
-    inputLlegada.addEventListener('change', () => {
-      inputSalida.min = inputLlegada.value;
-      refrescarDisponibilidad();
-    });
-    inputSalida.addEventListener('change', refrescarDisponibilidad);

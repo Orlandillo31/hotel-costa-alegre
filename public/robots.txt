@@ -1,0 +1,6 @@
+# Permite que todos los buscadores lean el sitio completo.
+# Si se compra un dominio propio, cambiar la dirección del sitemap.
+User-agent: *
+Allow: /
+
+Sitemap: https://hotel-costa-alegre-7wl2.onrender.com/sitemap.xml

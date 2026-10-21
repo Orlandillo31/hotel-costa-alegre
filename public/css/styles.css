@@ -810,7 +810,7 @@
     }
 
     /* =========================================================
-       CAMPOS DE FORMULARIO (compartidos: reserva, reseñas, modales)
+       CAMPOS DE FORMULARIO (base)
     ========================================================= */
     /* Grupo de campo del formulario */
     .campo-grupo {
@@ -863,17 +863,6 @@
     }
     .campo-error.visible { display: block; }
 
-    /* Mensaje de disponibilidad de villas (bajo el desplegable) */
-    .villas-msg {
-      display: block;
-      font-size: 0.78rem;
-      margin-top: 0.4rem;
-      min-height: 1em;
-    }
-    .villas-msg.info { color: var(--color-gris-suave); }
-    .villas-msg.ok   { color: var(--color-selva); font-weight: 500; }
-    .villas-msg.warn { color: #c0392b; font-weight: 500; }
-
     /* Fila de dos campos en la misma línea */
     .campos-fila { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
@@ -900,7 +889,7 @@
        SECCIÓN CONTACTO / FORMULARIO DE RESERVA
        JS valida todos los campos antes de enviar.
        Los estilos del formulario van bajo .formulario-reserva para no
-       cambiar los otros formularios que también usan .campo-grupo.
+       cambiar la base de .campo-grupo.
     ========================================================= */
     #contacto {
       position: relative;
@@ -1121,9 +1110,7 @@
     .formulario-reserva .campo-grupo .error:focus { box-shadow: 0 0 0 4px rgba(217, 75, 75, 0.14); }
     .formulario-reserva .campo-error { font-size: 0.76rem; color: #d94b4b; margin-top: 0.4rem; }
 
-    /* Villa más ancha que huéspedes: su etiqueta es más larga */
     .formulario-reserva .campos-fila { gap: 0 1rem; }
-    .campos-fila.fila-villa { grid-template-columns: 1.25fr 1fr; }
 
     /* Botón de envío */
     .formulario-reserva .btn-enviar {
@@ -1401,7 +1388,6 @@
 
       /* Formulario: campos en una sola columna */
       .campos-fila { grid-template-columns: 1fr; }
-      .campos-fila.fila-villa { grid-template-columns: 1fr; }
       .formulario-cabecera { padding: 1.6rem 1.4rem 1.4rem; }
       .formulario-cabecera::after { left: 1.4rem; }
       .formulario-titulo { font-size: 1.6rem; }
@@ -1420,579 +1406,6 @@
       .navbar-logo { font-size: 1.3rem; }
     }
 
-    /* =========================================================
-       LOGIN MODAL + PANELES DE CLIENTE Y ADMINISTRADOR
-       Diseño premium acorde a la identidad de Villas Cangrejo.
-    ========================================================= */
-
-    @keyframes fadeIn        { from { opacity: 0 } to { opacity: 1 } }
-    @keyframes slideUp       { from { opacity: 0; transform: translateY(20px) } to { opacity: 1; transform: translateY(0) } }
-    @keyframes slideDown     { from { opacity: 0; transform: translateY(-30px) } to { opacity: 1; transform: translateY(0) } }
-    @keyframes contadorIn    { from { opacity: 0; transform: scale(0.9) } to { opacity: 1; transform: scale(1) } }
-
-    /* -----------------------------------------------------
-       BOTÓN "INICIAR SESIÓN" EN EL NAVBAR
-    ----------------------------------------------------- */
-    .btn-sesion {
-      padding: 0.55rem 1.3rem;
-      border: 1px solid rgba(255,255,255,0.4);
-      border-radius: 999px;
-      color: inherit;
-      font-size: 0.82rem;
-      font-weight: 400;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      transition: var(--transicion);
-      backdrop-filter: blur(8px);
-    }
-    .navbar-solida .btn-sesion {
-      border-color: var(--color-turquesa);
-      color: var(--color-turquesa);
-    }
-    .btn-sesion:hover {
-      background: var(--color-dorado);
-      border-color: var(--color-dorado);
-      color: #fff;
-      transform: translateY(-1px);
-      box-shadow: 0 6px 18px rgba(201, 160, 88, 0.35);
-    }
-
-    /* =====================================================
-       MODAL DE LOGIN — Glassmorphism elegante
-    ===================================================== */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(11,61,78,0.85), rgba(20,20,20,0.75));
-      backdrop-filter: blur(8px);
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-      animation: fadeIn 0.3s ease;
-    }
-
-    .modal-caja {
-      position: relative;
-      background: linear-gradient(180deg, #ffffff 0%, var(--color-blanco) 100%);
-      border-radius: 8px;
-      width: 100%;
-      max-width: 480px;
-      padding: 3rem 2.5rem 2.5rem;
-      max-height: 92vh;
-      overflow-y: auto;
-      box-shadow:
-        0 30px 80px rgba(0,0,0,0.35),
-        0 0 0 1px rgba(255,255,255,0.1);
-      animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    /* Detalles decorativos en las esquinas */
-    .modal-caja::before,
-    .modal-caja::after {
-      content: '';
-      position: absolute;
-      width: 40px;
-      height: 40px;
-      border: 2px solid var(--color-dorado);
-    }
-    .modal-caja::before {
-      top: 12px; left: 12px;
-      border-right: 0; border-bottom: 0;
-    }
-    .modal-caja::after {
-      bottom: 12px; right: 12px;
-      border-left: 0; border-top: 0;
-    }
-
-    .modal-cerrar {
-      position: absolute;
-      top: 1rem;
-      right: 1.2rem;
-      background: none;
-      border: none;
-      font-size: 1.8rem;
-      color: var(--color-gris-suave);
-      cursor: pointer;
-      line-height: 1;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      transition: var(--transicion);
-      z-index: 2;
-    }
-    .modal-cerrar:hover {
-      background: var(--color-oceano);
-      color: #fff;
-      transform: rotate(90deg);
-    }
-
-    .modal-titulo {
-      font-family: var(--fuente-titulo);
-      font-size: 2rem;
-      font-weight: 400;
-      color: var(--color-oceano);
-      text-align: center;
-      margin-bottom: 0.3rem;
-      letter-spacing: 0.5px;
-    }
-    .modal-titulo::after {
-      content: '';
-      display: block;
-      width: 50px;
-      height: 1px;
-      background: var(--color-dorado);
-      margin: 0.8rem auto 1.5rem;
-    }
-
-    .modal-tabs {
-      display: flex;
-      gap: 0;
-      margin-bottom: 2rem;
-      background: rgba(11,61,78,0.04);
-      border-radius: 6px;
-      padding: 4px;
-    }
-    .modal-tab {
-      flex: 1;
-      background: none;
-      border: none;
-      padding: 0.7rem 0.5rem;
-      font-family: var(--fuente-cuerpo);
-      font-size: 0.78rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--color-gris-suave);
-      cursor: pointer;
-      border-radius: 4px;
-      transition: var(--transicion);
-    }
-    .modal-tab:hover { color: var(--color-oceano); }
-    .modal-tab.activo {
-      background: var(--color-oceano);
-      color: #fff;
-      box-shadow: 0 2px 8px rgba(11,61,78,0.2);
-    }
-
-    .modal-form { display: none; animation: fadeIn 0.3s ease; }
-    .modal-form.activo { display: block; }
-
-    .modal-form label {
-      display: block;
-      margin: 1rem 0 0.35rem;
-      font-size: 0.72rem;
-      color: var(--color-oceano);
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      font-weight: 500;
-    }
-    .modal-form input {
-      width: 100%;
-      padding: 0.85rem 1rem;
-      border: 1px solid #e5dfd0;
-      border-radius: 4px;
-      background: #fff;
-      font-family: var(--fuente-cuerpo);
-      font-size: 0.95rem;
-      color: var(--color-oscuro);
-      transition: var(--transicion);
-    }
-    .modal-form input:focus {
-      outline: none;
-      border-color: var(--color-turquesa);
-      box-shadow: 0 0 0 4px rgba(26, 138, 148, 0.12);
-      background: #fff;
-    }
-    .modal-form .btn-enviar {
-      width: 100%;
-      margin-top: 1.6rem;
-      padding: 0.95rem;
-      font-size: 0.85rem;
-      letter-spacing: 2px;
-    }
-
-    .modal-mensaje {
-      min-height: 1.2em;
-      font-size: 0.85rem;
-      text-align: center;
-      margin-bottom: 0.3rem;
-      padding: 0.4rem 0;
-    }
-    .modal-mensaje.ok    { color: var(--color-selva); }
-    .modal-mensaje.error { color: #c0392b; }
-
-    /* =====================================================
-       PANELES DE USUARIO (cliente / admin)
-    ===================================================== */
-    .panel-usuario {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 9rem 2rem 5rem;
-      animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    /* Banner superior con gradiente de marca */
-    .panel-encabezado {
-      position: relative;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1.5rem;
-      margin-bottom: 3rem;
-      padding: 2.5rem 2.5rem;
-      background:
-        linear-gradient(135deg, rgba(11,61,78,0.95) 0%, rgba(26,138,148,0.9) 100%),
-        url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1600&q=80') center/cover;
-      background-blend-mode: multiply;
-      border-radius: 8px;
-      color: #fff;
-      box-shadow: 0 15px 50px rgba(11,61,78,0.25);
-      overflow: hidden;
-    }
-    .panel-encabezado::before {
-      content: '';
-      position: absolute;
-      top: 0; right: 0;
-      width: 200px; height: 200px;
-      background: radial-gradient(circle at top right, rgba(201,160,88,0.4) 0%, transparent 70%);
-    }
-    .panel-encabezado .seccion-etiqueta {
-      color: var(--color-dorado);
-      font-size: 0.72rem;
-      letter-spacing: 3px;
-      position: relative;
-      z-index: 1;
-    }
-    .panel-encabezado .seccion-titulo {
-      color: #fff;
-      font-size: 2.5rem;
-      margin-top: 0.4rem;
-      position: relative;
-      z-index: 1;
-    }
-    .panel-encabezado .seccion-titulo em {
-      color: var(--color-dorado);
-      font-style: italic;
-    }
-    .panel-encabezado .btn-secundario {
-      background: rgba(255,255,255,0.08);
-      border-color: rgba(255,255,255,0.4);
-      color: #fff;
-      backdrop-filter: blur(8px);
-      position: relative;
-      z-index: 1;
-    }
-    .panel-encabezado .btn-secundario:hover {
-      background: var(--color-dorado);
-      border-color: var(--color-dorado);
-      color: #fff;
-    }
-
-    .panel-subtitulo {
-      font-family: var(--fuente-titulo);
-      font-size: 1.8rem;
-      color: var(--color-oceano);
-      margin: 1.5rem 0 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    .panel-subtitulo::before {
-      content: '';
-      width: 30px;
-      height: 1px;
-      background: var(--color-dorado);
-    }
-
-    /* =====================================================
-       TABS DEL PANEL ADMIN
-    ===================================================== */
-    .admin-tabs {
-      display: flex;
-      gap: 0;
-      flex-wrap: wrap;
-      margin-bottom: 2.5rem;
-      background: #fff;
-      border-radius: 8px;
-      padding: 6px;
-      box-shadow: var(--sombra-suave);
-    }
-    .admin-tab {
-      flex: 1;
-      min-width: 140px;
-      background: none;
-      border: none;
-      padding: 0.9rem 1.4rem;
-      font-family: var(--fuente-cuerpo);
-      font-size: 0.78rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--color-gris-suave);
-      cursor: pointer;
-      border-radius: 6px;
-      transition: var(--transicion);
-    }
-    .admin-tab:hover { color: var(--color-oceano); background: rgba(11,61,78,0.04); }
-    .admin-tab.activo {
-      background: linear-gradient(135deg, var(--color-oceano), var(--color-turquesa));
-      color: #fff;
-      font-weight: 500;
-      box-shadow: 0 4px 12px rgba(11,61,78,0.25);
-    }
-
-    .admin-panel { display: none; }
-    .admin-panel.activo { display: block; animation: slideUp 0.4s ease; }
-
-    /* =====================================================
-       TABLAS DE RESERVACIONES Y CLIENTES
-    ===================================================== */
-    .tabla-wrapper {
-      overflow-x: auto;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow:
-        0 4px 20px rgba(11,61,78,0.06),
-        0 0 0 1px rgba(11,61,78,0.04);
-    }
-
-    .tabla-reservaciones {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 720px;
-    }
-    .tabla-reservaciones thead {
-      background: linear-gradient(180deg, var(--color-oceano), #093341);
-      color: #fff;
-    }
-    .tabla-reservaciones th,
-    .tabla-reservaciones td {
-      padding: 1.1rem 1.2rem;
-      text-align: left;
-      font-size: 0.88rem;
-      border-bottom: 1px solid #f0ebe0;
-      vertical-align: middle;
-    }
-    .tabla-reservaciones th {
-      font-weight: 500;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      font-size: 0.7rem;
-      color: rgba(255,255,255,0.85);
-      border-bottom: 2px solid var(--color-dorado);
-    }
-    .tabla-reservaciones tbody tr {
-      transition: background 0.2s ease;
-    }
-    .tabla-reservaciones tbody tr:nth-child(even) { background: #fdfbf6; }
-    .tabla-reservaciones tbody tr:hover { background: #f5ead6; }
-    .tabla-reservaciones tbody tr:last-child td { border-bottom: 0; }
-    .tabla-reservaciones small {
-      display: block;
-      color: var(--color-gris-suave);
-      font-size: 0.76rem;
-      margin-top: 0.2rem;
-    }
-
-    .tabla-vacia {
-      padding: 3rem 2rem;
-      text-align: center;
-      color: var(--color-gris-suave);
-      font-family: var(--fuente-titulo);
-      font-size: 1.1rem;
-      font-style: italic;
-    }
-    .tabla-vacia::before {
-      content: '✦';
-      display: block;
-      font-size: 1.8rem;
-      color: var(--color-dorado);
-      margin-bottom: 0.5rem;
-      opacity: 0.6;
-    }
-
-    /* Badge de estado con punto */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.35rem 0.85rem;
-      border-radius: 999px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      white-space: nowrap;
-    }
-    .badge::before {
-      content: '';
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: currentColor;
-      opacity: 0.7;
-    }
-    .estado-pendiente  { background: #fff3cd; color: #856404; }
-    .estado-confirmada { background: #d4f0db; color: #155724; }
-    .estado-rechazada  { background: #fadbde; color: #721c24; }
-
-    /* Botones de acción en la tabla */
-    .acciones-celda {
-      white-space: nowrap;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-    }
-    .btn-mini {
-      padding: 0.45rem 0.85rem;
-      font-size: 0.72rem;
-      font-weight: 500;
-      letter-spacing: 0.5px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-family: var(--fuente-cuerpo);
-      transition: var(--transicion);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-    }
-    .btn-mini:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-    .btn-mini.confirmar { background: var(--color-selva); color: #fff; }
-    .btn-mini.confirmar:hover { background: #1f3f1a; }
-    .btn-mini.rechazar  { background: #c0392b; color: #fff; }
-    .btn-mini.rechazar:hover  { background: #922b21; }
-    .btn-mini.recibo   { background: var(--color-dorado); color: #3a2c10; }
-    .btn-mini.recibo:hover    { background: #b88e45; }
-    .btn-mini.eliminar  { background: #fff; color: #555; border: 1px solid #ddd; }
-    .btn-mini.eliminar:hover  { background: #555; color: #fff; border-color: #555; }
-
-    /* =====================================================
-       CONTABILIDAD — Tarjetas y resumen
-    ===================================================== */
-    .conta-tarjetas {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2.5rem;
-    }
-    .conta-card {
-      position: relative;
-      background: #fff;
-      padding: 1.8rem 1.6rem;
-      border-radius: 8px;
-      box-shadow: 0 4px 20px rgba(11,61,78,0.06);
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-      overflow: hidden;
-      transition: var(--transicion);
-      animation: contadorIn 0.5s ease;
-    }
-    .conta-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 35px rgba(11,61,78,0.15);
-    }
-    .conta-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 4px;
-      height: 100%;
-      background: var(--color-turquesa);
-    }
-    .conta-card.destacada {
-      background: linear-gradient(135deg, var(--color-oceano) 0%, #093341 100%);
-      color: #fff;
-    }
-    .conta-card.destacada::before { background: var(--color-dorado); width: 100%; height: 4px; }
-    .conta-card.destacada .conta-label { color: rgba(255,255,255,0.7); }
-    .conta-card.destacada .conta-valor { color: var(--color-dorado); }
-
-    .conta-label {
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: var(--color-gris-suave);
-      font-weight: 500;
-    }
-    .conta-valor {
-      font-family: var(--fuente-titulo);
-      font-size: 2.4rem;
-      font-weight: 600;
-      color: var(--color-oceano);
-      line-height: 1;
-    }
-
-    .conta-acciones {
-      display: flex;
-      justify-content: flex-end;
-      margin: 2rem 0 1rem;
-    }
-    #btn-exportar-excel {
-      cursor: pointer;
-      border: none;
-      font-family: var(--fuente-cuerpo);
-      background: linear-gradient(135deg, #1f7a44 0%, #2d5a27 100%);
-      color: #fff;
-      padding: 0.95rem 2rem;
-      letter-spacing: 1.5px;
-      font-size: 0.82rem;
-      text-transform: uppercase;
-      border-radius: 4px;
-      transition: var(--transicion);
-      box-shadow: 0 4px 16px rgba(45, 90, 39, 0.3);
-    }
-    #btn-exportar-excel:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(45, 90, 39, 0.45);
-    }
-
-    /* =====================================================
-       RESPONSIVE — Tablets y móviles
-    ===================================================== */
-    @media (max-width: 900px) {
-      .panel-usuario { padding: 8rem 1.5rem 4rem; }
-      .panel-encabezado { padding: 2rem 1.5rem; }
-      .panel-encabezado .seccion-titulo { font-size: 1.9rem; }
-      .conta-valor { font-size: 2rem; }
-    }
-    @media (max-width: 600px) {
-      .panel-usuario   { padding: 7rem 1rem 3rem; }
-      .panel-encabezado { padding: 1.5rem; flex-direction: column; align-items: flex-start; }
-      .panel-encabezado .seccion-titulo { font-size: 1.6rem; }
-      .modal-caja      { padding: 2.5rem 1.5rem 1.8rem; }
-      .modal-caja::before, .modal-caja::after { width: 25px; height: 25px; }
-      .modal-titulo    { font-size: 1.6rem; }
-      .conta-valor     { font-size: 1.8rem; }
-      .admin-tab       { padding: 0.7rem 0.8rem; font-size: 0.7rem; min-width: 0; }
-    }
-
-    /* =====================================================
-       RECUPERACIÓN DE CONTRASEÑA + INTRO DE VILLAS
-    ===================================================== */
-    .modal-link-wrap { text-align: center; margin-top: 1rem; }
-    .modal-link {
-      color: var(--color-turquesa);
-      font-size: 0.85rem;
-      border-bottom: 1px solid transparent;
-      transition: var(--transicion);
-    }
-    .modal-link:hover { border-bottom-color: var(--color-turquesa); }
-    .modal-link.resaltado {
-      color: var(--color-dorado);
-      font-weight: 600;
-      animation: latido 1.2s ease infinite;
-    }
-    @keyframes latido { 0%,100% { opacity: 1 } 50% { opacity: 0.55 } }
-
-    .modal-sub {
-      font-size: 0.85rem;
-      color: var(--color-gris-suave);
-      text-align: center;
-      margin-bottom: 0.5rem;
-    }
-
     /* Texto introductorio de la sección de villas */
     .habitaciones-intro {
       max-width: 680px;
@@ -2002,127 +1415,6 @@
       font-size: 1.02rem;
       line-height: 1.6;
     }
-
-    /* =========================================================
-       CALENDARIO DE OCUPACIÓN (panel admin)
-    ========================================================= */
-    .cal-encabezado {
-      display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;
-    }
-    .cal-nav { display: flex; align-items: center; gap: 0.8rem; }
-    .cal-titulo {
-      font-family: var(--fuente-titulo); font-size: 1.3rem; font-weight: 600;
-      color: var(--color-oceano); min-width: 170px; text-align: center;
-    }
-    .cal-leyenda {
-      display: flex; flex-wrap: wrap; gap: 1.2rem; align-items: center;
-      font-size: 0.82rem; color: var(--color-gris-suave); margin-bottom: 1rem;
-    }
-    .cal-leyenda > span { display: inline-flex; align-items: center; gap: 0.4rem; }
-    .cal-punto { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
-    .cal-punto.llegada  { background: #2e7d32; }
-    .cal-punto.salida   { background: #c0392b; }
-    .cal-punto.estancia { background: #cfe3e6; border: 1px solid var(--color-turquesa); }
-    .cal-grid-dias {
-      display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px;
-      text-align: center; font-size: 0.72rem; font-weight: 600;
-      text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-gris-suave);
-      margin-bottom: 6px;
-    }
-    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-    .cal-celda {
-      min-height: 78px; border: 1px solid #e7e2d6; border-radius: 8px;
-      padding: 5px 6px; background: var(--color-blanco); overflow: hidden;
-    }
-    .cal-celda.vacia { background: transparent; border: none; }
-    .cal-celda.ocupada { background: #eef6f7; border-color: #cfe3e6; }
-    .cal-dia { font-size: 0.8rem; font-weight: 600; color: var(--color-oceano); }
-    .cal-chips { display: flex; flex-direction: column; gap: 3px; margin-top: 4px; }
-    .cal-chip {
-      font-size: 0.66rem; font-weight: 600; border-radius: 4px;
-      padding: 1px 4px; white-space: nowrap; color: #fff;
-    }
-    .cal-chip.llegada { background: #2e7d32; }
-    .cal-chip.salida  { background: #c0392b; }
-    @media (max-width: 640px) {
-      .cal-celda { min-height: 60px; }
-      .cal-chip { font-size: 0.58rem; }
-    }
-
-    /* =========================================================
-       RESEÑAS — sección pública + formulario
-    ========================================================= */
-    #resenas { padding: 5rem 8% 4rem; background: var(--color-arena); }
-    .resenas-encabezado { text-align: center; margin-bottom: 2.5rem; }
-    .resenas-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem; max-width: 1100px; margin: 0 auto 3rem;
-    }
-    .resena-card {
-      background: var(--color-blanco); border-radius: 14px; padding: 1.6rem;
-      box-shadow: 0 6px 20px rgba(11, 61, 78, 0.08); border: 1px solid #ece6d8;
-    }
-    .resena-estrellas { color: var(--color-dorado); font-size: 1.1rem; letter-spacing: 2px; }
-    .resena-texto {
-      font-style: italic; color: var(--color-oscuro); line-height: 1.6;
-      margin: 0.8rem 0; font-size: 0.98rem;
-    }
-    .resena-autor { font-weight: 600; color: var(--color-oceano); margin: 0; }
-
-    .resena-form-caja {
-      max-width: 620px; margin: 0 auto; background: var(--color-blanco);
-      border-radius: 16px; padding: 2.2rem; box-shadow: 0 8px 28px rgba(11, 61, 78, 0.1);
-    }
-    .resena-form-titulo {
-      font-family: var(--fuente-titulo); font-size: 1.5rem; color: var(--color-oceano);
-      text-align: center; margin: 0 0 1.4rem;
-    }
-    .estrellas-input { display: flex; gap: 0.3rem; }
-    .estrella {
-      background: none; border: none; cursor: pointer; font-size: 2rem;
-      color: #d8d2c4; line-height: 1; padding: 0; transition: color 0.15s, transform 0.15s;
-    }
-    .estrella:hover { transform: scale(1.15); }
-    .estrella.activa { color: var(--color-dorado); }
-    .resena-mensaje { margin-top: 0.8rem; font-size: 0.9rem; text-align: center; }
-    .resena-mensaje.ok { color: var(--color-selva); }
-    .resena-mensaje.error { color: #c0392b; }
-
-    /* Reseñas en el panel admin (moderación) */
-    .admin-resenas-lista { display: flex; flex-direction: column; gap: 0.9rem; }
-    .admin-resena {
-      border: 1px solid #e7e2d6; border-left: 4px solid var(--color-dorado);
-      border-radius: 8px; padding: 0.9rem 1.1rem; background: var(--color-blanco);
-    }
-    .admin-resena.aprobada { border-left-color: var(--color-selva); }
-    .admin-resena-top {
-      display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; margin-bottom: 0.4rem;
-    }
-    .admin-resena-estado { font-size: 0.78rem; color: var(--color-gris-suave); margin-left: auto; }
-    .admin-resena-texto { margin: 0.3rem 0 0.7rem; color: var(--color-oscuro); line-height: 1.5; }
-
-    /* Contabilidad: nota y fila de TOTAL de "Ingresos por mes" */
-    .conta-nota { font-size: 0.85rem; color: var(--color-gris-suave); margin: -0.4rem 0 1rem; }
-    .tabla-reservaciones tfoot td {
-      font-weight: 600; color: var(--color-oceano); background: #f5ead6;
-      border-top: 2px solid var(--color-dorado); border-bottom: 0;
-    }
-
-    /* =========================================================
-       MODO ADMINISTRADOR — con la sesión de admin solo se ve el
-       panel; el sitio público queda oculto (la clase la pone dashboard.js)
-    ========================================================= */
-    body.modo-admin > :not(#navbar):not(#panel-admin):not(#modal-login) { display: none !important; }
-    body.modo-admin #navbar {
-      background: var(--color-oceano);
-      box-shadow: var(--sombra-suave);
-      padding: 0.75rem 5%;
-    }
-    body.modo-admin .navbar-menu,
-    body.modo-admin #boton-hamburguesa { display: none !important; }
-    body.modo-admin #panel-admin { min-height: 100vh; }
-    body.modo-admin #btn-idioma { display: none; }   /* el panel de admin va en español */
 
     /* Botón de idioma ES/EN en la barra (a la derecha, junto al menú) */
     #btn-idioma {
@@ -2182,33 +1474,6 @@
     .nota-privacidad { margin-top: 0.8rem; font-size: 0.78rem; color: var(--color-gris-suave); text-align: center; }
     .nota-privacidad a { color: var(--color-turquesa); text-decoration: underline; }
 
-    /* ---------- Panel admin: registrar reservación y precios ---------- */
-    .admin-barra { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
-    .form-admin {
-      background: var(--color-blanco); border: 1px solid #ece4d3; border-radius: 12px;
-      padding: 1.4rem 1.5rem; margin-bottom: 1.6rem;
-    }
-    .form-admin-ayuda { font-size: 0.86rem; color: var(--color-gris-suave); margin-bottom: 1rem; }
-    .form-admin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 0.9rem 1rem; margin-bottom: 0.9rem; }
-    .form-admin label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.8rem; font-weight: 500; color: var(--color-oceano); }
-    .form-admin label small { font-weight: 400; color: var(--color-gris-suave); }
-    .form-admin input, .form-admin select, .form-admin textarea {
-      font: inherit; font-size: 0.9rem; font-weight: 400; color: var(--color-oscuro);
-      padding: 0.55rem 0.7rem; border: 1px solid #ddd5c3; border-radius: 6px; background: #fff;
-    }
-    .form-admin .form-admin-check { flex-direction: row; align-items: center; gap: 0.5rem; margin: 0.8rem 0 0.4rem; }
-    .form-admin-botones { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 0.8rem; }
-    .form-tarifas { max-width: 900px; }
-
-    /* Estado del pago en la tabla de reservaciones */
-    .badge.pago-sin      { background: #ececec; color: #555; }
-    .badge.pago-anticipo { background: #fff3cd; color: #856404; }
-    .badge.pago-completo { background: #d4f0db; color: #155724; }
-    .btn-mini.cancelar { background: #fff; color: #c0392b; border: 1px solid #e8b4ae; }
-    .btn-mini.cancelar:hover { background: #c0392b; color: #fff; }
-    .btn-mini.pago { background: var(--color-turquesa); color: #fff; }
-    .btn-mini.pago:hover { background: var(--color-oceano); }
-
     /* ---------- Páginas legales (aviso de privacidad) ---------- */
     .pagina-legal { background: var(--color-arena); }
     .legal-encabezado { background: var(--color-oceano); padding: 0.9rem 5%; }
@@ -2227,27 +1492,101 @@
     .legal-volver { margin-top: 2rem; }
     @media (max-width: 600px) { .legal-contenido { margin: 1.2rem 1rem 3rem; padding: 1.6rem 1.2rem; } }
 
-    /* Calificación promedio arriba de las reseñas */
-    .resenas-resumen {
-      margin: 1rem 0 0;
-      font-size: 1rem;
+    /* =========================================================
+       SECCIÓN UBICACIÓN — texto + tarjeta de lugares cercanos
+    ========================================================= */
+    #ubicacion {
+      padding: 7rem 5% 2rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 4.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      align-items: center;
+    }
+    .ubicacion-texto .seccion-titulo { margin-bottom: 1.4rem; }
+    .ubicacion-texto p {
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: var(--color-gris-suave);
+      margin-bottom: 2rem;
+      max-width: 32rem;
+    }
+    .ubicacion-tarjeta {
+      background: #fff;
+      border: 1px solid rgba(11, 61, 78, 0.08);
+      border-radius: 20px;
+      padding: 2rem 2.2rem 1.6rem;
+      box-shadow: 0 14px 34px -22px rgba(11, 61, 78, 0.45);
+    }
+    .ubicacion-subtitulo {
+      font-family: var(--fuente-titulo);
+      font-size: 1.6rem;
+      font-weight: 500;
       color: var(--color-oceano);
+      margin-bottom: 1rem;
     }
-    /* Cinco estrellas grises con una capa dorada recortada al promedio */
-    .estrellas-promedio {
-      position: relative;
+    .ubicacion-lista { list-style: none; }
+    .ubicacion-lista li {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid rgba(11, 61, 78, 0.07);
+      font-size: 0.95rem;
+    }
+    .ubicacion-lista li:last-child { border-bottom: 0; }
+    .ub-lugar { color: var(--color-oceano); }
+    .ub-tiempo { color: var(--color-turquesa); font-weight: 500; white-space: nowrap; }
+    .ub-nota { display: block; margin-top: 0.6rem; font-size: 0.78rem; color: var(--color-gris-suave); }
+
+    @media (max-width: 900px) {
+      #ubicacion { grid-template-columns: 1fr; gap: 2.5rem; padding-top: 5rem; }
+    }
+    @media (max-width: 600px) {
+      .ubicacion-tarjeta { padding: 1.6rem 1.4rem 1.3rem; }
+    }
+
+    /* Enlace de respaldo bajo el mensaje de éxito del formulario */
+    .exito-alterno {
       display: inline-block;
-      margin-right: 0.4rem;
-      font-size: 1.15rem;
-      letter-spacing: 2px;
-      color: #d8d2c4;
+      margin-top: 1.2rem;
+      font-size: 0.85rem;
+      color: var(--color-turquesa);
+      text-decoration: underline;
+      text-underline-offset: 3px;
     }
-    .estrellas-promedio::before {
-      content: '★★★★★';
-      position: absolute;
-      inset: 0 auto 0 0;
-      width: var(--relleno, 0%);
-      overflow: hidden;
-      white-space: nowrap;
-      color: var(--color-dorado);
+
+    /* =========================================================
+       BOTÓN FLOTANTE DE WHATSAPP
+    ========================================================= */
+    .whatsapp-flotante {
+      position: fixed;
+      right: 1.4rem;
+      bottom: 1.4rem;
+      z-index: 900;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #25d366;
+      color: #fff;
+      box-shadow: 0 10px 24px -8px rgba(0, 0, 0, 0.45);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .whatsapp-flotante:hover { transform: translateY(-3px) scale(1.04); box-shadow: 0 14px 28px -8px rgba(0, 0, 0, 0.5); }
+    .whatsapp-flotante:focus-visible { outline: 3px solid var(--color-dorado); outline-offset: 3px; }
+    .whatsapp-flotante svg {
+      width: 30px;
+      height: 30px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    @media (max-width: 600px) {
+      .whatsapp-flotante { right: 1rem; bottom: 1rem; width: 54px; height: 54px; }
     }

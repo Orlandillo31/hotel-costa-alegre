@@ -1,6 +1,6 @@
 # Corre en GitHub cada vez que se sube un cambio a main o se abre un PR:
 #  1) Revisa que ninguna dependencia tenga vulnerabilidades graves.
-#  2) Ejecuta las pruebas automáticas (test/), con una base en memoria.
+#  2) Ejecuta las pruebas automáticas (test/): página, seguridad y SEO.
 # Si algo falla, GitHub lo marca con ❌ y te avisa por correo.
 name: Pruebas y seguridad
 

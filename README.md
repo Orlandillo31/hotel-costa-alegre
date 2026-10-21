@@ -1,110 +1,52 @@
 # Villas Cangrejo
 
-Web application for a hotel reservation system in Melaque, Jalisco, developed as a university project.
+Promotional website for Villas Cangrejo, a hotel with 16 villas in San Patricio-Melaque, Jalisco, developed as a university project.
 
-The project started as a hotel website and evolved into a full web application with a public site, customer accounts, an administrator panel, reservations, reviews and accounting features.
+The project started as a hotel website, grew into a full reservation system (customer accounts, administrator panel, reviews and accounting) and is now a lightweight promotional site: the hotel handles its reservations directly, so the website focuses on showing the villas and getting guests in touch by WhatsApp.
+
+> The full reservation system is preserved in the git tag [`v2-con-panel`](../../tree/v2-con-panel).
 
 ## Features
 
-- Online reservation requests
-- Customer registration and login
-- Customer reservation history
-- Administrator panel
-- Reservation status management
-- Occupancy calendar
-- Guest review system with administrator moderation
-- Average guest rating
-- Password recovery by email
-- Spanish and English public interface
-- Monthly income and accounting information
-- PDF receipt generation
-- Excel data export
+- Villa information, prices per night and long-stay monthly rates
+- Photo gallery with lightbox
+- Reservation request form that opens WhatsApp with the message ready to send (no data stored on a server)
+- Price estimate based on the selected dates
+- Location section with nearby places
+- Floating WhatsApp button
+- Spanish and English interface
+- SEO: descriptive title and meta tags, canonical URL, schema.org `Hotel` data, `robots.txt` and `sitemap.xml`
 - Responsive interface
 
 ## Technologies Used
 
-### Frontend
-
-- HTML5
-- CSS3
-- JavaScript
-
-### Backend
-
-- Node.js
-- Express
-
-### Database
-
-- MongoDB
-- Mongoose
-
-### Libraries and Tools
-
-- bcryptjs
-- dotenv
-- CORS
-- Helmet
-- express-rate-limit
-- Nodemailer
-- jsPDF
+- HTML5, CSS3 and JavaScript
+- Node.js + Express (only to serve the static files)
+- Helmet (HTTP security headers and Content Security Policy)
 
 ## Project Structure
 
 ```text
 hotel-costa-alegre/
-├── public/          # HTML, CSS, JavaScript and public assets
-├── server/          # Node.js / Express backend
-│   ├── config/
-│   ├── models/
-│   ├── routes/
-│   ├── scripts/
-│   └── utils/
+├── public/          # The whole website (HTML, CSS, JavaScript, images, robots.txt, sitemap.xml)
+├── server/          # Small Express server that serves public/
+├── test/            # Automated tests (page, security headers, SEO)
 ├── package.json
 └── README.md
 ```
 
-## API
-
-The Express backend provides REST endpoints for:
-
-- Authentication
-- Reservations
-- Customers
-- Accounting
-- Guest reviews
-
-## Security
-
-The backend implements several security measures:
-
-- HTTP security headers with Helmet
-- Rate limiting
-- Request payload limits
-- Password hashing with bcryptjs
-- Environment variables for sensitive configuration
-- Role-based access for customers and administrators
+Since the site is static, the `public/` folder can also be published as-is on any static hosting (Render Static Site, Cloudflare Pages, GitHub Pages).
 
 ## Running Locally
 
-### Requirements
-
-- Node.js 18 or newer
-- MongoDB
-
-Install the dependencies:
+Requirements: Node.js 20 or newer.
 
 ```bash
 npm install
-```
-
-Configure the required environment variables and start the server:
-
-```bash
 npm start
 ```
 
-The application uses port `3000` by default.
+The site runs on port `3000` by default. Run the tests with `npm test`.
 
 ## About the Project
 

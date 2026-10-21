@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Lista de páginas para Google. Si se compra un dominio propio,
+     cambiar las direcciones; al cambiar el contenido, actualizar lastmod. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://hotel-costa-alegre-7wl2.onrender.com/</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://hotel-costa-alegre-7wl2.onrender.com/aviso-privacidad.html</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+</urlset>

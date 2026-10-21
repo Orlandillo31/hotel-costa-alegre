@@ -1,31 +1,20 @@
 {
   "name": "villas-cangrejo",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "private": true,
-  "description": "Sitio web de Villas Cangrejo con backend Node.js + MongoDB, panel de cliente y administrador, contabilidad, exportación a Excel y recuperación de contraseña.",
+  "description": "Página informativa de Villas Cangrejo, hotel en San Patricio-Melaque, Jalisco. Sitio estático servido con Express.",
   "main": "server/server.js",
   "scripts": {
     "start": "node server/server.js",
-    "test": "node --test",
-    "respaldo": "node server/scripts/respaldo.js",
-    "restaurar": "node server/scripts/restaurar.js",
-    "actualizar-admin": "node server/scripts/actualizar-admin.js"
+    "test": "node --test"
   },
   "engines": {
     "node": ">=20.19.0"
   },
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "express-rate-limit": "^8.5.2",
-    "helmet": "^8.2.0",
-    "mongoose": "^9.11.1",
-    "nodemailer": "^10.0.16"
+    "helmet": "^8.2.0"
   },
   "author": "Angel Leonor",
-  "license": "MIT",
-  "devDependencies": {
-    "mongodb-memory-server": "^11.2.0"
-  }
+  "license": "MIT"
 }

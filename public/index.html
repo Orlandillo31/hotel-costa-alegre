@@ -4,15 +4,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Villas Cangrejo | Jalisco, México</title>
+  <title>Villas Cangrejo · Hotel y villas en Melaque, Jalisco</title>
   <meta name="description"
-    content="Villas Cangrejo: 16 villas en San Patricio-Melaque, Bahía de Navidad, Jalisco. Alberca, aire acondicionado, internet y cocina. Estancias por noche o por mes. Reserva en línea." />
+    content="Hotel en San Patricio-Melaque, Jalisco: 16 villas con aire acondicionado, Wi-Fi, cocina y alberca. Renta por noche o por mes en la Bahía de Navidad." />
+  <meta name="theme-color" content="#0b3d4e" />
+
+  <!-- Dirección oficial de la página para Google. Si se compra un dominio
+       propio, cambiarla aquí, en og:url, en los datos de abajo, en
+       robots.txt y en sitemap.xml. -->
+  <link rel="canonical" href="https://hotel-costa-alegre-7wl2.onrender.com/" />
 
   <!-- Vista previa al compartir el enlace (WhatsApp, Facebook, X).
        Si se compra un dominio propio, cambiar og:url por la nueva dirección. -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Villas Cangrejo" />
-  <meta property="og:title" content="Villas Cangrejo · Melaque, Jalisco" />
+  <meta property="og:title" content="Villas Cangrejo · Hotel en Melaque, Jalisco" />
   <meta property="og:description"
     content="16 villas en San Patricio-Melaque, Bahía de Navidad. Alberca, aire acondicionado e internet. Estancias por noche o por mes." />
   <meta property="og:url" content="https://hotel-costa-alegre-7wl2.onrender.com/" />
@@ -36,6 +42,47 @@
 
   <!-- Favicon: logo del hotel -->
   <link rel="icon" type="image/png" href="img/favicon.png" />
+  <link rel="apple-touch-icon" href="img/logo.png" />
+
+  <!-- Ficha del hotel para Google (datos estructurados schema.org).
+       Google la usa para mostrar dirección, teléfono, horario y precio en
+       los resultados. Mantenerla igual que la información visible. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Hotel",
+    "name": "Villas Cangrejo",
+    "description": "Hotel con 16 villas idénticas en San Patricio-Melaque, Jalisco, en la Bahía de Navidad. Aire acondicionado, televisión, Wi-Fi, agua caliente, estufa de inducción y alberca. Renta por noche o por mes.",
+    "url": "https://hotel-costa-alegre-7wl2.onrender.com/",
+    "logo": "https://hotel-costa-alegre-7wl2.onrender.com/img/logo-completo.png",
+    "image": "https://hotel-costa-alegre-7wl2.onrender.com/img/logo-completo.png",
+    "telephone": "+52 315 100 7106",
+    "email": "joseangel.hotel68@gmail.com",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "14 C. Palmas",
+      "addressLocality": "San Patricio-Melaque",
+      "addressRegion": "Jalisco",
+      "postalCode": "48980",
+      "addressCountry": "MX"
+    },
+    "hasMap": "https://www.google.com/maps/search/?api=1&query=14+C.+Palmas,+San+Patricio,+Jalisco",
+    "checkinTime": "15:00",
+    "checkoutTime": "12:00",
+    "numberOfRooms": 16,
+    "priceRange": "Desde $1,850 MXN por noche",
+    "currenciesAccepted": "MXN",
+    "availableLanguage": ["es", "en"],
+    "amenityFeature": [
+      { "@type": "LocationFeatureSpecification", "name": "Aire acondicionado", "value": true },
+      { "@type": "LocationFeatureSpecification", "name": "Televisión", "value": true },
+      { "@type": "LocationFeatureSpecification", "name": "Wi-Fi", "value": true },
+      { "@type": "LocationFeatureSpecification", "name": "Agua caliente", "value": true },
+      { "@type": "LocationFeatureSpecification", "name": "Cocina con estufa de inducción", "value": true },
+      { "@type": "LocationFeatureSpecification", "name": "Alberca", "value": true }
+    ]
+  }
+  </script>
 </head>
 
 <body>
@@ -47,7 +94,7 @@
   ====================================================== -->
   <nav id="navbar" role="navigation" aria-label="Menú principal">
     <div class="navbar-logo">
-      <img src="img/logo.png" alt="" class="logo-img" aria-hidden="true" />
+      <img src="img/logo.png" alt="" class="logo-img" aria-hidden="true" width="600" height="573" />
       <span class="navbar-logo-texto">
         Villas Cangrejo
         <span>Jalisco, México</span>
@@ -68,346 +115,10 @@
       <li><a href="#habitaciones">Villas</a></li>
       <li><a href="#galeria">Galería</a></li>
       <li><a href="#amenidades">Amenidades</a></li>
-      <li><a href="#resenas">Reseñas</a></li>
+      <li><a href="#ubicacion">Ubicación</a></li>
       <li><a href="#contacto" class="btn-reservar-nav">Reservar</a></li>
-      <!-- Botones de sesión: cambian según el estado de login -->
-      <li id="nav-sesion-publica">
-        <a href="#" id="btn-abrir-login" class="btn-sesion">Iniciar sesión</a>
-      </li>
-      <li id="nav-sesion-cliente" style="display:none">
-        <a href="#" id="btn-ir-cliente" class="btn-sesion">Mi cuenta</a>
-      </li>
-      <li id="nav-sesion-admin" style="display:none">
-        <a href="#" id="btn-ir-admin" class="btn-sesion">Panel Admin</a>
-      </li>
     </ul>
   </nav>
-
-  <!-- =====================================================
-       MODAL DE LOGIN / REGISTRO
-       Se abre al hacer clic en "Iniciar sesión".
-       Tiene 3 pestañas: Cliente login, Cliente registro, Admin.
-  ====================================================== -->
-  <div id="modal-login" class="modal-overlay" style="display:none" role="dialog" aria-modal="true">
-    <div class="modal-caja">
-      <button class="modal-cerrar" id="modal-cerrar" aria-label="Cerrar">×</button>
-
-      <h3 class="modal-titulo">✦ Acceso al sistema</h3>
-
-      <!-- Tabs del modal -->
-      <div class="modal-tabs" role="tablist">
-        <button class="modal-tab activo" data-modal-tab="login">Iniciar sesión</button>
-        <button class="modal-tab" data-modal-tab="registro-cliente">Registro</button>
-      </div>
-
-      <!-- Mensaje de feedback -->
-      <p class="modal-mensaje" id="modal-mensaje"></p>
-
-      <!-- Formulario: Login único (huésped o administrador; lo identifica el servidor) -->
-      <form id="form-login" class="modal-form activo">
-        <label for="login-usuario">Correo o usuario</label>
-        <input type="text" id="login-usuario" autocomplete="username" required />
-        <label for="login-pass">Contraseña</label>
-        <input type="password" id="login-pass" autocomplete="current-password" required />
-        <button type="submit" class="btn-enviar">Entrar</button>
-        <p class="modal-link-wrap">
-          <a href="#" id="link-olvide" class="modal-link">¿Olvidaste tu contraseña?</a>
-        </p>
-      </form>
-
-      <!-- Formulario: Recuperación de contraseña (2 pasos) -->
-      <form id="form-recuperar" class="modal-form">
-        <!-- Paso 1: pedir el código -->
-        <div id="reset-paso-1">
-          <p class="modal-sub">Te enviaremos un código de recuperación a tu correo.</p>
-          <label>Correo electrónico</label>
-          <input type="email" id="reset-email" />
-          <button type="button" id="btn-enviar-codigo" class="btn-enviar">Enviar código</button>
-        </div>
-        <!-- Paso 2: código + nueva contraseña -->
-        <div id="reset-paso-2" style="display:none">
-          <p class="modal-sub">Revisa tu correo e ingresa el código de 6 dígitos.</p>
-          <label>Código de recuperación</label>
-          <input type="text" id="reset-codigo" inputmode="numeric" maxlength="6" autocomplete="one-time-code" />
-          <label>Nueva contraseña (mín. 8 caracteres)</label>
-          <input type="password" id="reset-nueva" minlength="8" />
-          <button type="submit" class="btn-enviar">Cambiar contraseña</button>
-        </div>
-        <p class="modal-link-wrap">
-          <a href="#" id="link-volver-login" class="modal-link">← Volver a iniciar sesión</a>
-        </p>
-      </form>
-
-      <!-- Formulario: Registro de Cliente -->
-      <form id="form-registro-cliente" class="modal-form">
-        <label>Nombre completo</label>
-        <input type="text" id="reg-nombre" required />
-        <label>Correo electrónico</label>
-        <input type="email" id="reg-email" required />
-        <label>Teléfono (opcional)</label>
-        <input type="tel" id="reg-telefono" />
-        <label>Contraseña (mín. 8 caracteres)</label>
-        <input type="password" id="reg-pass" minlength="8" required />
-        <button type="submit" class="btn-enviar">Crear cuenta</button>
-        <p class="nota-privacidad">Al crear tu cuenta aceptas nuestro <a href="aviso-privacidad.html" target="_blank">aviso de privacidad</a>.</p>
-      </form>
-    </div>
-  </div>
-
-  <!-- =====================================================
-       PANEL DE CLIENTE (oculto hasta que un cliente inicia sesión)
-  ====================================================== -->
-  <section id="panel-cliente" class="panel-usuario" style="display:none" aria-label="Panel de cliente">
-    <div class="panel-encabezado">
-      <div>
-        <span class="seccion-etiqueta">Tu cuenta</span>
-        <h2 class="seccion-titulo"><span id="cliente-saludo">Hola</span>, <em id="cliente-nombre">cliente</em></h2>
-      </div>
-      <button class="btn-secundario" id="btn-logout-cliente">Cerrar sesión</button>
-    </div>
-
-    <h3 class="panel-subtitulo">Tus reservaciones</h3>
-    <div id="cliente-tabla-wrapper" class="tabla-wrapper">
-      <table class="tabla-reservaciones">
-        <thead>
-          <tr>
-            <th>Villa</th>
-            <th>Llegada</th>
-            <th>Salida</th>
-            <th>Noches</th>
-            <th>Total</th>
-            <th>Estado</th>
-          </tr>
-        </thead>
-        <tbody id="cliente-tbody"></tbody>
-      </table>
-      <p id="cliente-vacio" class="tabla-vacia">Aún no tienes reservaciones registradas.</p>
-    </div>
-  </section>
-
-  <!-- =====================================================
-       PANEL DE ADMINISTRADOR (oculto hasta que el admin inicia sesión)
-  ====================================================== -->
-  <section id="panel-admin" class="panel-usuario" style="display:none" aria-label="Panel de administrador">
-    <div class="panel-encabezado">
-      <div>
-        <span class="seccion-etiqueta">Administración</span>
-        <h2 class="seccion-titulo">Panel de <em>control</em></h2>
-      </div>
-      <button class="btn-secundario" id="btn-logout-admin">Cerrar sesión</button>
-    </div>
-
-    <!-- Tabs del panel admin -->
-    <div class="admin-tabs" role="tablist">
-      <button class="admin-tab activo" data-admin-tab="reservaciones">Reservaciones</button>
-      <button class="admin-tab" data-admin-tab="calendario">Calendario</button>
-      <button class="admin-tab" data-admin-tab="clientes">Clientes</button>
-      <button class="admin-tab" data-admin-tab="contabilidad">Contabilidad</button>
-      <button class="admin-tab" data-admin-tab="resenas">Reseñas</button>
-      <button class="admin-tab" data-admin-tab="precios">Precios</button>
-    </div>
-
-    <!-- Panel: Reservaciones -->
-    <div id="admin-panel-reservaciones" class="admin-panel activo">
-      <div class="admin-barra">
-        <h3 class="panel-subtitulo" style="margin:0">Reservaciones</h3>
-        <button class="btn-primario" id="btn-nueva-reserva" type="button">+ Registrar reservación</button>
-      </div>
-
-      <!-- Registrar una reserva ya acordada (pagada, de Booking, por teléfono…) -->
-      <form id="form-reserva-admin" class="form-admin" hidden>
-        <p class="form-admin-ayuda">Para reservas ya acordadas: pagadas, de Booking, por teléfono o WhatsApp.
-          Quedan <strong>confirmadas</strong> y la villa se bloquea en la página para esas fechas.</p>
-        <div class="form-admin-grid">
-          <label>Nombre del huésped *<input type="text" id="ra-nombre" maxlength="120" required /></label>
-          <label>Correo<input type="email" id="ra-email" maxlength="254" /></label>
-          <label>Teléfono<input type="tel" id="ra-telefono" maxlength="30" /></label>
-          <label>Villa *<select id="ra-villa" required></select></label>
-          <label>Huéspedes<input type="text" id="ra-huespedes" maxlength="10" placeholder="Ej. 2" /></label>
-          <label>Origen
-            <select id="ra-origen">
-              <option value="telefono">Teléfono</option>
-              <option value="whatsapp">WhatsApp</option>
-              <option value="booking">Booking</option>
-              <option value="web">Página web</option>
-              <option value="otro">Otro</option>
-            </select>
-          </label>
-          <label>Llegada *<input type="date" id="ra-llegada" required /></label>
-          <label>Salida *<input type="date" id="ra-salida" required /></label>
-          <label>Total acordado sin IVA (MXN)<input type="number" id="ra-total" min="1" step="1" placeholder="Vacío = según tarifas" /></label>
-          <label>Ya pagó, con IVA (MXN)<input type="number" id="ra-pagado" min="0" step="0.01" placeholder="0" /></label>
-        </div>
-        <label>Notas<textarea id="ra-comentarios" maxlength="1000" rows="2"></textarea></label>
-        <label class="form-admin-check"><input type="checkbox" id="ra-correo" /> Enviar correo de confirmación al huésped</label>
-        <p id="ra-estimado" class="villas-msg info"></p>
-        <div class="form-admin-botones">
-          <button type="submit" class="btn-primario">Guardar reservación</button>
-          <button type="button" class="btn-secundario" id="ra-cancelar">Cancelar</button>
-        </div>
-        <p id="ra-mensaje" class="resena-mensaje"></p>
-      </form>
-
-      <div class="tabla-wrapper">
-        <table class="tabla-reservaciones">
-          <thead>
-            <tr>
-              <th>Cliente</th>
-              <th>Contacto</th>
-              <th>Villa</th>
-              <th>Fechas</th>
-              <th>Noches</th>
-              <th>Total</th>
-              <th>Pago</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="admin-tbody-reservaciones"></tbody>
-        </table>
-        <p id="admin-reservaciones-vacio" class="tabla-vacia">No hay reservaciones todavía.</p>
-      </div>
-    </div>
-
-    <!-- Panel: Calendario de llegadas y salidas -->
-    <div id="admin-panel-calendario" class="admin-panel">
-      <div class="cal-encabezado">
-        <h3 class="panel-subtitulo" style="margin:0">Calendario de ocupación</h3>
-        <div class="cal-nav">
-          <button class="btn-mini" id="cal-prev" aria-label="Mes anterior">‹</button>
-          <span id="cal-titulo" class="cal-titulo">—</span>
-          <button class="btn-mini" id="cal-next" aria-label="Mes siguiente">›</button>
-        </div>
-      </div>
-      <div class="cal-leyenda">
-        <span><span class="cal-punto llegada"></span> Llegada</span>
-        <span><span class="cal-punto salida"></span> Salida</span>
-        <span><span class="cal-punto estancia"></span> En estancia</span>
-        <small style="opacity:.65">(solo reservaciones confirmadas)</small>
-      </div>
-      <div class="cal-grid-dias" id="cal-encabezados">
-        <span>Dom</span><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span>
-      </div>
-      <div class="cal-grid" id="cal-grid"></div>
-    </div>
-
-    <!-- Panel: Clientes -->
-    <div id="admin-panel-clientes" class="admin-panel">
-      <h3 class="panel-subtitulo">Clientes registrados</h3>
-      <div class="tabla-wrapper">
-        <table class="tabla-reservaciones">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Correo</th>
-              <th>Teléfono</th>
-              <th>Registrado</th>
-            </tr>
-          </thead>
-          <tbody id="admin-tbody-clientes"></tbody>
-        </table>
-        <p id="admin-clientes-vacio" class="tabla-vacia">No hay clientes registrados todavía.</p>
-      </div>
-    </div>
-
-    <!-- Panel: Contabilidad -->
-    <div id="admin-panel-contabilidad" class="admin-panel">
-      <h3 class="panel-subtitulo">Contabilidad (solo reservaciones confirmadas)</h3>
-
-      <!-- Tarjetas resumen -->
-      <div class="conta-tarjetas">
-        <div class="conta-card">
-          <span class="conta-label">Reservas confirmadas</span>
-          <span class="conta-valor" id="conta-total-reservas">0</span>
-        </div>
-        <div class="conta-card">
-          <span class="conta-label">Noches vendidas</span>
-          <span class="conta-valor" id="conta-noches">0</span>
-        </div>
-        <div class="conta-card destacada">
-          <span class="conta-label">Ingreso total (MXN)</span>
-          <span class="conta-valor" id="conta-ingreso">$0</span>
-        </div>
-        <div class="conta-card">
-          <span class="conta-label">Promedio por reserva</span>
-          <span class="conta-valor" id="conta-promedio">$0</span>
-        </div>
-        <div class="conta-card">
-          <span class="conta-label">Cobrado (con IVA)</span>
-          <span class="conta-valor" id="conta-cobrado">$0</span>
-        </div>
-        <div class="conta-card">
-          <span class="conta-label">Por cobrar (con IVA)</span>
-          <span class="conta-valor" id="conta-por-cobrar">$0</span>
-        </div>
-      </div>
-
-      <!-- Botón exportar a Excel -->
-      <div class="conta-acciones">
-        <button class="btn-primario" id="btn-exportar-excel">📊 Exportar a Excel (.xlsx)</button>
-      </div>
-
-      <!-- Ingresos por mes -->
-      <h4 class="panel-subtitulo" style="margin-top:2rem">Ingresos por mes</h4>
-      <p class="conta-nota">Cada reservación cuenta en el mes de su llegada. El IVA (16%) se suma al subtotal, igual que en los recibos.</p>
-      <div class="tabla-wrapper">
-        <table class="tabla-reservaciones">
-          <thead>
-            <tr>
-              <th>Mes</th>
-              <th>Reservas</th>
-              <th>Noches</th>
-              <th>Ingresos sin IVA</th>
-              <th>IVA (16%)</th>
-              <th>Total con IVA</th>
-            </tr>
-          </thead>
-          <tbody id="conta-tbody-mes"></tbody>
-          <tfoot id="conta-tfoot-mes"></tfoot>
-        </table>
-      </div>
-
-      <!-- Desglose por villa -->
-      <h4 class="panel-subtitulo" style="margin-top:2rem">Desglose por villa</h4>
-      <div class="tabla-wrapper">
-        <table class="tabla-reservaciones">
-          <thead>
-            <tr>
-              <th>Villa</th>
-              <th>Reservas confirmadas</th>
-              <th>Ingresos (MXN)</th>
-            </tr>
-          </thead>
-          <tbody id="conta-tbody-desglose"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Panel: Reseñas (moderación) -->
-    <div id="admin-panel-resenas" class="admin-panel">
-      <h3 class="panel-subtitulo">Reseñas de huéspedes</h3>
-      <p style="opacity:.7;font-size:.9rem;margin-top:-.4rem">Aprueba las reseñas para que aparezcan en la página, o elimínalas.</p>
-      <div id="admin-resenas-lista" class="admin-resenas-lista"></div>
-      <p id="admin-resenas-vacio" class="tabla-vacia">No hay reseñas todavía.</p>
-    </div>
-
-    <!-- Panel: Precios (editables) -->
-    <div id="admin-panel-precios" class="admin-panel">
-      <h3 class="panel-subtitulo">Precios</h3>
-      <p class="conta-nota">Precios antes de IVA, en pesos. Se aplican a las reservaciones nuevas; las que ya existen
-        conservan el precio con el que se hicieron.</p>
-      <form id="form-tarifas" class="form-admin form-tarifas">
-        <div class="form-admin-grid">
-          <label>Por noche <small>(menos de 30 noches)</small><input type="number" id="t-noche" min="1" step="1" required /></label>
-          <label>1 mes, por mes <small>(30 a 59 noches)</small><input type="number" id="t-mes1" min="1" step="1" required /></label>
-          <label>2 meses, por mes <small>(60 a 89 noches)</small><input type="number" id="t-mes2" min="1" step="1" required /></label>
-          <label>3 meses o más, por mes <small>(90 noches o más)</small><input type="number" id="t-mes3" min="1" step="1" required /></label>
-        </div>
-        <div class="form-admin-botones"><button type="submit" class="btn-primario">Guardar precios</button></div>
-        <p id="t-mensaje" class="resena-mensaje"></p>
-      </form>
-    </div>
-  </section>
 
   <!-- =====================================================
        SECCIÓN HERO — Pantalla completa al cargar la página
@@ -418,11 +129,11 @@
     <div id="hero-fondo" aria-hidden="true"></div>
 
     <div class="hero-contenido">
-      <p class="hero-subtitulo">Bienvenido al paraíso del Pacífico</p>
-      <h1 class="hero-titulo">
+      <h1 class="hero-subtitulo">Villas Cangrejo · Hotel en San Patricio-Melaque, Jalisco</h1>
+      <p class="hero-titulo">
         Donde el mar<br>
         <em>abraza la selva</em>
-      </h1>
+      </p>
       <p class="hero-descripcion">
         Descubre la magia de la Costa Alegre de Jalisco: kilómetros de playas
         vírgenes, atardeceres dorados y una hospitalidad que nace del corazón mexicano.
@@ -452,10 +163,10 @@
         <strong>15</strong>
         <small>Años de<br>hospitalidad</small>
       </div>
-      <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80"
+      <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80" loading="lazy" decoding="async"
         alt="Alberca de Villas Cangrejo al atardecer" class="nosotros-imagen-principal" />
-      <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?w=600&q=80"
-        alt="Vista de la playa privada del hotel" class="nosotros-imagen-flotante" />
+      <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?w=600&q=80" loading="lazy" decoding="async"
+        alt="Playa de la Bahía de Navidad en Melaque" class="nosotros-imagen-flotante" />
     </div>
 
     <!-- Columna derecha: texto e información -->
@@ -511,12 +222,11 @@
 
     <!-- Presentación de la villa (todas iguales) -->
     <div class="panel-habitacion activo" id="tab-villa" role="tabpanel">
-      <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80"
+      <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80" loading="lazy" decoding="async"
         alt="Villa frente al mar en Villas Cangrejo" class="habitacion-imagen" />
       <div class="habitacion-info">
         <h3 class="habitacion-nombre">Villa Cangrejo</h3>
-        <!-- Los precios con data-tarifa los llena dashboard.js desde /api/tarifas -->
-        <p class="habitacion-precio"><strong data-tarifa="precioNoche">$1,850</strong> MXN / noche</p>
+        <p class="habitacion-precio"><strong data-tarifa="precioNoche">$1,850</strong> <span class="hp-unidad">MXN / noche</span></p>
         <p class="habitacion-descripcion">
           Una villa independiente y totalmente equipada en San Patricio-Melaque, pensada para
           parejas, familias y estancias largas. Las 16 villas son idénticas en diseño,
@@ -556,7 +266,7 @@
     <!-- Grid de fotos (cada foto abre el lightbox al clic) -->
     <div class="galeria-grid">
       <div class="galeria-item reveal" data-indice="0">
-        <img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?w=900&q=80"
+        <img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?w=900&q=80" loading="lazy" decoding="async"
           alt="Bahía de Navidad vista desde la playa de Melaque, Jalisco" class="galeria-foto" />
         <div class="galeria-overlay">
           <div class="galeria-overlay-icono">🔍</div>
@@ -564,7 +274,7 @@
       </div>
 
       <div class="galeria-item reveal reveal-delay-1" data-indice="1">
-        <img src="https://images.unsplash.com/photo-1473116763249-2faaef81ccda?w=900&q=80"
+        <img src="https://images.unsplash.com/photo-1473116763249-2faaef81ccda?w=900&q=80" loading="lazy" decoding="async"
           alt="Atardecer dorado sobre la bahía de Melaque" class="galeria-foto" />
         <div class="galeria-overlay">
           <div class="galeria-overlay-icono">🔍</div>
@@ -572,7 +282,7 @@
       </div>
 
       <div class="galeria-item reveal reveal-delay-2" data-indice="2">
-        <img src="https://images.unsplash.com/photo-1506953823976-52e1fdc0149a?w=900&q=80"
+        <img src="https://images.unsplash.com/photo-1506953823976-52e1fdc0149a?w=900&q=80" loading="lazy" decoding="async"
           alt="Palmeras y aguas tranquilas de nuestra bahía" class="galeria-foto" />
         <div class="galeria-overlay">
           <div class="galeria-overlay-icono">🔍</div>
@@ -580,7 +290,7 @@
       </div>
 
       <div class="galeria-item reveal reveal-delay-1" data-indice="3">
-        <img src="https://images.unsplash.com/photo-1468413253725-0d5181091126?w=900&q=80"
+        <img src="https://images.unsplash.com/photo-1468413253725-0d5181091126?w=900&q=80" loading="lazy" decoding="async"
           alt="Playa de arena dorada bordeada de palmeras en la Costalegre" class="galeria-foto" />
         <div class="galeria-overlay">
           <div class="galeria-overlay-icono">🔍</div>
@@ -588,7 +298,7 @@
       </div>
 
       <div class="galeria-item reveal reveal-delay-2" data-indice="4">
-        <img src="https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=900&q=80"
+        <img src="https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=900&q=80" loading="lazy" decoding="async"
           alt="Rincón escondido de la Costalegre jalisciense" class="galeria-foto" />
         <div class="galeria-overlay">
           <div class="galeria-overlay-icono">🔍</div>
@@ -600,7 +310,7 @@
     <!-- Imagen panorámica de la bahía de la Costa Alegre -->
     <div class="reveal" style="margin-top: 2rem;">
       <p class="galeria-video-titulo">Descubre la Costa Alegre</p>
-      <img src="https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?w=1600&q=80"
+      <img src="https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?w=1600&q=80" loading="lazy" decoding="async"
         alt="Vista panorámica de la bahía de la Costa Alegre, Jalisco"
         style="width: 100%; border-radius: 1rem; object-fit: cover; max-height: 500px;" />
     </div>
@@ -608,7 +318,7 @@
     <!-- ====== Imagen panorámica de nuestras playas ====== -->
     <div class="reveal" style="margin-top: 3rem;">
       <p class="galeria-video-titulo">Un recorrido por nuestras playas</p>
-      <img src="https://images.unsplash.com/photo-1505228395891-9a51e7e86bf6?w=1600&q=80"
+      <img src="https://images.unsplash.com/photo-1505228395891-9a51e7e86bf6?w=1600&q=80" loading="lazy" decoding="async"
         alt="Vista aérea de las playas del Pacífico en la Costa Alegre, Jalisco"
         style="width: 100%; border-radius: 1rem; object-fit: cover; max-height: 520px;" />
     </div>
@@ -633,7 +343,7 @@
       </div>
 
       <!-- El elemento <audio> real: lo controla el botón de arriba vía JS -->
-      <audio id="audio-ambiental" loop>
+      <audio id="audio-ambiental" loop preload="none">
         <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg" />
         Tu navegador no soporta el elemento de audio.
       </audio>
@@ -706,53 +416,42 @@
   </section>
 
   <!-- =====================================================
-       SECCIÓN RESEÑAS — opiniones de huéspedes
+       SECCIÓN UBICACIÓN — dónde está el hotel y qué hay cerca.
+       Nombra los lugares que la gente busca (Melaque, Barra de
+       Navidad, Manzanillo…): ayuda a aparecer en esas búsquedas.
   ====================================================== -->
-  <section id="resenas" aria-label="Reseñas de huéspedes">
-    <div class="resenas-encabezado reveal">
-      <span class="seccion-etiqueta">Opiniones</span>
-      <h2 class="seccion-titulo">Lo que dicen nuestros <em>huéspedes</em></h2>
-      <!-- Calificación promedio de las reseñas aprobadas (la llena dashboard.js) -->
-      <p class="resenas-resumen" id="resenas-resumen" hidden></p>
+  <section id="ubicacion" aria-label="Ubicación del hotel">
+    <div class="ubicacion-texto reveal">
+      <span class="seccion-etiqueta">Ubicación</span>
+      <h2 class="seccion-titulo">En el corazón de la<br><em>Bahía de Navidad</em></h2>
+      <p>
+        Villas Cangrejo está en San Patricio-Melaque, municipio de Cihuatlán, Jalisco,
+        en la Costa Alegre del Pacífico mexicano. Una base tranquila para disfrutar
+        la playa de Melaque, recorrer Barra de Navidad y descubrir las bahías de la costa.
+      </p>
+      <a class="btn-primario" href="https://www.google.com/maps/search/?api=1&amp;query=14+C.+Palmas,+San+Patricio,+Jalisco"
+        target="_blank" rel="noopener">Abrir en Google Maps</a>
     </div>
 
-    <div class="resenas-grid" id="resenas-grid"></div>
-    <p id="resenas-vacio" class="tabla-vacia" style="display:none">
-      Aún no hay reseñas. ¡Sé el primero en compartir tu experiencia!
-    </p>
-
-    <!-- Formulario para dejar una reseña -->
-    <div class="resena-form-caja reveal">
-      <h3 class="resena-form-titulo">Deja tu reseña</h3>
-      <form id="form-resena" class="resena-form">
-        <div class="campo-grupo">
-          <label for="resena-nombre">Tu nombre *</label>
-          <input type="text" id="resena-nombre" maxlength="80" required />
-        </div>
-        <div class="campo-grupo">
-          <label>Calificación *</label>
-          <div class="estrellas-input" id="estrellas-input" role="radiogroup" aria-label="Calificación">
-            <button type="button" class="estrella" data-valor="1" aria-label="1 estrella">★</button>
-            <button type="button" class="estrella" data-valor="2" aria-label="2 estrellas">★</button>
-            <button type="button" class="estrella" data-valor="3" aria-label="3 estrellas">★</button>
-            <button type="button" class="estrella" data-valor="4" aria-label="4 estrellas">★</button>
-            <button type="button" class="estrella" data-valor="5" aria-label="5 estrellas">★</button>
-          </div>
-          <input type="hidden" id="resena-calificacion" value="0" />
-        </div>
-        <div class="campo-grupo">
-          <label for="resena-comentario">Tu comentario *</label>
-          <textarea id="resena-comentario" rows="4" maxlength="600" placeholder="Cuéntanos cómo fue tu estancia en Villas Cangrejo…" required></textarea>
-        </div>
-        <button type="submit" class="btn-primario">Enviar reseña</button>
-        <p class="resena-mensaje" id="resena-mensaje"></p>
-      </form>
+    <div class="ubicacion-tarjeta reveal reveal-delay-1">
+      <h3 class="ubicacion-subtitulo">Qué hay cerca</h3>
+      <!-- Distancias aproximadas en auto -->
+      <ul class="ubicacion-lista">
+        <li><span class="ub-lugar">Playa Cuastecomates</span><span class="ub-tiempo">≈ 10 min</span></li>
+        <li><span class="ub-lugar">Barra de Navidad</span><span class="ub-tiempo">≈ 10 min</span></li>
+        <li><span class="ub-lugar">Aeropuerto de Manzanillo (ZLO)</span><span class="ub-tiempo">≈ 35 min</span></li>
+        <li><span class="ub-lugar">Manzanillo, Colima</span><span class="ub-tiempo">≈ 1 h</span></li>
+        <li><span class="ub-lugar">Puerto Vallarta</span><span class="ub-tiempo">≈ 4 h</span></li>
+        <li><span class="ub-lugar">Guadalajara</span><span class="ub-tiempo">≈ 4 h 30 min</span></li>
+      </ul>
+      <small class="ub-nota">Tiempos aproximados en auto.</small>
     </div>
   </section>
 
   <!-- =====================================================
        SECCIÓN CONTACTO Y FORMULARIO DE RESERVA
-       JS valida: nombre, email, fechas y tipo de habitación.
+       No se guarda nada en un servidor: main.js valida los datos y
+       abre WhatsApp con el mensaje listo para enviarlo al hotel.
   ====================================================== -->
   <section id="contacto" aria-label="Contacto y reservaciones">
 
@@ -813,7 +512,7 @@
     <div class="formulario-reserva reveal reveal-delay-2">
       <div class="formulario-cabecera">
         <h3 class="formulario-titulo">Solicita tu reservación</h3>
-        <p class="formulario-subtitulo">Te respondemos en menos de 24 horas por correo o WhatsApp.</p>
+        <p class="formulario-subtitulo">Llena tus datos y se abrirá WhatsApp con tu mensaje listo para enviar.</p>
       </div>
 
       <!-- El atributo novalidate desactiva la validación nativa del browser;
@@ -834,7 +533,7 @@
           <div class="campos-fila">
             <!-- Email -->
             <div class="campo-grupo">
-              <label for="campo-email">Correo electrónico *</label>
+              <label for="campo-email">Correo electrónico</label>
               <input type="email" id="campo-email" autocomplete="email" placeholder="correo@ejemplo.com" />
               <span class="campo-error" id="error-email">Ingresa un correo electrónico válido.</span>
             </div>
@@ -847,7 +546,7 @@
           </div>
         </fieldset>
 
-        <!-- Paso 2: fechas, villa y huéspedes -->
+        <!-- Paso 2: fechas y huéspedes -->
         <fieldset class="form-paso">
           <legend><span class="paso-num">2</span><span class="paso-texto">Tu estancia</span></legend>
 
@@ -865,49 +564,21 @@
             </div>
           </div>
 
-          <!-- Precio estimado según las fechas (lo calcula dashboard.js con las tarifas vigentes) -->
+          <!-- Precio estimado según las fechas (lo calcula main.js con los precios de la sección de villas) -->
           <p id="precio-estimado" class="precio-estimado" hidden></p>
 
-          <div class="campos-fila fila-villa">
-            <!-- Selección de villa (las 16 son idénticas) -->
-            <div class="campo-grupo">
-              <label for="campo-villa">Elige tu villa * <small style="font-weight:400;opacity:.7">(todas son iguales)</small></label>
-              <select id="campo-villa">
-                <option value="">— Selecciona una villa (1 a 16) —</option>
-                <option value="1">Villa 1</option>
-                <option value="2">Villa 2</option>
-                <option value="3">Villa 3</option>
-                <option value="4">Villa 4</option>
-                <option value="5">Villa 5</option>
-                <option value="6">Villa 6</option>
-                <option value="7">Villa 7</option>
-                <option value="8">Villa 8</option>
-                <option value="9">Villa 9</option>
-                <option value="10">Villa 10</option>
-                <option value="11">Villa 11</option>
-                <option value="12">Villa 12</option>
-                <option value="13">Villa 13</option>
-                <option value="14">Villa 14</option>
-                <option value="15">Villa 15</option>
-                <option value="16">Villa 16</option>
-              </select>
-              <span class="campo-error" id="error-villa">Selecciona una villa.</span>
-              <small id="villas-disponibles-msg" class="villas-msg"></small>
-            </div>
-
-            <!-- Número de huéspedes -->
-            <div class="campo-grupo">
-              <label for="campo-huespedes">Número de huéspedes *</label>
-              <select id="campo-huespedes">
-                <option value="">— Número de huéspedes —</option>
-                <option value="1">1 huésped</option>
-                <option value="2">2 huéspedes</option>
-                <option value="3">3 huéspedes</option>
-                <option value="4">4 huéspedes</option>
-                <option value="5">5+ huéspedes</option>
-              </select>
-              <span class="campo-error" id="error-huespedes">Indica cuántos huéspedes serán.</span>
-            </div>
+          <!-- Número de huéspedes -->
+          <div class="campo-grupo">
+            <label for="campo-huespedes">Número de huéspedes *</label>
+            <select id="campo-huespedes">
+              <option value="">— Número de huéspedes —</option>
+              <option value="1">1 huésped</option>
+              <option value="2">2 huéspedes</option>
+              <option value="3">3 huéspedes</option>
+              <option value="4">4 huéspedes</option>
+              <option value="5">5+ huéspedes</option>
+            </select>
+            <span class="campo-error" id="error-huespedes">Indica cuántos huéspedes serán.</span>
           </div>
         </fieldset>
 
@@ -921,7 +592,7 @@
           </div>
         </fieldset>
 
-        <button type="submit" class="btn-enviar">Enviar solicitud de reserva</button>
+        <button type="submit" class="btn-enviar">Enviar por WhatsApp</button>
         <p class="nota-privacidad">Al enviar aceptas nuestro <a href="aviso-privacidad.html" target="_blank">aviso de privacidad</a>.</p>
       </form>
 
@@ -930,9 +601,11 @@
         <div class="exito-icono" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>
         </div>
-        <p><strong>¡Gracias por tu solicitud!</strong><br>
-          Nuestro equipo de reservaciones te contactará en las próximas 24 horas para
-          confirmar tu estadía en Villas Cangrejo.</p>
+        <p><strong>¡Listo!</strong><br>
+          Se abrió WhatsApp con tu mensaje. Solo presiona enviar y te responderemos
+          para confirmar tu estancia en Villas Cangrejo.</p>
+        <!-- Por si el navegador bloqueó la ventana: main.js le pone el mensaje al enlace -->
+        <a id="exito-whatsapp" class="exito-alterno" href="https://wa.me/523151007106" target="_blank" rel="noopener">¿No se abrió WhatsApp? Toca aquí</a>
       </div>
     </div>
   </section>
@@ -946,7 +619,7 @@
       <!-- Columna: Marca del hotel -->
       <div class="footer-marca">
         <div class="navbar-logo" style="margin-bottom:1rem">
-          <img src="img/logo.png" alt="" class="logo-img" aria-hidden="true" />
+          <img src="img/logo.png" alt="" class="logo-img" aria-hidden="true" width="600" height="573" loading="lazy" />
           <span class="navbar-logo-texto">
             Villas Cangrejo
             <span>Jalisco, México</span>
@@ -958,10 +631,7 @@
         </p>
         <!-- Redes sociales -->
         <div class="footer-sociales">
-          <a href="#" class="social-enlace" aria-label="Instagram">📸</a>
-          <a href="#" class="social-enlace" aria-label="Facebook">📘</a>
-          <a href="#" class="social-enlace" aria-label="TripAdvisor">🌟</a>
-          <a href="#" class="social-enlace" aria-label="WhatsApp">💬</a>
+          <a href="https://wa.me/523151007106" class="social-enlace" aria-label="WhatsApp" target="_blank" rel="noopener">💬</a>
         </div>
       </div>
 
@@ -992,6 +662,7 @@
         <h4>Información</h4>
         <ul>
           <li><a href="#contacto">Reservaciones</a></li>
+          <li><a href="#ubicacion">Ubicación</a></li>
           <li><a href="https://www.google.com/maps/search/?api=1&amp;query=14+C.+Palmas,+San+Patricio,+Jalisco"
               target="_blank" rel="noopener">Cómo llegar</a></li>
           <li><a href="aviso-privacidad.html">Aviso de privacidad</a></li>
@@ -1002,9 +673,15 @@
     <!-- Barra inferior con copyright -->
     <div class="footer-inferior">
       <p>© 2026 Villas Cangrejo. Todos los derechos reservados.</p>
-      <p>Diseñado con entusiasmo para la <a href="#">Costa Alegre, Jalisco</a></p>
+      <p>San Patricio-Melaque, Bahía de Navidad · Costa Alegre de Jalisco</p>
     </div>
   </footer>
+
+  <!-- Botón flotante de WhatsApp (siempre visible) -->
+  <a href="https://wa.me/523151007106" class="whatsapp-flotante" target="_blank" rel="noopener"
+    aria-label="Escríbenos por WhatsApp">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 18.8z"/><path d="M9.2 8.6c.2-.5.6-.5.9-.5.4 0 .6.6.9 1.3.1.3 0 .5-.2.8l-.4.4c.4.9 1.5 2 2.5 2.5l.4-.4c.3-.2.5-.3.8-.2.7.3 1.3.5 1.3.9 0 .3 0 .7-.5.9-.6.3-1.4.4-2.5-.1a8 8 0 0 1-3.4-3.4c-.5-1-.4-1.9-.1-2.5z"/></svg>
+  </a>
 
   <!-- =====================================================
        MODAL LIGHTBOX (para la galería de fotos)
@@ -1031,25 +708,11 @@
        9. Validación del formulario de reserva
   ====================================================== -->
 
-  <!-- SheetJS (xlsx) — librería para generar archivos Excel en el navegador -->
-  <!-- integrity (SRI): si el archivo del CDN fuera alterado, el navegador no lo ejecuta -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"
-    integrity="sha384-vtjasyidUo0kW94K5MXDXntzOJpQgBKXmE7e2Ga4LG0skTTLeBi97eFAXsqewJjw"
-    crossorigin="anonymous"></script>
-
-  <!-- jsPDF — generación de recibos en PDF (solo lo usa el panel admin) -->
-  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"
-    integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk"
-    crossorigin="anonymous"></script>
-
-  <!-- Versión en inglés (ES/EN): va antes que main.js y dashboard.js porque ellos usan sus traducciones -->
+  <!-- Versión en inglés (ES/EN): va antes que main.js porque usa sus traducciones -->
   <script src="js/i18n.js"></script>
 
   <!-- JavaScript principal (validación, navbar, animaciones) -->
   <script src="js/main.js"></script>
-
-  <!-- Lógica de login, panel de cliente y panel de administrador -->
-  <script src="js/dashboard.js"></script>
 
 </body>
 
