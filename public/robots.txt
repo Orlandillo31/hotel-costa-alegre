@@ -3,4 +3,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://hotel-costa-alegre-7wl2.onrender.com/sitemap.xml
+Sitemap: https://hotel-costa-alegre.orlandojamaga.workers.dev/sitemap.xml

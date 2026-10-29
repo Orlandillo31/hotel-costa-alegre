@@ -2,9 +2,9 @@
  * ============================================================
  *  VILLAS CANGREJO — Servidor local (sin arrancar)
  * ============================================================
- *  La página se publica en Cloudflare Pages directamente desde public/.
+ *  La página se publica en Cloudflare directamente desde public/ (ver wrangler.jsonc).
  *  Este servidor solo sirve para verla en tu computadora (npm start) y
- *  para las pruebas (test/), imitando lo que hace Cloudflare:
+ *  para las pruebas (test/), imitando lo que hace Cloudflare (Workers con archivos estáticos):
  *   • Aplica las cabeceras de public/_headers (mismo archivo que usa
  *     Cloudflare), así las pruebas revisan la seguridad real.
  *   • Direcciones sin .html: /aviso-privacidad.html → /aviso-privacidad.

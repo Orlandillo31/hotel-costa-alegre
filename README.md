@@ -21,7 +21,7 @@ The project started as a hotel website, grew into a full reservation system (cus
 ## Technologies Used
 
 - HTML5, CSS3 and JavaScript
-- Cloudflare Pages (hosting, HTTPS and CDN)
+- Cloudflare Workers static assets (hosting, HTTPS and CDN)
 - HTTP security headers and Content Security Policy in `public/_headers`
 - Node.js + Express (only to preview the site locally and run the tests)
 
@@ -30,7 +30,7 @@ The project started as a hotel website, grew into a full reservation system (cus
 ```text
 hotel-costa-alegre/
 ├── public/          # The whole website (HTML, CSS, JavaScript, images, robots.txt, sitemap.xml, _headers)
-├── server/          # Small Express server that mimics Cloudflare Pages locally
+├── server/          # Small Express server that mimics Cloudflare locally
 ├── test/            # Automated tests (page, security headers, SEO)
 ├── package.json
 └── README.md
@@ -38,13 +38,9 @@ hotel-costa-alegre/
 
 ## Deployment
 
-The site is published on **Cloudflare Pages**, connected to this repository: every push to `main` is deployed automatically.
+The site is published on **Cloudflare Workers** (static assets), connected to this repository: every push to `main` is deployed automatically.
 
-| Setting | Value |
-| --- | --- |
-| Framework preset | None |
-| Build command | *(empty)* |
-| Build output directory | `public` |
+The configuration is in `wrangler.jsonc`: it publishes the `public/` folder and shows `public/404.html` for pages that do not exist.
 
 Security headers live in `public/_headers`. The local server reads the same file, so the tests check the headers that Cloudflare applies.
 

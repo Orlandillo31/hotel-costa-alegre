@@ -90,3 +90,12 @@ test('la página ya no carga el panel, Excel ni PDF', () => {
   assert.doesNotMatch(html, /dashboard\.js|xlsx|jspdf|modal-login|panel-admin/);
   assert.ok(!fs.existsSync(path.join(__dirname, '..', 'public', 'js', 'dashboard.js')));
 });
+
+test('wrangler.jsonc publica public/ con la página 404 propia', () => {
+  const texto = fs.readFileSync(path.join(__dirname, '..', 'wrangler.jsonc'), 'utf8');
+  const config = JSON.parse(texto.replace(/^\s*\/\/.*$/gm, ''));   // quitar comentarios
+  assert.equal(config.name, 'hotel-costa-alegre');
+  assert.equal(config.assets.directory, './public');
+  assert.equal(config.assets.not_found_handling, '404-page');
+  assert.ok(fs.existsSync(path.join(__dirname, '..', 'public', '404.html')));
+});

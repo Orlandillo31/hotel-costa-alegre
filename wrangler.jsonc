@@ -1,0 +1,13 @@
+// Configuración de Cloudflare Workers (sitio estático).
+// Cloudflare publica la carpeta public/ cada vez que se sube algo a main.
+//  • name: debe ser el nombre del Worker en Cloudflare.
+//  • not_found_handling: muestra public/404.html en direcciones que no existen.
+//  • Las cabeceras de seguridad están en public/_headers.
+{
+  "name": "hotel-costa-alegre",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./public",
+    "not_found_handling": "404-page"
+  }
+}

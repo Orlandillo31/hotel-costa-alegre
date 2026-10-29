@@ -1,4 +1,4 @@
-# Cabeceras HTTP del sitio (formato de Cloudflare Pages).
+# Cabeceras HTTP del sitio (formato _headers de Cloudflare).
 # Cloudflare las aplica al publicar; el servidor local (server/app.js)
 # lee este mismo archivo, así las pruebas revisan lo mismo.
 # Si dos reglas ponen la misma cabecera, Cloudflare junta los valores con
