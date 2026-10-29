@@ -17,6 +17,9 @@ plantillas/
 respaldos/
 *.vcbk
 
+# Música local (tiene derechos de autor: nunca al repo público)
+audio/
+
 # Configuración local de IDE / Claude
 .vscode/
 .idea/
