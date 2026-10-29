@@ -21,21 +21,32 @@ The project started as a hotel website, grew into a full reservation system (cus
 ## Technologies Used
 
 - HTML5, CSS3 and JavaScript
-- Node.js + Express (only to serve the static files)
-- Helmet (HTTP security headers and Content Security Policy)
+- Cloudflare Pages (hosting, HTTPS and CDN)
+- HTTP security headers and Content Security Policy in `public/_headers`
+- Node.js + Express (only to preview the site locally and run the tests)
 
 ## Project Structure
 
 ```text
 hotel-costa-alegre/
-├── public/          # The whole website (HTML, CSS, JavaScript, images, robots.txt, sitemap.xml)
-├── server/          # Small Express server that serves public/
+├── public/          # The whole website (HTML, CSS, JavaScript, images, robots.txt, sitemap.xml, _headers)
+├── server/          # Small Express server that mimics Cloudflare Pages locally
 ├── test/            # Automated tests (page, security headers, SEO)
 ├── package.json
 └── README.md
 ```
 
-Since the site is static, the `public/` folder can also be published as-is on any static hosting (Render Static Site, Cloudflare Pages, GitHub Pages).
+## Deployment
+
+The site is published on **Cloudflare Pages**, connected to this repository: every push to `main` is deployed automatically.
+
+| Setting | Value |
+| --- | --- |
+| Framework preset | None |
+| Build command | *(empty)* |
+| Build output directory | `public` |
+
+Security headers live in `public/_headers`. The local server reads the same file, so the tests check the headers that Cloudflare applies.
 
 ## Running Locally
 

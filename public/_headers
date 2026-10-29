@@ -1,0 +1,24 @@
+# Cabeceras HTTP del sitio (formato de Cloudflare Pages).
+# Cloudflare las aplica al publicar; el servidor local (server/app.js)
+# lee este mismo archivo, así las pruebas revisan lo mismo.
+# Si dos reglas ponen la misma cabecera, Cloudflare junta los valores con
+# coma: por eso Cache-Control solo va en las reglas de abajo.
+
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com; media-src 'self' https://www.soundhelix.com; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+  X-Permitted-Cross-Domain-Policies: none
+
+# CSS, JavaScript e imágenes: el navegador los guarda un día
+/css/*
+  Cache-Control: public, max-age=86400
+/js/*
+  Cache-Control: public, max-age=86400
+/img/*
+  Cache-Control: public, max-age=86400

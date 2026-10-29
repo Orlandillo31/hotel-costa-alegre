@@ -1,57 +1,71 @@
 /**
  * ============================================================
- *  VILLAS CANGREJO — Servidor de la página (sin arrancar)
+ *  VILLAS CANGREJO — Servidor local (sin arrancar)
  * ============================================================
- *  La página es solo informativa: no hay base de datos, cuentas ni
- *  reservas en línea (el hotel las atiende por WhatsApp y teléfono).
- *  Este servidor únicamente entrega los archivos de public/ con
- *  cabeceras de seguridad. server.js lo arranca; las pruebas (test/)
- *  lo usan directamente.
- *
- *  Como todo es estático, la carpeta public/ también se puede publicar
- *  tal cual en un hosting estático (Render Static Site, Cloudflare Pages).
+ *  La página se publica en Cloudflare Pages directamente desde public/.
+ *  Este servidor solo sirve para verla en tu computadora (npm start) y
+ *  para las pruebas (test/), imitando lo que hace Cloudflare:
+ *   • Aplica las cabeceras de public/_headers (mismo archivo que usa
+ *     Cloudflare), así las pruebas revisan la seguridad real.
+ *   • Direcciones sin .html: /aviso-privacidad.html → /aviso-privacidad.
+ *   • Página 404 propia para lo que no existe.
+ *  server.js lo arranca; las pruebas lo usan directamente.
  * ============================================================
  */
 const express = require('express');
-const helmet  = require('helmet');
+const fs      = require('fs');
 const path    = require('path');
 
 const PUBLICO = path.join(__dirname, '..', 'public');
 
+// Lee public/_headers: líneas sin sangría = ruta (con * como comodín);
+// líneas con sangría = "Cabecera: valor" para esa ruta.
+function leerCabeceras(archivo) {
+  const reglas = [];
+  for (const linea of fs.readFileSync(archivo, 'utf8').split(/\r?\n/)) {
+    if (!linea.trim() || linea.trim().startsWith('#')) continue;
+    if (!/^\s/.test(linea)) {
+      const patron = linea.trim().replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*');
+      reglas.push({ patron: new RegExp('^' + patron + '$'), cabeceras: [] });
+    } else {
+      const i = linea.indexOf(':');
+      reglas[reglas.length - 1].cabeceras.push([linea.slice(0, i).trim(), linea.slice(i + 1).trim()]);
+    }
+  }
+  return reglas;
+}
+const REGLAS = leerCabeceras(path.join(PUBLICO, '_headers'));
+
 const app = express();
 app.disable('x-powered-by');
 
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc:  ["'self'"],
-      styleSrc:   ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
-      fontSrc:    ["'self'", 'https://fonts.gstatic.com'],
-      imgSrc:     ["'self'", 'data:', 'https://images.unsplash.com'],
-      mediaSrc:   ["'self'", 'https://www.soundhelix.com'],
-      connectSrc: ["'self'"],
-      frameSrc:   ["'none'"],
-      objectSrc:  ["'none'"],
-      baseUri:    ["'self'"],
-      formAction: ["'self'"],
-      frameAncestors: ["'none'"]     // nadie puede incrustar el sitio (anti-clickjacking)
+// Cabeceras de _headers (si dos reglas repiten una, se juntan con coma, como en Cloudflare)
+app.use((req, res, next) => {
+  for (const { patron, cabeceras } of REGLAS) {
+    if (!patron.test(req.path)) continue;
+    for (const [nombre, valor] of cabeceras) {
+      const previo = res.getHeader(nombre);
+      res.setHeader(nombre, previo ? previo + ', ' + valor : valor);
     }
-  },
-  crossOriginEmbedderPolicy: false,  // permite las imágenes externas (Unsplash)
-  referrerPolicy: { policy: 'strict-origin-when-cross-origin' }
-}));
-
-// Las páginas HTML se revisan en cada visita (así un cambio se ve de
-// inmediato); CSS, JS e imágenes se guardan un día en el navegador.
-app.use(express.static(PUBLICO, {
-  maxAge: '1d',
-  setHeaders: (res, archivo) => {
-    if (archivo.endsWith('.html')) res.setHeader('Cache-Control', 'no-cache');
   }
-}));
+  next();
+});
+
+// Direcciones limpias, como Cloudflare: /index.html → /, /pagina.html → /pagina
+app.use((req, res, next) => {
+  if (!req.path.endsWith('.html') || req.path === '/404.html') return next();
+  const limpia = req.path.replace(/(index)?\.html$/, '');
+  const consulta = req.originalUrl.slice(req.path.length);
+  res.redirect(308, limpia + consulta);
+});
+
+// Los archivos de configuración de Cloudflare no se publican
+app.use((req, res, next) => (/^\/_(headers|redirects)$/.test(req.path) ? noEncontrada(req, res) : next()));
+
+app.use(express.static(PUBLICO, { extensions: ['html'], cacheControl: false }));
 
 // Cualquier otra dirección: página no encontrada
-app.use((_req, res) => res.status(404).sendFile(path.join(PUBLICO, '404.html')));
+function noEncontrada(_req, res) { res.status(404).sendFile(path.join(PUBLICO, '404.html')); }
+app.use(noEncontrada);
 
 module.exports = app;

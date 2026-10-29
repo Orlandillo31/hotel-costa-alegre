@@ -144,7 +144,7 @@
     ['.footer-columna li a', ['About', 'Villas', 'Comforts', 'Gallery',
       'Pool', 'Air conditioning', 'Wi-Fi internet', 'Long stays',
       'Reservations', 'Location', 'Getting here', 'Privacy notice (Spanish)']],
-    ['.nota-privacidad', 'By sending you accept our <a href="aviso-privacidad.html" target="_blank">privacy notice</a> (in Spanish).'],
+    ['.nota-privacidad', 'By sending you accept our <a href="/aviso-privacidad" target="_blank">privacy notice</a> (in Spanish).'],
     ['.footer-inferior p', ['© 2026 Villas Cangrejo. All rights reserved.',
       'San Patricio-Melaque, Bahía de Navidad · Costa Alegre, Jalisco']]
   ];

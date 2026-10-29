@@ -16,14 +16,41 @@ before(() => {
 });
 after(() => servidor.close());
 
-test('la portada se sirve con cabeceras de seguridad', async () => {
+test('la portada se sirve con las cabeceras de seguridad de public/_headers', async () => {
   const res = await fetch(B + '/');
   assert.equal(res.status, 200);
   const csp = res.headers.get('content-security-policy');
-  assert.match(csp, /script-src 'self'/);
+  assert.match(csp, /script-src 'self';/, 'solo scripts propios');
   assert.match(csp, /frame-ancestors 'none'/);
+  assert.equal(res.headers.get('x-frame-options'), 'DENY');
+  assert.equal(res.headers.get('x-content-type-options'), 'nosniff');
+  assert.match(res.headers.get('strict-transport-security'), /max-age=31536000/);
   assert.equal(res.headers.get('x-powered-by'), null);
-  assert.equal(res.headers.get('cache-control'), 'no-cache');
+  assert.equal(res.headers.get('cache-control'), null, 'el HTML no se guarda en caché');
+});
+
+test('CSS, JS e imágenes se guardan un día; la regla general no repite Cache-Control', async () => {
+  for (const ruta of ['/css/styles.css', '/js/main.js', '/img/logo.png']) {
+    const res = await fetch(B + ruta);
+    assert.equal(res.status, 200, ruta);
+    assert.equal(res.headers.get('cache-control'), 'public, max-age=86400', ruta);
+    assert.ok(res.headers.get('content-security-policy'), ruta);
+  }
+});
+
+test('direcciones sin .html, como en Cloudflare Pages', async () => {
+  const aviso = await fetch(B + '/aviso-privacidad');
+  assert.equal(aviso.status, 200);
+  assert.match(await aviso.text(), /Aviso de privacidad/);
+  for (const [vieja, nueva] of [['/aviso-privacidad.html', '/aviso-privacidad'], ['/index.html', '/']]) {
+    const res = await fetch(B + vieja, { redirect: 'manual' });
+    assert.equal(res.status, 308, vieja);
+    assert.equal(res.headers.get('location'), nueva, vieja);
+  }
+});
+
+test('los archivos de configuración de Cloudflare no se publican', async () => {
+  assert.equal((await fetch(B + '/_headers')).status, 404);
 });
 
 test('la portada tiene título, descripción, canonical y ficha de hotel para Google', async () => {
