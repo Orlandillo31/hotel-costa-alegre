@@ -1590,3 +1590,58 @@
     @media (max-width: 600px) {
       .whatsapp-flotante { right: 1rem; bottom: 1rem; width: 54px; height: 54px; }
     }
+
+    /* =========================================================
+       ESQUELETOS DE CARGA — un brillo pasa sobre el lugar de cada
+       foto mientras se descarga. Solo aparece donde de verdad algo
+       está cargando: el texto ya está en la página desde el inicio.
+    ========================================================= */
+    :root {
+      --esqueleto-base:   #e8e2d6;
+      --esqueleto-brillo: rgba(255, 255, 255, 0.65);
+    }
+    @keyframes brillo-carga {
+      from { background-position: 150% 0, 0 0; }
+      to   { background-position: -50% 0, 0 0; }
+    }
+    /* Fotos: main.js pone .esqueleto mientras la foto no ha llegado */
+    img.esqueleto {
+      background-color: var(--esqueleto-base);
+      background-image: linear-gradient(100deg, transparent 25%, var(--esqueleto-brillo) 50%, transparent 75%);
+      background-size: 200% 100%;
+      background-repeat: no-repeat;
+      animation: brillo-carga 1.5s ease-in-out infinite;
+    }
+    @keyframes foto-aparece { from { opacity: 0; } to { opacity: 1; } }
+    img.foto-lista { animation: foto-aparece 0.5s ease; }
+
+    /* Portada y banner: el brillo va detrás de la foto de fondo, así que
+       la foto lo tapa en cuanto llega (no hace falta JS) */
+    #hero,
+    #cta-banner {
+      background-color: var(--color-oceano);
+      background-image: linear-gradient(100deg, transparent 25%, rgba(255, 255, 255, 0.07) 50%, transparent 75%);
+      background-size: 200% 100%;
+      background-repeat: no-repeat;
+      animation: brillo-carga 1.8s ease-in-out infinite;
+    }
+
+    /* main.js pone .fondo-listo cuando la foto de fondo ya cargó: el brillo se apaga */
+    #hero.fondo-listo,
+    #cta-banner.fondo-listo { animation: none; background-image: none; }
+
+    /* Las panorámicas necesitan proporción fija para que el esqueleto
+       ocupe su lugar antes de que llegue la foto */
+    .galeria-panoramica {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 7;
+      max-height: 520px;
+      object-fit: cover;
+      border-radius: 1rem;
+    }
+    @media (max-width: 600px) { .galeria-panoramica { aspect-ratio: 4 / 3; } }
+
+    @media (prefers-reduced-motion: reduce) {
+      img.esqueleto, #hero, #cta-banner, img.foto-lista { animation: none; }
+    }

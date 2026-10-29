@@ -373,6 +373,36 @@ const traducir = s => (window.VC_t ? window.VC_t(s) : s);
     document.addEventListener('vc:idioma', actualizarEstimado);
 
     // -------------------------------------------------------
+    // 11. ESQUELETOS DE CARGA
+    //     Mientras una foto se descarga se ve un recuadro con un brillo
+    //     que pasa (CSS: img.esqueleto); al llegar, la foto aparece suave.
+    //     Las fotos con loading="lazy" muestran el esqueleto hasta que el
+    //     visitante se acerca y terminan de descargarse.
+    // -------------------------------------------------------
+    document.querySelectorAll('img[src*="images.unsplash.com"]').forEach(img => {
+      if (img.complete && img.naturalWidth) return;      // ya estaba en caché
+      img.classList.add('esqueleto');
+      const listo = () => {
+        img.classList.remove('esqueleto');
+        if (img.naturalWidth) img.classList.add('foto-lista');
+      };
+      img.addEventListener('load', listo, { once: true });
+      img.addEventListener('error', listo, { once: true });
+    });
+
+    // Fotos de fondo (portada y banner): el brillo va detrás en CSS; aquí
+    // solo se apaga la animación cuando la foto ya cargó.
+    [['hero', 'hero-fondo'], ['cta-banner', 'cta-banner-fondo']].forEach(([seccionId, fondoId]) => {
+      const seccion = document.getElementById(seccionId);
+      const fondo   = document.getElementById(fondoId);
+      const url = fondo && getComputedStyle(fondo).backgroundImage.match(/url\(["']?([^"')]+)/);
+      if (!url) return;
+      const foto = new Image();
+      foto.onload = foto.onerror = () => seccion.classList.add('fondo-listo');
+      foto.src = url[1];
+    });
+
+    // -------------------------------------------------------
     // BONUS: Smooth scroll personalizado para links del navbar
     // (complementa el scroll-behavior: smooth del CSS)
     // -------------------------------------------------------
