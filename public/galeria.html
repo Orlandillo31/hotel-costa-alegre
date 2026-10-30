@@ -49,12 +49,19 @@
       <a href="/ubicacion" data-en="Location">Ubicación</a>
       <a href="/contacto" data-en="Contact">Contacto</a>
       <a href="/contacto" class="menu-reservar" data-en="Book now">Reservar ahora</a>
+      <div class="menu-extra">
+        <a href="tel:+523151007106" class="boton boton-claro" data-en="Call the hotel">Llamar al hotel</a>
+        <a href="https://wa.me/523151007106" class="boton boton-wa" target="_blank" rel="noopener">WhatsApp</a>
+        <button class="boton boton-idioma" type="button" lang="en">English</button>
+      </div>
     </nav>
     <div class="cabecera-acciones">
-      <button id="btn-idioma" type="button" aria-label="View this page in English">EN</button>
+      <button class="boton-idioma" type="button" lang="en">English</button>
+      <a href="tel:+523151007106" class="cabecera-tel" aria-label="Llamar al hotel: 315 100 7106" data-en-aria-label="Call the hotel: 315 100 7106"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg><span>315 100 7106</span></a>
       <a href="/contacto" class="boton boton-acento boton-chico" data-en="Book">Reservar</a>
-      <button class="menu-boton" id="menu-boton" type="button" aria-expanded="false" aria-controls="menu" aria-label="Abrir menú">
-        <span></span><span></span>
+      <button class="menu-boton" id="menu-boton" type="button" aria-expanded="false" aria-controls="menu">
+        <span class="menu-icono" aria-hidden="true"><span></span><span></span></span>
+        <span class="menu-texto">Menú</span>
       </button>
     </div>
   </header>
@@ -159,6 +166,7 @@
   <a href="https://wa.me/523151007106" class="whatsapp-flotante" target="_blank" rel="noopener"
     aria-label="Escríbenos por WhatsApp" data-en-aria-label="Message us on WhatsApp">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 18.8z"/><path d="M9.2 8.6c.2-.5.6-.5.9-.5.4 0 .6.6.9 1.3.1.3 0 .5-.2.8l-.4.4c.4.9 1.5 2 2.5 2.5l.4-.4c.3-.2.5-.3.8-.2.7.3 1.3.5 1.3.9 0 .3 0 .7-.5.9-.6.3-1.4.4-2.5-.1a8 8 0 0 1-3.4-3.4c-.5-1-.4-1.9-.1-2.5z"/></svg>
+    <span aria-hidden="true">WhatsApp</span>
   </a>
 
 </body>

@@ -21,13 +21,14 @@
 
   // Textos exactos que arma main.js
   const MENSAJES = {
-    'Abrir menú': 'Open menu',
-    'Cerrar menú': 'Close menu'
+    'Menú': 'Menu',
+    'Cerrar': 'Close'
   };
 
   let idioma = 'es';
   const originales = new Map();   // elemento → { html | atributo: texto en español }
-  const boton = document.getElementById('btn-idioma');
+  // Botones de idioma: en la cabecera y dentro del menú del celular
+  const botones = document.querySelectorAll('.boton-idioma');
 
   function t(texto) {
     if (idioma !== 'en' || typeof texto !== 'string') return texto;
@@ -56,10 +57,12 @@
     actualizarBoton();
   }
 
+  // Cada botón dice el idioma al que cambia, escrito en ese idioma
   function actualizarBoton() {
-    if (!boton) return;
-    boton.textContent = idioma === 'en' ? 'ES' : 'EN';
-    boton.setAttribute('aria-label', idioma === 'en' ? 'Ver la página en español' : 'View this page in English');
+    botones.forEach(b => {
+      b.textContent = idioma === 'en' ? 'Español' : 'English';
+      b.lang = idioma === 'en' ? 'es' : 'en';
+    });
   }
 
   window.VC_t = t;
@@ -72,11 +75,11 @@
   const inicial = guardado === 'es' || guardado === 'en' ? guardado : (/^es\b/i.test(delNavegador) ? 'es' : 'en');
   if (inicial === 'en') aplicar('en'); else actualizarBoton();   // el español ya está en el HTML
 
-  if (boton) boton.addEventListener('click', () => {
+  botones.forEach(b => b.addEventListener('click', () => {
     const nuevo = idioma === 'en' ? 'es' : 'en';
     aplicar(nuevo);
     try { localStorage.setItem(CLAVE, nuevo); } catch { /* sin almacenamiento: dura hasta recargar */ }
-    // Para que main.js vuelva a dibujar lo que genera (precio estimado, texto por palabras)
+    // Para que main.js vuelva a dibujar lo que genera (precio estimado, texto por palabras, menú)
     document.dispatchEvent(new CustomEvent('vc:idioma', { detail: nuevo }));
-  });
+  }));
 })();

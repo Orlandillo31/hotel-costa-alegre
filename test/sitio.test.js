@@ -143,3 +143,17 @@ test('wrangler.jsonc publica public/ con la página 404 propia', () => {
   assert.equal(config.assets.not_found_handling, '404-page');
   assert.ok(fs.existsSync(path.join(__dirname, '..', 'public', '404.html')));
 });
+
+test('fácil de usar para todos: teléfono, botones con texto y nada que se mueva solo', async () => {
+  for (const ruta of PAGINAS) {
+    const html = await (await fetch(B + ruta)).text();
+    assert.match(html, /<a href="tel:\+523151007106" class="cabecera-tel"/, ruta + ': teléfono en la cabecera');
+    assert.match(html, /<span class="menu-texto">Menú<\/span>/, ruta + ': el botón del menú dice "Menú"');
+    assert.equal((html.match(/class="boton boton-idioma"|class="boton-idioma"/g) || []).length, 2, ruta + ': botón de idioma en cabecera y menú');
+    assert.match(html, /class="whatsapp-flotante"[\s\S]*?<span aria-hidden="true">WhatsApp<\/span>/, ruta + ': WhatsApp con texto');
+    assert.doesNotMatch(html, /cinta-pista/, ruta + ': sin cintas en movimiento');
+  }
+  const css = fs.readFileSync(path.join(__dirname, '..', 'public', 'css', 'styles.css'), 'utf8');
+  assert.match(css, /html \{ font-size: 112\.5%;/, 'texto base de 18 px');
+  assert.match(css, /--gris: +#55524b;/, 'gris con buen contraste');
+});

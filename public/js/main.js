@@ -25,11 +25,16 @@ function alBajar() { cabecera.classList.toggle('solida', window.scrollY > 24); }
 window.addEventListener('scroll', alBajar, { passive: true });
 alBajar();
 
+const textoMenu = botonMenu.querySelector('.menu-texto');
+
+// El botón dice "Menú" o "Cerrar" (con palabras, no solo con el icono)
 function abrirMenu(abrir) {
   document.body.classList.toggle('menu-abierto', abrir);
   botonMenu.setAttribute('aria-expanded', abrir);
-  botonMenu.setAttribute('aria-label', traducir(abrir ? 'Cerrar menú' : 'Abrir menú'));
+  textoMenu.textContent = traducir(abrir ? 'Cerrar' : 'Menú');
 }
+abrirMenu(false);   // pone "Menu" si la página está en inglés
+document.addEventListener('vc:idioma', () => abrirMenu(document.body.classList.contains('menu-abierto')));
 botonMenu.addEventListener('click', () => abrirMenu(!document.body.classList.contains('menu-abierto')));
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && document.body.classList.contains('menu-abierto')) abrirMenu(false);
