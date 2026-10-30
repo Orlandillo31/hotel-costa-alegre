@@ -5,7 +5,7 @@
 # coma: por eso Cache-Control solo va en las reglas de abajo.
 
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com; media-src 'self' https://www.soundhelix.com; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com; media-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
@@ -15,10 +15,9 @@
   Cross-Origin-Resource-Policy: same-origin
   X-Permitted-Cross-Domain-Policies: none
 
-# CSS, JavaScript e imágenes: el navegador los guarda un día
-/css/*
-  Cache-Control: public, max-age=86400
-/js/*
-  Cache-Control: public, max-age=86400
+# Imágenes: el navegador las guarda un día.
+# CSS y JS NO llevan regla: el navegador los revisa en cada visita (si no
+# cambiaron, la respuesta es mínima). Así un rediseño nunca se ve con
+# estilos viejos guardados.
 /img/*
   Cache-Control: public, max-age=86400

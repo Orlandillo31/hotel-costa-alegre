@@ -2,7 +2,7 @@
   "name": "villas-cangrejo",
   "version": "3.0.0",
   "private": true,
-  "description": "Página informativa de Villas Cangrejo, hotel en San Patricio-Melaque, Jalisco. Sitio estático publicado en Cloudflare Pages; Express solo para verlo en local y para las pruebas.",
+  "description": "Página informativa de Villas Cangrejo, hotel en San Patricio-Melaque, Jalisco. Sitio estático publicado en Cloudflare; Express solo para verlo en local y para las pruebas.",
   "main": "server/server.js",
   "scripts": {
     "start": "node server/server.js",

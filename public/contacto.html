@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es" data-en-title="Reservations and contact · Villas Cangrejo, Melaque">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reservaciones y contacto · Villas Cangrejo, Melaque</title>
+  <meta name="description" content="Reserva tu villa en San Patricio-Melaque por WhatsApp. Teléfono +52 (315) 100 7106. Check-in 3:00 PM, check-out 12:00 PM." />
+  <meta name="theme-color" content="#111a1c" />
+  <link rel="canonical" href="https://hotel-costa-alegre.orlandojamaga.workers.dev/contacto" />
+
+  <!-- Vista previa al compartir el enlace (WhatsApp, Facebook, X) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Villas Cangrejo" />
+  <meta property="og:title" content="Reservaciones y contacto · Villas Cangrejo, Melaque" />
+  <meta property="og:description" content="Reserva tu villa en San Patricio-Melaque por WhatsApp. Teléfono +52 (315) 100 7106. Check-in 3:00 PM, check-out 12:00 PM." />
+  <meta property="og:url" content="https://hotel-costa-alegre.orlandojamaga.workers.dev/contacto" />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1519046904884-53103b34b206?w=1200&amp;q=75&amp;auto=format&amp;fit=crop&amp;h=630" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="es_MX" />
+  <meta property="og:locale:alternate" content="en_US" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Tipografías: Geist (títulos y texto), Geist Mono (etiquetas), Fraunces itálica (acentos) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,300&amp;family=Geist+Mono:wght@400&amp;family=Geist:wght@400;500;600&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css?v=3" />
+  <link rel="icon" type="image/png" href="/img/favicon.png" />
+  <link rel="apple-touch-icon" href="/img/favicon.png" />
+
+  <!-- i18n.js va antes que main.js: main.js usa sus traducciones -->
+  <script src="/js/i18n.js?v=3" defer></script>
+  <script src="/js/main.js?v=3" defer></script>
+</head>
+
+<body>
+  <a class="saltar" href="#contenido" data-en="Skip to content">Saltar al contenido</a>
+
+  <header class="cabecera" id="cabecera">
+    <a href="/" class="marca" aria-label="Villas Cangrejo, inicio" data-en-aria-label="Villas Cangrejo, home">
+      <img src="/img/favicon.png" alt="" width="256" height="256" />
+      <span>Villas Cangrejo</span>
+    </a>
+    <nav class="menu" id="menu" aria-label="Principal" data-en-aria-label="Main">
+      <a href="/villas" data-en="Villas">Villas</a>
+      <a href="/galeria" data-en="Gallery">Galería</a>
+      <a href="/ubicacion" data-en="Location">Ubicación</a>
+      <a href="/contacto" aria-current="page" data-en="Contact">Contacto</a>
+      <a href="/contacto" class="menu-reservar" data-en="Book now">Reservar ahora</a>
+    </nav>
+    <div class="cabecera-acciones">
+      <button id="btn-idioma" type="button" aria-label="View this page in English">EN</button>
+      <a href="/contacto" class="boton boton-acento boton-chico" data-en="Book">Reservar</a>
+      <button class="menu-boton" id="menu-boton" type="button" aria-expanded="false" aria-controls="menu" aria-label="Abrir menú">
+        <span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="contenido">
+
+    <section class="pagina-cabecera">
+      <div class="contenedor">
+        <span class="etiqueta" data-en="Contact">Contacto</span>
+        <h1 class="titulo-xl" data-en="Book <span class=&quot;serif&quot;>on WhatsApp.</span>">Reserva <span class="serif">por WhatsApp.</span></h1>
+        <p class="lead" data-en="Fill in your details and WhatsApp will open with your message ready to send. We reply with availability to confirm your stay.">Llena tus datos y se abrirá WhatsApp con tu mensaje listo para enviar. Te respondemos con la disponibilidad para confirmar tu estancia.</p>
+      </div>
+    </section>
+
+    <section class="seccion" style="padding-top: 0" aria-label="Formulario de reservación" data-en-aria-label="Reservation form">
+      <div class="contenedor contacto">
+        <div class="formulario">
+          <!-- novalidate: main.js hace la validación -->
+          <form id="formulario-reservacion" novalidate>
+            <fieldset class="form-paso">
+              <legend><span class="paso-num">01</span><span data-en="Your details">Tus datos</span></legend>
+              <div class="campo-grupo">
+                <label for="campo-nombre" data-en="Full name *">Nombre completo *</label>
+                <input type="text" id="campo-nombre" autocomplete="name" placeholder="Ej: Ana García López" data-en-placeholder="e.g. Ana García López" />
+                <span class="campo-error" id="error-nombre" data-en="Please enter your full name.">Por favor ingresa tu nombre completo.</span>
+              </div>
+              <div class="campos-fila">
+                <div class="campo-grupo">
+                  <label for="campo-email" data-en="Email">Correo electrónico</label>
+                  <input type="email" id="campo-email" autocomplete="email" placeholder="correo@ejemplo.com" data-en-placeholder="email@example.com" />
+                  <span class="campo-error" id="error-email" data-en="Enter a valid email address.">Ingresa un correo electrónico válido.</span>
+                </div>
+                <div class="campo-grupo">
+                  <label for="campo-telefono" data-en="Phone">Teléfono</label>
+                  <input type="tel" id="campo-telefono" autocomplete="tel" placeholder="+52 315 112 1201" />
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-paso">
+              <legend><span class="paso-num">02</span><span data-en="Your stay">Tu estancia</span></legend>
+              <div class="campos-fila">
+                <div class="campo-grupo">
+                  <label for="campo-llegada" data-en="Check-in date *">Fecha de llegada *</label>
+                  <input type="date" id="campo-llegada" />
+                  <span class="campo-error" id="error-llegada" data-en="Select your check-in date.">Selecciona tu fecha de llegada.</span>
+                </div>
+                <div class="campo-grupo">
+                  <label for="campo-salida" data-en="Check-out date *">Fecha de salida *</label>
+                  <input type="date" id="campo-salida" />
+                  <span class="campo-error" id="error-salida" data-en="Check-out must be after check-in.">La salida debe ser posterior a la llegada.</span>
+                </div>
+              </div>
+              <!-- Precio estimado (main.js, con las tarifas de la tarjeta de la derecha) -->
+              <p id="precio-estimado" class="precio-estimado" hidden></p>
+              <div class="campo-grupo">
+                <label for="campo-huespedes" data-en="Number of guests *">Número de huéspedes *</label>
+                <select id="campo-huespedes">
+                  <option value="" data-en="— Number of guests —">— Número de huéspedes —</option>
+                  <option value="1" data-en="1 guest">1 huésped</option>
+                  <option value="2" data-en="2 guests">2 huéspedes</option>
+                  <option value="3" data-en="3 guests">3 huéspedes</option>
+                  <option value="4" data-en="4 guests">4 huéspedes</option>
+                  <option value="5" data-en="5+ guests">5+ huéspedes</option>
+                </select>
+                <span class="campo-error" id="error-huespedes" data-en="Tell us how many guests are coming.">Indica cuántos huéspedes serán.</span>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-paso">
+              <legend><span class="paso-num">03</span><span data-en="Anything else">Algo más</span></legend>
+              <div class="campo-grupo">
+                <label for="campo-comentarios" data-en="Special requests">Peticiones especiales</label>
+                <textarea id="campo-comentarios" placeholder="Alergias, luna de miel, celebración especial, etc." data-en-placeholder="Allergies, honeymoon, special celebration, etc."></textarea>
+              </div>
+            </fieldset>
+
+            <button type="submit" class="boton boton-acento btn-enviar" data-en="Send via WhatsApp">Enviar por WhatsApp</button>
+            <p class="nota-privacidad" data-en="By sending you accept our <a href=&quot;/aviso-privacidad&quot; target=&quot;_blank&quot;>privacy notice</a> (in Spanish).">Al enviar aceptas nuestro <a href="/aviso-privacidad" target="_blank">aviso de privacidad</a>.</p>
+          </form>
+
+          <!-- Mensaje de confirmación (aparece al enviar) -->
+          <div id="formulario-exito" role="alert">
+            <div class="exito-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></div>
+            <p data-en="<strong>All set!</strong>WhatsApp opened with your message. Just press send and we will reply to confirm your stay at Villas Cangrejo."><strong>¡Listo!</strong>Se abrió WhatsApp con tu mensaje. Solo presiona enviar y te responderemos para confirmar tu estancia en Villas Cangrejo.</p>
+            <!-- Por si el navegador bloqueó la ventana: main.js le pone el mensaje al enlace -->
+            <a id="exito-whatsapp" class="exito-alterno" href="https://wa.me/523151007106" target="_blank" rel="noopener" data-en="WhatsApp didn't open? Tap here">¿No se abrió WhatsApp? Toca aquí</a>
+          </div>
+        </div>
+
+        <aside class="contacto-lado">
+          <div class="tarjeta">
+            <span class="etiqueta" data-en="Contact">Contacto</span>
+            <div class="dato"><span>WhatsApp</span><a href="https://wa.me/523151007106" target="_blank" rel="noopener">+52 (315) 100 7106</a></div>
+            <div class="dato"><span data-en="Phone">Teléfono</span><a href="tel:+523151007106">+52 (315) 100 7106</a></div>
+            <div class="dato"><span data-en="Email">Correo</span><a href="mailto:joseangel.hotel68@gmail.com">joseangel.hotel68@gmail.com</a></div>
+            <div class="dato"><span data-en="Address">Dirección</span><span data-en="14 C. Palmas, San Patricio-Melaque, Jalisco">14 C. Palmas, San Patricio-Melaque, Jalisco</span></div>
+            <div class="dato"><span data-en="Hours">Horario</span><span>Check-in 3:00 PM · Check-out 12:00 PM</span></div>
+          </div>
+          <div class="tarjeta">
+            <span class="etiqueta" data-en="Rates">Tarifas</span>
+            <div class="dato"><span data-en="Per night">Por noche</span><span data-tarifa="precioNoche">$1,850</span></div>
+            <div class="dato"><span data-en="1 month (per month)">1 mes (por mes)</span><span data-tarifa="mes1">$20,000</span></div>
+            <div class="dato"><span data-en="2 months (per month)">2 meses (por mes)</span><span data-tarifa="mes2">$18,000</span></div>
+            <div class="dato"><span data-en="3+ months (per month)">3+ meses (por mes)</span><span data-tarifa="mes3">$16,000</span></div>
+            <p class="nota" data-en="MXN, plus VAT (16%).">MXN, más IVA (16%).</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <div class="contenedor">
+      <div class="pie-grid">
+        <div class="pie-marca">
+          <a href="/" class="marca">
+            <img src="/img/favicon.png" alt="" width="256" height="256" loading="lazy" />
+            <span>Villas Cangrejo</span>
+          </a>
+          <p data-en="16 villas in San Patricio-Melaque, on the Bahía de Navidad. Nightly or monthly stays.">16 villas en San Patricio-Melaque, en la Bahía de Navidad. Renta por noche o por mes.</p>
+        </div>
+        <div>
+          <h2 data-en="The hotel">El hotel</h2>
+          <ul>
+            <li><a href="/villas" data-en="Villas and rates">Villas y tarifas</a></li>
+            <li><a href="/galeria" data-en="Gallery">Galería</a></li>
+            <li><a href="/ubicacion" data-en="Location">Ubicación</a></li>
+            <li><a href="/contacto" data-en="Reservations">Reservaciones</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 data-en="Contact">Contacto</h2>
+          <ul>
+            <li><a href="https://wa.me/523151007106" target="_blank" rel="noopener">WhatsApp</a></li>
+            <li><a href="tel:+523151007106">+52 (315) 100 7106</a></li>
+            <li><a href="mailto:joseangel.hotel68@gmail.com">joseangel.hotel68@gmail.com</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 data-en="Information">Información</h2>
+          <ul>
+            <li><a href="https://www.google.com/maps/search/?api=1&amp;query=14+C.+Palmas,+San+Patricio,+Jalisco" target="_blank" rel="noopener" data-en="Getting here">Cómo llegar</a></li>
+            <li><a href="/aviso-privacidad" data-en="Privacy notice (Spanish)">Aviso de privacidad</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="pie-inferior">
+        <p data-en="© 2026 Villas Cangrejo. All rights reserved.">© 2026 Villas Cangrejo. Todos los derechos reservados.</p>
+        <p>San Patricio-Melaque · Jalisco, México</p>
+      </div>
+    </div>
+  </footer>
+
+  <a href="https://wa.me/523151007106" class="whatsapp-flotante" target="_blank" rel="noopener"
+    aria-label="Escríbenos por WhatsApp" data-en-aria-label="Message us on WhatsApp">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 18.8z"/><path d="M9.2 8.6c.2-.5.6-.5.9-.5.4 0 .6.6.9 1.3.1.3 0 .5-.2.8l-.4.4c.4.9 1.5 2 2.5 2.5l.4-.4c.3-.2.5-.3.8-.2.7.3 1.3.5 1.3.9 0 .3 0 .7-.5.9-.6.3-1.4.4-2.5-.1a8 8 0 0 1-3.4-3.4c-.5-1-.4-1.9-.1-2.5z"/></svg>
+  </a>
+
+</body>
+
+</html>

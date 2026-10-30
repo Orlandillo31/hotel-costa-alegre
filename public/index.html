@@ -1,52 +1,37 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-en-title="Villas Cangrejo · Hotel and villas in Melaque, Jalisco, Mexico">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Villas Cangrejo · Hotel y villas en Melaque, Jalisco</title>
-  <meta name="description"
-    content="Hotel en San Patricio-Melaque, Jalisco: 16 villas con aire acondicionado, Wi-Fi, cocina y alberca. Renta por noche o por mes en la Bahía de Navidad." />
-  <meta name="theme-color" content="#0b3d4e" />
-
-  <!-- Dirección oficial de la página para Google. Si se compra un dominio
-       propio, cambiarla aquí, en og:url, en los datos de abajo, en
-       robots.txt y en sitemap.xml. -->
+  <meta name="description" content="Hotel en San Patricio-Melaque, Jalisco: 16 villas con aire acondicionado, Wi-Fi, cocina y alberca. Renta por noche o por mes en la Bahía de Navidad." />
+  <meta name="theme-color" content="#111a1c" />
   <link rel="canonical" href="https://hotel-costa-alegre.orlandojamaga.workers.dev/" />
 
-  <!-- Vista previa al compartir el enlace (WhatsApp, Facebook, X).
-       Si se compra un dominio propio, cambiar og:url por la nueva dirección. -->
+  <!-- Vista previa al compartir el enlace (WhatsApp, Facebook, X) -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Villas Cangrejo" />
-  <meta property="og:title" content="Villas Cangrejo · Hotel en Melaque, Jalisco" />
-  <meta property="og:description"
-    content="16 villas en San Patricio-Melaque, Bahía de Navidad. Alberca, aire acondicionado e internet. Estancias por noche o por mes." />
+  <meta property="og:title" content="Villas Cangrejo · Hotel y villas en Melaque, Jalisco" />
+  <meta property="og:description" content="Hotel en San Patricio-Melaque, Jalisco: 16 villas con aire acondicionado, Wi-Fi, cocina y alberca. Renta por noche o por mes en la Bahía de Navidad." />
   <meta property="og:url" content="https://hotel-costa-alegre.orlandojamaga.workers.dev/" />
-  <meta property="og:image" content="https://images.unsplash.com/photo-1519046904884-53103b34b206?w=1200&h=630&fit=crop&q=80" />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1519046904884-53103b34b206?w=1200&amp;q=75&amp;auto=format&amp;fit=crop&amp;h=630" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Bahía de Navidad vista desde la playa de Melaque, Jalisco" />
   <meta property="og:locale" content="es_MX" />
   <meta property="og:locale:alternate" content="en_US" />
   <meta name="twitter:card" content="summary_large_image" />
 
-  <!-- Google Fonts: Cormorant Garamond (display) + Jost (body) -->
+  <!-- Tipografías: Geist (títulos y texto), Geist Mono (etiquetas), Fraunces itálica (acentos) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap"
-    rel="stylesheet" />
-
-  <!-- Hoja de estilos externa — css/styles.css -->
-  <link rel="stylesheet" href="css/styles.css" />
-
-  <!-- Favicon: logo del hotel -->
-  <link rel="icon" type="image/png" href="img/favicon.png" />
-  <link rel="apple-touch-icon" href="img/logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,300&amp;family=Geist+Mono:wght@400&amp;family=Geist:wght@400;500;600&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css?v=3" />
+  <link rel="icon" type="image/png" href="/img/favicon.png" />
+  <link rel="apple-touch-icon" href="/img/favicon.png" />
 
   <!-- Ficha del hotel para Google (datos estructurados schema.org).
-       Google la usa para mostrar dirección, teléfono, horario y precio en
-       los resultados. Mantenerla igual que la información visible. -->
+       Mantenerla igual que la información visible de la página. -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -83,636 +68,281 @@
     ]
   }
   </script>
+
+  <!-- i18n.js va antes que main.js: main.js usa sus traducciones -->
+  <script src="/js/i18n.js?v=3" defer></script>
+  <script src="/js/main.js?v=3" defer></script>
 </head>
 
-<body>
+<body class="pagina-inicio">
+  <a class="saltar" href="#contenido" data-en="Skip to content">Saltar al contenido</a>
 
-  <!-- =====================================================
-       BARRA DE NAVEGACIÓN
-       JS detecta el scroll y agrega la clase .navbar-solida.
-       El botón hamburguesa abre/cierra el menú en mobile.
-  ====================================================== -->
-  <nav id="navbar" role="navigation" aria-label="Menú principal">
-    <div class="navbar-logo">
-      <img src="img/logo.png" alt="" class="logo-img" aria-hidden="true" width="600" height="573" />
-      <span class="navbar-logo-texto">
-        Villas Cangrejo
-        <span>Jalisco, México</span>
-      </span>
+  <header class="cabecera" id="cabecera">
+    <a href="/" class="marca" aria-label="Villas Cangrejo, inicio" data-en-aria-label="Villas Cangrejo, home">
+      <img src="/img/favicon.png" alt="" width="256" height="256" />
+      <span>Villas Cangrejo</span>
+    </a>
+    <nav class="menu" id="menu" aria-label="Principal" data-en-aria-label="Main">
+      <a href="/villas" data-en="Villas">Villas</a>
+      <a href="/galeria" data-en="Gallery">Galería</a>
+      <a href="/ubicacion" data-en="Location">Ubicación</a>
+      <a href="/contacto" data-en="Contact">Contacto</a>
+      <a href="/contacto" class="menu-reservar" data-en="Book now">Reservar ahora</a>
+    </nav>
+    <div class="cabecera-acciones">
+      <button id="btn-idioma" type="button" aria-label="View this page in English">EN</button>
+      <a href="/contacto" class="boton boton-acento boton-chico" data-en="Book">Reservar</a>
+      <button class="menu-boton" id="menu-boton" type="button" aria-expanded="false" aria-controls="menu" aria-label="Abrir menú">
+        <span></span><span></span>
+      </button>
     </div>
+  </header>
 
-    <!-- Cambio de idioma ES/EN (lo controla js/i18n.js) -->
-    <button id="btn-idioma" type="button" aria-label="View this page in English">EN</button>
+  <main id="contenido">
 
-    <!-- Botón hamburguesa (visible en mobile) -->
-    <button id="boton-hamburguesa" aria-label="Abrir menú" aria-expanded="false">
-      <span></span><span></span><span></span>
-    </button>
-
-    <!-- Links de navegación -->
-    <ul class="navbar-menu" id="navbar-menu">
-      <li><a href="#nosotros">Nosotros</a></li>
-      <li><a href="#habitaciones">Villas</a></li>
-      <li><a href="#galeria">Galería</a></li>
-      <li><a href="#amenidades">Amenidades</a></li>
-      <li><a href="#ubicacion">Ubicación</a></li>
-      <li><a href="#contacto" class="btn-reservar-nav">Reservar</a></li>
-    </ul>
-  </nav>
-
-  <!-- =====================================================
-       SECCIÓN HERO — Pantalla completa al cargar la página
-       Imagen del Pacífico + texto + botones de acción
-  ====================================================== -->
-  <section id="hero" aria-label="Bienvenida a Villas Cangrejo">
-    <!-- Fondo con imagen de playa (el parallax lo mueve JS) -->
-    <div id="hero-fondo" aria-hidden="true"></div>
-
-    <div class="hero-contenido">
-      <h1 class="hero-subtitulo">Villas Cangrejo · Hotel en San Patricio-Melaque, Jalisco</h1>
-      <p class="hero-titulo">
-        Donde el mar<br>
-        <em>abraza la selva</em>
-      </p>
-      <p class="hero-descripcion">
-        Descubre la magia de la Costa Alegre de Jalisco: kilómetros de playas
-        vírgenes, atardeceres dorados y una hospitalidad que nace del corazón mexicano.
-      </p>
-      <div class="hero-botones">
-        <a href="#contacto" class="btn-primario">Reservar Ahora</a>
-        <a href="#galeria" class="btn-secundario">Ver Galería</a>
-      </div>
-    </div>
-
-    <!-- Flecha de scroll hacia abajo -->
-    <div class="hero-scroll-indicador" aria-hidden="true">
-      <span>Scroll</span>
-      <div class="scroll-flecha"></div>
-    </div>
-  </section>
-
-  <!-- =====================================================
-       SECCIÓN NOSOTROS — Historia y estadísticas del hotel
-  ====================================================== -->
-  <section id="nosotros" aria-label="Acerca de Villas Cangrejo">
-
-    <!-- Columna izquierda: imágenes del hotel -->
-    <div class="nosotros-imagen-wrapper reveal">
-      <!-- Etiqueta de años de experiencia -->
-      <div class="nosotros-etiqueta">
-        <strong>15</strong>
-        <small>Años de<br>hospitalidad</small>
-      </div>
-      <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80" loading="lazy" decoding="async"
-        alt="Alberca de Villas Cangrejo al atardecer" class="nosotros-imagen-principal" />
-      <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?w=600&q=80" loading="lazy" decoding="async"
-        alt="Playa de la Bahía de Navidad en Melaque" class="nosotros-imagen-flotante" />
-    </div>
-
-    <!-- Columna derecha: texto e información -->
-    <div class="nosotros-texto">
-      <div class="seccion-encabezado reveal reveal-delay-1">
-        <span class="seccion-etiqueta">Nuestra historia</span>
-        <h2 class="seccion-titulo">Un rincón <em>único</em><br>en el Pacífico</h2>
-      </div>
-      <div class="reveal reveal-delay-2">
-        <p>
-          Enclavado entre la exuberante selva tropical y las aguas cristalinas del Pacífico,
-          Villas Cangrejo nació del sueño de ofrecer una experiencia auténtica en uno
-          de los litorales más hermosos de México: la Costa Alegre de Jalisco.
-        </p>
-        <p>
-          Desde Barra de Navidad hasta Chamela, nuestra región guarda secretos de arrecifes
-          de coral, bahías escondidas y una biodiversidad que deja sin aliento. Nuestro hotel
-          es la puerta de entrada a este paraíso natural.
-        </p>
-      </div>
-
-      <!-- Estadísticas animadas (contadores JS) -->
-      <div class="nosotros-stats reveal reveal-delay-3">
-        <div class="stat-item">
-          <span class="stat-numero" data-destino="16">0</span>
-          <span class="stat-etiqueta">Villas</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-numero" data-destino="320">0</span>
-          <span class="stat-etiqueta">Metros de playa</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-numero" data-destino="98">0</span>
-          <span class="stat-etiqueta">% Satisfacción</span>
+    <!-- Portada oscura -->
+    <section class="hero" aria-labelledby="titulo-inicio">
+      <div class="contenedor">
+        <a class="hero-aviso" href="/villas">
+          <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=300&amp;q=75&amp;auto=format&amp;fit=crop" alt="" width="300" height="200" />
+          <span><strong data-en="16 villas, all the same">16 villas, todas iguales</strong><span class="flecha" data-en="See villas and rates">Ver villas y tarifas</span></span>
+        </a>
+        <h1 class="titulo-xl" id="titulo-inicio" data-en="Villas to unwind in <span class=&quot;serif&quot;>Melaque</span>, Jalisco.">Villas para descansar en <span class="serif">Melaque</span>, Jalisco.</h1>
+        <p class="lead" data-en="Villas Cangrejo is a hotel with 16 equipped villas in San Patricio-Melaque, on the Costa Alegre. Stay by the night or by the month, with a pool, air conditioning and a kitchen.">Villas Cangrejo es un hotel con 16 villas equipadas en San Patricio-Melaque, en la Costa Alegre. Quédate por noche o por mes, con alberca, aire acondicionado y cocina.</p>
+        <div class="hero-botones">
+          <a href="/contacto" class="boton boton-acento" data-en="Book on WhatsApp">Reservar por WhatsApp</a>
+          <a href="/villas" class="boton boton-linea" data-en="See villas">Ver villas</a>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- =====================================================
-       SECCIÓN HABITACIONES — Tabs interactivos por tipo
-  ====================================================== -->
-  <section id="habitaciones" aria-label="Nuestras villas">
-    <div class="habitaciones-encabezado reveal">
-      <span class="seccion-etiqueta">Alojamiento</span>
-      <h2 class="seccion-titulo">Nuestras <em>villas</em></h2>
-      <p class="habitaciones-intro">
-        Contamos con <strong>16 villas idénticas</strong>, todas con el mismo diseño,
-        comodidades y precio. Elige la que prefieras: todas ofrecen la misma experiencia
-        de lujo frente al Pacífico.
-      </p>
+    </section>
+    <div class="hero-foto">
+      <div class="contenedor">
+        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1800&amp;q=75&amp;auto=format&amp;fit=crop" alt="Playa del Pacífico al atardecer en la Costa Alegre de Jalisco"
+          data-en-alt="Pacific beach at sunset on Jalisco's Costa Alegre" width="1800" height="788" fetchpriority="high" />
+      </div>
     </div>
 
-    <!-- Presentación de la villa (todas iguales) -->
-    <div class="panel-habitacion activo" id="tab-villa" role="tabpanel">
-      <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80" loading="lazy" decoding="async"
-        alt="Villa frente al mar en Villas Cangrejo" class="habitacion-imagen" />
-      <div class="habitacion-info">
-        <h3 class="habitacion-nombre">Villa Cangrejo</h3>
-        <p class="habitacion-precio"><strong data-tarifa="precioNoche">$1,850</strong> <span class="hp-unidad">MXN / noche</span></p>
-        <p class="habitacion-descripcion">
-          Una villa independiente y totalmente equipada en San Patricio-Melaque, pensada para
-          parejas, familias y estancias largas. Las 16 villas son idénticas en diseño,
-          comodidades y precio.
-        </p>
-        <ul class="habitacion-comodidades">
-          <li class="comodidad-item">Aire acondicionado</li>
-          <li class="comodidad-item">Televisión</li>
-          <li class="comodidad-item">Internet Wi-Fi</li>
-          <li class="comodidad-item">Agua caliente</li>
-          <li class="comodidad-item">Estufa de inducción</li>
-          <li class="comodidad-item">Acceso a la alberca</li>
-        </ul>
-        <div class="estancias-largas">
-          <h4 class="el-titulo">Estancias largas</h4>
-          <ul>
-            <li><span class="el-plazo">1 mes</span> <strong data-tarifa="mes1">$20,000</strong> <span class="el-por">por mes</span></li>
-            <li><span class="el-plazo">2 meses</span> <strong data-tarifa="mes2">$18,000</strong> <span class="el-por">por mes</span></li>
-            <li><span class="el-plazo">3 meses o más</span> <strong data-tarifa="mes3">$16,000</strong> <span class="el-por">por mes</span></li>
+    <!-- Cinta de lo que incluye cada villa -->
+    <section class="cinta-bloque" aria-label="Lo que incluye cada villa" data-en-aria-label="What every villa includes">
+      <div class="contenedor">
+        <p data-en="Everything every villa includes, at the same price:">Todo lo que incluye cada villa, al mismo precio:</p>
+      </div>
+      <div class="cinta">
+        <div class="cinta-pista">
+          <ul class="cinta-grupo">
+            <li class="chip" data-en="16 identical villas">16 villas idénticas</li>
+            <li class="chip" data-en="Swimming pool">Alberca</li>
+            <li class="chip" data-en="Air conditioning">Aire acondicionado</li>
+            <li class="chip" data-en="Wi-Fi">Wi-Fi</li>
+            <li class="chip" data-en="Kitchen with induction stove">Cocina con estufa de inducción</li>
+            <li class="chip" data-en="Hot water">Agua caliente</li>
+            <li class="chip" data-en="Monthly rentals">Renta por mes</li>
+            <li class="chip" data-en="Check-in 3:00 PM">Check-in 3:00 PM</li>
+            <li class="chip" data-en="Bahía de Navidad">Bahía de Navidad</li>
           </ul>
-          <small class="el-nota">Precios en pesos mexicanos, más IVA (16%).</small>
-        </div>
-        <a href="#contacto" class="btn-primario">Reservar una villa</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- =====================================================
-       SECCIÓN GALERÍA — Fotos + Video + Audio
-  ====================================================== -->
-  <section id="galeria" aria-label="Galería multimedia del hotel">
-    <div class="galeria-encabezado reveal">
-      <span class="seccion-etiqueta">Galería</span>
-      <h2 class="seccion-titulo">Vive la <em>experiencia</em></h2>
-    </div>
-
-    <!-- Grid de fotos (cada foto abre el lightbox al clic) -->
-    <div class="galeria-grid">
-      <div class="galeria-item reveal" data-indice="0">
-        <img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?w=900&q=80" loading="lazy" decoding="async"
-          alt="Bahía de Navidad vista desde la playa de Melaque, Jalisco" class="galeria-foto" />
-        <div class="galeria-overlay">
-          <div class="galeria-overlay-icono">🔍</div>
+          <ul class="cinta-grupo" aria-hidden="true">
+            <li class="chip" data-en="16 identical villas">16 villas idénticas</li>
+            <li class="chip" data-en="Swimming pool">Alberca</li>
+            <li class="chip" data-en="Air conditioning">Aire acondicionado</li>
+            <li class="chip" data-en="Wi-Fi">Wi-Fi</li>
+            <li class="chip" data-en="Kitchen with induction stove">Cocina con estufa de inducción</li>
+            <li class="chip" data-en="Hot water">Agua caliente</li>
+            <li class="chip" data-en="Monthly rentals">Renta por mes</li>
+            <li class="chip" data-en="Check-in 3:00 PM">Check-in 3:00 PM</li>
+            <li class="chip" data-en="Bahía de Navidad">Bahía de Navidad</li>
+          </ul>
         </div>
       </div>
+    </section>
 
-      <div class="galeria-item reveal reveal-delay-1" data-indice="1">
-        <img src="https://images.unsplash.com/photo-1473116763249-2faaef81ccda?w=900&q=80" loading="lazy" decoding="async"
-          alt="Atardecer dorado sobre la bahía de Melaque" class="galeria-foto" />
-        <div class="galeria-overlay">
-          <div class="galeria-overlay-icono">🔍</div>
+    <!-- Cuatro rasgos -->
+    <section class="seccion" aria-labelledby="titulo-rasgos">
+      <div class="contenedor">
+        <div class="encabezado aparece">
+          <span class="etiqueta" data-en="Your stay">Tu estancia</span>
+          <h2 class="titulo-l" id="titulo-rasgos" data-en="A whole villa.<br><span class=&quot;gris&quot;>No rush, no hassle.</span>">Una villa completa.<br><span class="gris">Sin prisas ni complicaciones.</span></h2>
+        </div>
+        <div class="rasgos aparece">
+          <article class="rasgo">
+            <div class="rasgo-dibujo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/><path d="M15 3.5v3M13.5 5h3M19 8v2M18 9h2"/></svg></div>
+            <h3 data-en="Rest">Descansa</h3>
+            <p data-en="Air conditioning and quiet to sleep cool even on the hottest days.">Aire acondicionado y silencio para dormir fresco aun en los días más calurosos.</p>
+          </article>
+          <article class="rasgo">
+            <div class="rasgo-dibujo"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="8.5" cy="10" r="2.6"/><circle cx="15.5" cy="10" r="2.6"/><path d="M7 16.5h3M14 16.5h3"/></svg></div>
+            <h3 data-en="Cook">Cocina</h3>
+            <p data-en="Every villa has an induction stove: cook what you bought at the market.">Cada villa tiene estufa de inducción: prepara lo que compraste en el mercado.</p>
+          </article>
+          <article class="rasgo">
+            <div class="rasgo-dibujo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 15V5.5a2 2 0 0 1 4 0M15 15V5.5a2 2 0 0 1 4 0M8 9h7M8 12.5h7"/><path d="M2.5 17.5c1.6 1.1 3.2 1.1 4.8 0s3.2-1.1 4.7 0 3.2 1.1 4.8 0 3.1-1.1 4.7 0M2.5 21c1.6 1.1 3.2 1.1 4.8 0s3.2-1.1 4.7 0 3.2 1.1 4.8 0 3.1-1.1 4.7 0"/></svg></div>
+            <h3 data-en="Swim">Nada</h3>
+            <p data-en="A peanut-shaped pool, with curves for swimming and nooks for floating.">Una alberca con forma de cacahuate, con curvas para nadar y rincones para flotar.</p>
+          </article>
+          <article class="rasgo">
+            <div class="rasgo-dibujo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.5a9.5 9.5 0 0 1 13 0M8.6 15.8a5 5 0 0 1 6.8 0"/><circle cx="12" cy="19" r="1.1" class="relleno"/></svg></div>
+            <h3 data-en="Connect">Conéctate</h3>
+            <p data-en="Internet in your villa, ideal for long stays or remote work.">Internet en tu villa, ideal para estancias largas o para trabajar a distancia.</p>
+          </article>
         </div>
       </div>
+    </section>
 
-      <div class="galeria-item reveal reveal-delay-2" data-indice="2">
-        <img src="https://images.unsplash.com/photo-1506953823976-52e1fdc0149a?w=900&q=80" loading="lazy" decoding="async"
-          alt="Palmeras y aguas tranquilas de nuestra bahía" class="galeria-foto" />
-        <div class="galeria-overlay">
-          <div class="galeria-overlay-icono">🔍</div>
+    <!-- Tarjetas hacia las otras páginas -->
+    <section class="seccion seccion-borde" aria-labelledby="titulo-explora">
+      <div class="contenedor">
+        <div class="encabezado aparece">
+            <span class="etiqueta" data-en="Explore">Explora</span>
+            <h2 class="titulo-l" id="titulo-explora" data-en="Everything you need<br><span class=&quot;serif&quot;>to plan your trip.</span>">Todo lo que necesitas<br><span class="serif">para planear tu viaje.</span></h2>
+        </div>
+        <div class="tarjetas-foto">
+          <a class="tarjeta-foto aparece" href="/villas">
+            <div class="tarjeta-foto-imagen"><img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1000&amp;q=75&amp;auto=format&amp;fit=crop" alt="Recámara con cama y ventanales" data-en-alt="Bedroom with a bed and large windows" width="1000" height="750" loading="lazy" /></div>
+            <h3 data-en="The villas">Las villas</h3>
+            <p data-en="16 identical villas with air conditioning, Wi-Fi, a kitchen and pool access.">16 villas idénticas con aire acondicionado, Wi-Fi, cocina y acceso a la alberca.</p>
+            <span class="flecha" data-en="See villas">Ver villas</span>
+          </a>
+          <a class="tarjeta-foto aparece" href="/villas#estancias">
+            <div class="tarjeta-foto-imagen"><img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=1000&amp;q=75&amp;auto=format&amp;fit=crop" alt="Alberca rodeada de vegetación tropical" data-en-alt="Pool surrounded by tropical plants" width="1000" height="750" loading="lazy" /></div>
+            <h3 data-en="Long stays">Estancias largas</h3>
+            <p data-en="Spending the winter in Melaque? Monthly rates from $16,000 MXN.">¿Pasas el invierno en Melaque? Tarifas por mes desde $16,000 MXN.</p>
+            <span class="flecha" data-en="See monthly rates">Ver tarifas por mes</span>
+          </a>
+          <a class="tarjeta-foto aparece" href="/galeria">
+            <div class="tarjeta-foto-imagen"><img src="https://images.unsplash.com/photo-1473116763249-2faaef81ccda?w=1000&amp;q=75&amp;auto=format&amp;fit=crop" alt="Atardecer sobre el mar" data-en-alt="Sunset over the sea" width="1000" height="750" loading="lazy" /></div>
+            <h3 data-en="Gallery">Galería</h3>
+            <p data-en="Beaches, sunsets and the colours of the Costa Alegre.">Playas, atardeceres y los colores de la Costa Alegre.</p>
+            <span class="flecha" data-en="See gallery">Ver galería</span>
+          </a>
+          <a class="tarjeta-foto aparece" href="/ubicacion">
+            <div class="tarjeta-foto-imagen"><img src="https://images.unsplash.com/photo-1506953823976-52e1fdc0149a?w=1000&amp;q=75&amp;auto=format&amp;fit=crop" alt="Palmeras bajo el cielo azul" data-en-alt="Palm trees under a blue sky" width="1000" height="750" loading="lazy" /></div>
+            <h3 data-en="Location">Ubicación</h3>
+            <p data-en="Melaque, Barra de Navidad and the Manzanillo airport, all nearby.">Melaque, Barra de Navidad y el aeropuerto de Manzanillo, todo cerca.</p>
+            <span class="flecha" data-en="How to get here">Cómo llegar</span>
+          </a>
         </div>
       </div>
+    </section>
 
-      <div class="galeria-item reveal reveal-delay-1" data-indice="3">
-        <img src="https://images.unsplash.com/photo-1468413253725-0d5181091126?w=900&q=80" loading="lazy" decoding="async"
-          alt="Playa de arena dorada bordeada de palmeras en la Costalegre" class="galeria-foto" />
-        <div class="galeria-overlay">
-          <div class="galeria-overlay-icono">🔍</div>
+    <!-- Declaración que se enciende al bajar -->
+    <section class="seccion oscuro" aria-label="Melaque">
+      <div class="contenedor">
+        <p class="declaracion" data-en="Melaque is a fishing village where time slows down: golden sunsets over the bay, a quiet seafront and the taste of the Pacific in every dish.">Melaque es un pueblo de pescadores donde el tiempo va más despacio: atardeceres dorados sobre la bahía, un malecón tranquilo y el sabor del Pacífico en cada platillo.</p>
+      </div>
+    </section>
+
+    <!-- Precios -->
+    <section class="seccion oscuro" aria-labelledby="titulo-precios" style="padding-top: 0">
+      <div class="contenedor">
+        <div class="encabezado aparece">
+          <span class="etiqueta" data-en="Rates">Tarifas</span>
+          <h2 class="titulo-l" id="titulo-precios" data-en="Clear prices,<br><span class=&quot;serif&quot;>for a night or a season.</span>">Precios claros,<br><span class="serif">por noche o por temporada.</span></h2>
+        </div>
+        <div class="cifras aparece">
+          <div class="cifra"><strong>$1,850</strong><span data-en="MXN per night">MXN por noche</span></div>
+          <div class="cifra"><strong>$20,000</strong><span data-en="MXN per month · 1 month">MXN por mes · 1 mes</span></div>
+          <div class="cifra"><strong>$16,000</strong><span data-en="MXN per month · 3 months or more">MXN por mes · 3 meses o más</span></div>
+        </div>
+        <p class="nota gris" data-en="Prices in Mexican pesos, plus VAT (16%).">Precios en pesos mexicanos, más IVA (16%).</p>
+      </div>
+    </section>
+
+    <!-- Llamada final -->
+    <section class="seccion cta-final" aria-labelledby="titulo-cta">
+      <div class="contenedor">
+        <span class="etiqueta" data-en="Book">Reserva</span>
+        <h2 class="titulo-l" id="titulo-cta" data-en="Your villa in Melaque is <span class=&quot;serif&quot;>one message away.</span>">Tu villa en Melaque está <span class="serif">a un mensaje.</span></h2>
+        <p class="lead" data-en="Tell us your dates and we will reply on WhatsApp with availability.">Dinos tus fechas y te respondemos por WhatsApp con la disponibilidad.</p>
+        <div class="hero-botones">
+          <a href="/contacto" class="boton boton-acento" data-en="Request a reservation">Solicitar reservación</a>
+          <a href="https://wa.me/523151007106" class="boton boton-linea" target="_blank" rel="noopener" data-en="Open WhatsApp">Abrir WhatsApp</a>
         </div>
       </div>
-
-      <div class="galeria-item reveal reveal-delay-2" data-indice="4">
-        <img src="https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=900&q=80" loading="lazy" decoding="async"
-          alt="Rincón escondido de la Costalegre jalisciense" class="galeria-foto" />
-        <div class="galeria-overlay">
-          <div class="galeria-overlay-icono">🔍</div>
+      <div class="rejilla-marco" aria-hidden="true">
+        <div class="rejilla">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span class="rejilla-centro"><img src="/img/logo.png" alt="" width="600" height="573" loading="lazy" /></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
         </div>
       </div>
+    </section>
+  </main>
 
-    </div>
-
-    <!-- Imagen panorámica de la bahía de la Costa Alegre -->
-    <div class="reveal" style="margin-top: 2rem;">
-      <p class="galeria-video-titulo">Descubre la Costa Alegre</p>
-      <img src="https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?w=1600&q=80" loading="lazy" decoding="async"
-        alt="Vista panorámica de la bahía de la Costa Alegre, Jalisco"
-        class="galeria-panoramica" />
-    </div>
-
-    <!-- ====== Imagen panorámica de nuestras playas ====== -->
-    <div class="reveal" style="margin-top: 3rem;">
-      <p class="galeria-video-titulo">Un recorrido por nuestras playas</p>
-      <img src="https://images.unsplash.com/photo-1505228395891-9a51e7e86bf6?w=1600&q=80" loading="lazy" decoding="async"
-        alt="Vista aérea de las playas del Pacífico en la Costa Alegre, Jalisco"
-        class="galeria-panoramica" />
-    </div>
-
-    <!-- ====== AUDIO ambiental — reproductor personalizado controlado por JS ====== -->
-    <div class="audio-seccion reveal" style="margin-top: 3rem;">
-      <!-- Botón play/pausa propio (JS lo controla) -->
-      <button id="btn-audio" aria-label="Reproducir música ambiental">▶</button>
-
-      <!-- Barras de onda animadas: se mueven solo cuando suena el audio -->
-      <div class="onda-audio pausada" aria-hidden="true">
-        <span class="onda-barra"></span>
-        <span class="onda-barra"></span>
-        <span class="onda-barra"></span>
-        <span class="onda-barra"></span>
-        <span class="onda-barra"></span>
-      </div>
-
-      <div class="audio-texto">
-        <strong>Música ambiental del hotel</strong>
-        Pulsa play y relájate con el lounge del Bar El Pelícano.
-      </div>
-
-      <!-- El elemento <audio> real: lo controla el botón de arriba vía JS -->
-      <audio id="audio-ambiental" loop preload="none">
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg" />
-        Tu navegador no soporta el elemento de audio.
-      </audio>
-    </div>
-  </section>
-
-  <!-- =====================================================
-       BANNER CTA (llamada a la acción)
-  ====================================================== -->
-  <section id="cta-banner" aria-label="Oferta especial">
-    <div id="cta-banner-fondo" aria-hidden="true"></div>
-    <div class="cta-contenido reveal">
-      <span class="seccion-etiqueta" style="color: var(--color-dorado)">Melaque, Jalisco</span>
-      <h2 class="seccion-titulo">Donde el sol se despide<br><em style="color: var(--color-turquesa-claro)">entre
-        palmeras y mar</em></h2>
-      <p>En el corazón de la Bahía de Navidad, Melaque te recibe con sus atardeceres dorados, su malecón tranquilo
-        y el sabor del Pacífico en cada platillo. Un pueblo de pescadores donde el tiempo va más despacio
-        y cada ola te invita a quedarte un día más.</p>
-      <a href="#contacto" class="btn-primario">Ven a Melaque</a>
-    </div>
-  </section>
-
-  <!-- =====================================================
-       SECCIÓN AMENIDADES — Servicios del hotel
-  ====================================================== -->
-  <section id="amenidades" aria-label="Amenidades y servicios del hotel">
-    <div class="amenidades-encabezado reveal">
-      <span class="seccion-etiqueta">Lo que te espera</span>
-      <h2 class="seccion-titulo">Comodidades <em>para tu estancia</em></h2>
-    </div>
-
-    <!-- Grid de tarjetas de amenidades (servicios reales del hotel) -->
-    <div class="amenidades-grid">
-      <article class="amenidad-tarjeta reveal">
-        <span class="amenidad-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 15V5.5a2 2 0 0 1 4 0M15 15V5.5a2 2 0 0 1 4 0M8 9h7M8 12.5h7"/><path d="M2.5 17.5c1.6 1.1 3.2 1.1 4.8 0s3.2-1.1 4.7 0 3.2 1.1 4.8 0 3.1-1.1 4.7 0M2.5 21c1.6 1.1 3.2 1.1 4.8 0s3.2-1.1 4.7 0 3.2 1.1 4.8 0 3.1-1.1 4.7 0"/></svg></span>
-        <h3 class="amenidad-nombre">Alberca Cacahuate</h3>
-        <p class="amenidad-descripcion">Nuestra alberca presume una peculiar forma de cacahuate —sí, de cacahuate— con curvas para nadar y rincones para flotar.</p>
-      </article>
-
-      <article class="amenidad-tarjeta reveal reveal-delay-1">
-        <span class="amenidad-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2.5v19M3.8 7.25l16.4 9.5M3.8 16.75l16.4-9.5"/><path d="M9.6 3.9 12 5.8l2.4-1.9M9.6 20.1 12 18.2l2.4 1.9M3.9 10.4l2.9-.9-.5-3M20.1 13.6l-2.9.9.5 3M3.9 13.6l2.9.9-.5 3M20.1 10.4l-2.9-.9.5-3"/></svg></span>
-        <h3 class="amenidad-nombre">Aire acondicionado</h3>
-        <p class="amenidad-descripcion">Todas las villas tienen aire acondicionado para descansar fresco aun en los días más calurosos de la costa.</p>
-      </article>
-
-      <article class="amenidad-tarjeta reveal reveal-delay-2">
-        <span class="amenidad-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.5" y="4.5" width="19" height="13" rx="2"/><path d="M8.5 21h7M12 17.5V21"/></svg></span>
-        <h3 class="amenidad-nombre">Televisión</h3>
-        <p class="amenidad-descripcion">Pantalla en cada villa para relajarte después de un día de playa.</p>
-      </article>
-
-      <article class="amenidad-tarjeta reveal">
-        <span class="amenidad-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.5a9.5 9.5 0 0 1 13 0M8.6 15.8a5 5 0 0 1 6.8 0"/><circle cx="12" cy="19" r="1.1" class="relleno"/></svg></span>
-        <h3 class="amenidad-nombre">Internet Wi-Fi</h3>
-        <p class="amenidad-descripcion">Conexión a internet en tu villa: ideal para estancias largas o para trabajar a distancia.</p>
-      </article>
-
-      <article class="amenidad-tarjeta reveal reveal-delay-1">
-        <span class="amenidad-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3s-6 6.6-6 11a6 6 0 0 0 12 0c0-4.4-6-11-6-11z"/><path d="M9.3 14.3c.9-.8 1.8-.8 2.7 0s1.8.8 2.7 0"/></svg></span>
-        <h3 class="amenidad-nombre">Agua caliente</h3>
-        <p class="amenidad-descripcion">Agua caliente en todo momento para tu comodidad.</p>
-      </article>
-
-      <article class="amenidad-tarjeta reveal reveal-delay-2">
-        <span class="amenidad-icono" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="8.5" cy="10" r="2.6"/><circle cx="15.5" cy="10" r="2.6"/><path d="M7 16.5h3M14 16.5h3"/></svg></span>
-        <h3 class="amenidad-nombre">Estufa de inducción</h3>
-        <p class="amenidad-descripcion">Cocina como en casa con estufa de inducción: segura, rápida y eficiente.</p>
-      </article>
-    </div>
-  </section>
-
-  <!-- =====================================================
-       SECCIÓN UBICACIÓN — dónde está el hotel y qué hay cerca.
-       Nombra los lugares que la gente busca (Melaque, Barra de
-       Navidad, Manzanillo…): ayuda a aparecer en esas búsquedas.
-  ====================================================== -->
-  <section id="ubicacion" aria-label="Ubicación del hotel">
-    <div class="ubicacion-texto reveal">
-      <span class="seccion-etiqueta">Ubicación</span>
-      <h2 class="seccion-titulo">En el corazón de la<br><em>Bahía de Navidad</em></h2>
-      <p>
-        Villas Cangrejo está en San Patricio-Melaque, municipio de Cihuatlán, Jalisco,
-        en la Costa Alegre del Pacífico mexicano. Una base tranquila para disfrutar
-        la playa de Melaque, recorrer Barra de Navidad y descubrir las bahías de la costa.
-      </p>
-      <a class="btn-primario" href="https://www.google.com/maps/search/?api=1&amp;query=14+C.+Palmas,+San+Patricio,+Jalisco"
-        target="_blank" rel="noopener">Abrir en Google Maps</a>
-    </div>
-
-    <div class="ubicacion-tarjeta reveal reveal-delay-1">
-      <h3 class="ubicacion-subtitulo">Qué hay cerca</h3>
-      <!-- Distancias aproximadas en auto -->
-      <ul class="ubicacion-lista">
-        <li><span class="ub-lugar">Playa Cuastecomates</span><span class="ub-tiempo">≈ 10 min</span></li>
-        <li><span class="ub-lugar">Barra de Navidad</span><span class="ub-tiempo">≈ 10 min</span></li>
-        <li><span class="ub-lugar">Aeropuerto de Manzanillo (ZLO)</span><span class="ub-tiempo">≈ 35 min</span></li>
-        <li><span class="ub-lugar">Manzanillo, Colima</span><span class="ub-tiempo">≈ 1 h</span></li>
-        <li><span class="ub-lugar">Puerto Vallarta</span><span class="ub-tiempo">≈ 4 h</span></li>
-        <li><span class="ub-lugar">Guadalajara</span><span class="ub-tiempo">≈ 4 h 30 min</span></li>
-      </ul>
-      <small class="ub-nota">Tiempos aproximados en auto.</small>
-    </div>
-  </section>
-
-  <!-- =====================================================
-       SECCIÓN CONTACTO Y FORMULARIO DE RESERVA
-       No se guarda nada en un servidor: main.js valida los datos y
-       abre WhatsApp con el mensaje listo para enviarlo al hotel.
-  ====================================================== -->
-  <section id="contacto" aria-label="Contacto y reservaciones">
-
-    <!-- Columna izquierda: información de contacto -->
-    <div class="contacto-info">
-      <div class="seccion-encabezado reveal">
-        <span class="seccion-etiqueta">Contacto</span>
-        <h2 class="seccion-titulo">Platicamos y <em>planificamos</em><br>tu escape</h2>
-      </div>
-      <p class="reveal reveal-delay-1">
-        Nuestro equipo está disponible todos los días para ayudarte a diseñar
-        la escapada perfecta a la Costa Alegre. Escríbenos, llámanos o
-        visítanos en San Patricio-Melaque.
-      </p>
-
-      <!-- El orden de los 4 elementos importa: i18n.js los traduce por posición -->
-      <div class="contacto-detalle reveal reveal-delay-2">
-        <div class="detalle-item">
-          <div class="detalle-icono" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
-          </div>
-          <div class="detalle-texto">
-            <strong>Dirección</strong>
-            <span>14 C. Palmas, San Patricio-Melaque, Jalisco, México</span>
-          </div>
+  <footer class="pie">
+    <div class="contenedor">
+      <div class="pie-grid">
+        <div class="pie-marca">
+          <a href="/" class="marca">
+            <img src="/img/favicon.png" alt="" width="256" height="256" loading="lazy" />
+            <span>Villas Cangrejo</span>
+          </a>
+          <p data-en="16 villas in San Patricio-Melaque, on the Bahía de Navidad. Nightly or monthly stays.">16 villas en San Patricio-Melaque, en la Bahía de Navidad. Renta por noche o por mes.</p>
         </div>
-        <div class="detalle-item">
-          <div class="detalle-icono" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>
-          </div>
-          <div class="detalle-texto">
-            <strong>Teléfono</strong>
-            <span><a href="tel:+523151007106">+52 (315) 100 7106</a></span>
-          </div>
+        <div>
+          <h2 data-en="The hotel">El hotel</h2>
+          <ul>
+            <li><a href="/villas" data-en="Villas and rates">Villas y tarifas</a></li>
+            <li><a href="/galeria" data-en="Gallery">Galería</a></li>
+            <li><a href="/ubicacion" data-en="Location">Ubicación</a></li>
+            <li><a href="/contacto" data-en="Reservations">Reservaciones</a></li>
+          </ul>
         </div>
-        <div class="detalle-item">
-          <div class="detalle-icono" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
-          </div>
-          <div class="detalle-texto">
-            <strong>Email</strong>
-            <span><a href="mailto:joseangel.hotel68@gmail.com">joseangel.hotel68@gmail.com</a></span>
-          </div>
+        <div>
+          <h2 data-en="Contact">Contacto</h2>
+          <ul>
+            <li><a href="https://wa.me/523151007106" target="_blank" rel="noopener">WhatsApp</a></li>
+            <li><a href="tel:+523151007106">+52 (315) 100 7106</a></li>
+            <li><a href="mailto:joseangel.hotel68@gmail.com">joseangel.hotel68@gmail.com</a></li>
+          </ul>
         </div>
-        <div class="detalle-item">
-          <div class="detalle-icono" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-          </div>
-          <div class="detalle-texto">
-            <strong>Atención</strong>
-            <span>Check-in: 3:00 PM | Check-out: 12:00 PM</span>
-          </div>
+        <div>
+          <h2 data-en="Information">Información</h2>
+          <ul>
+            <li><a href="https://www.google.com/maps/search/?api=1&amp;query=14+C.+Palmas,+San+Patricio,+Jalisco" target="_blank" rel="noopener" data-en="Getting here">Cómo llegar</a></li>
+            <li><a href="/aviso-privacidad" data-en="Privacy notice (Spanish)">Aviso de privacidad</a></li>
+          </ul>
         </div>
       </div>
-    </div>
-
-    <!-- Columna derecha: formulario de reserva -->
-    <div class="formulario-reserva reveal reveal-delay-2">
-      <div class="formulario-cabecera">
-        <h3 class="formulario-titulo">Solicita tu reservación</h3>
-        <p class="formulario-subtitulo">Llena tus datos y se abrirá WhatsApp con tu mensaje listo para enviar.</p>
+      <div class="pie-inferior">
+        <p data-en="© 2026 Villas Cangrejo. All rights reserved.">© 2026 Villas Cangrejo. Todos los derechos reservados.</p>
+        <p>San Patricio-Melaque · Jalisco, México</p>
       </div>
-
-      <!-- El atributo novalidate desactiva la validación nativa del browser;
-           JS hace la validación personalizada. -->
-      <form id="formulario-reservacion" novalidate>
-
-        <!-- Paso 1: datos del huésped -->
-        <fieldset class="form-paso">
-          <legend><span class="paso-num">1</span><span class="paso-texto">Tus datos</span></legend>
-
-          <!-- Nombre completo -->
-          <div class="campo-grupo">
-            <label for="campo-nombre">Nombre completo *</label>
-            <input type="text" id="campo-nombre" autocomplete="name" placeholder="Ej: Ana García López" />
-            <span class="campo-error" id="error-nombre">Por favor ingresa tu nombre completo.</span>
-          </div>
-
-          <div class="campos-fila">
-            <!-- Email -->
-            <div class="campo-grupo">
-              <label for="campo-email">Correo electrónico</label>
-              <input type="email" id="campo-email" autocomplete="email" placeholder="correo@ejemplo.com" />
-              <span class="campo-error" id="error-email">Ingresa un correo electrónico válido.</span>
-            </div>
-
-            <!-- Teléfono (opcional) -->
-            <div class="campo-grupo">
-              <label for="campo-telefono">Teléfono de contacto</label>
-              <input type="tel" id="campo-telefono" autocomplete="tel" placeholder="+52 315 112 1201" />
-            </div>
-          </div>
-        </fieldset>
-
-        <!-- Paso 2: fechas y huéspedes -->
-        <fieldset class="form-paso">
-          <legend><span class="paso-num">2</span><span class="paso-texto">Tu estancia</span></legend>
-
-          <!-- Fechas de llegada y salida en la misma fila -->
-          <div class="campos-fila">
-            <div class="campo-grupo">
-              <label for="campo-llegada">Fecha de llegada *</label>
-              <input type="date" id="campo-llegada" />
-              <span class="campo-error" id="error-llegada">Selecciona tu fecha de llegada.</span>
-            </div>
-            <div class="campo-grupo">
-              <label for="campo-salida">Fecha de salida *</label>
-              <input type="date" id="campo-salida" />
-              <span class="campo-error" id="error-salida">La salida debe ser posterior a la llegada.</span>
-            </div>
-          </div>
-
-          <!-- Precio estimado según las fechas (lo calcula main.js con los precios de la sección de villas) -->
-          <p id="precio-estimado" class="precio-estimado" hidden></p>
-
-          <!-- Número de huéspedes -->
-          <div class="campo-grupo">
-            <label for="campo-huespedes">Número de huéspedes *</label>
-            <select id="campo-huespedes">
-              <option value="">— Número de huéspedes —</option>
-              <option value="1">1 huésped</option>
-              <option value="2">2 huéspedes</option>
-              <option value="3">3 huéspedes</option>
-              <option value="4">4 huéspedes</option>
-              <option value="5">5+ huéspedes</option>
-            </select>
-            <span class="campo-error" id="error-huespedes">Indica cuántos huéspedes serán.</span>
-          </div>
-        </fieldset>
-
-        <!-- Paso 3: peticiones especiales -->
-        <fieldset class="form-paso">
-          <legend><span class="paso-num">3</span><span class="paso-texto">Algo más</span></legend>
-          <div class="campo-grupo">
-            <label for="campo-comentarios">Peticiones especiales</label>
-            <textarea id="campo-comentarios"
-              placeholder="Alergias alimentarias, luna de miel, celebración especial, etc."></textarea>
-          </div>
-        </fieldset>
-
-        <button type="submit" class="btn-enviar">Enviar por WhatsApp</button>
-        <p class="nota-privacidad">Al enviar aceptas nuestro <a href="/aviso-privacidad" target="_blank">aviso de privacidad</a>.</p>
-      </form>
-
-      <!-- Mensaje de confirmación (oculto hasta que el formulario se envía con éxito) -->
-      <div id="formulario-exito" role="alert">
-        <div class="exito-icono" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>
-        </div>
-        <p><strong>¡Listo!</strong><br>
-          Se abrió WhatsApp con tu mensaje. Solo presiona enviar y te responderemos
-          para confirmar tu estancia en Villas Cangrejo.</p>
-        <!-- Por si el navegador bloqueó la ventana: main.js le pone el mensaje al enlace -->
-        <a id="exito-whatsapp" class="exito-alterno" href="https://wa.me/523151007106" target="_blank" rel="noopener">¿No se abrió WhatsApp? Toca aquí</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- =====================================================
-       PIE DE PÁGINA (FOOTER)
-  ====================================================== -->
-  <footer id="pie-de-pagina" aria-label="Pie de página">
-    <div class="footer-grid">
-
-      <!-- Columna: Marca del hotel -->
-      <div class="footer-marca">
-        <div class="navbar-logo" style="margin-bottom:1rem">
-          <img src="img/logo.png" alt="" class="logo-img" aria-hidden="true" width="600" height="573" loading="lazy" />
-          <span class="navbar-logo-texto">
-            Villas Cangrejo
-            <span>Jalisco, México</span>
-          </span>
-        </div>
-        <p>
-          Tu hogar en la costa más bella del Pacífico mexicano.
-          Naturaleza, lujo y calidez en perfecta armonía.
-        </p>
-        <!-- Redes sociales -->
-        <div class="footer-sociales">
-          <a href="https://wa.me/523151007106" class="social-enlace" aria-label="WhatsApp" target="_blank" rel="noopener">💬</a>
-        </div>
-      </div>
-
-      <!-- Columna: Links del hotel -->
-      <div class="footer-columna">
-        <h4>El Hotel</h4>
-        <ul>
-          <li><a href="#nosotros">Nosotros</a></li>
-          <li><a href="#habitaciones">Villas</a></li>
-          <li><a href="#amenidades">Comodidades</a></li>
-          <li><a href="#galeria">Galería</a></li>
-        </ul>
-      </div>
-
-      <!-- Columna: Servicios (los reales del hotel) -->
-      <div class="footer-columna">
-        <h4>Servicios</h4>
-        <ul>
-          <li><a href="#amenidades">Alberca</a></li>
-          <li><a href="#amenidades">Aire acondicionado</a></li>
-          <li><a href="#amenidades">Internet Wi-Fi</a></li>
-          <li><a href="#habitaciones">Estancias largas</a></li>
-        </ul>
-      </div>
-
-      <!-- Columna: Información y contacto -->
-      <div class="footer-columna">
-        <h4>Información</h4>
-        <ul>
-          <li><a href="#contacto">Reservaciones</a></li>
-          <li><a href="#ubicacion">Ubicación</a></li>
-          <li><a href="https://www.google.com/maps/search/?api=1&amp;query=14+C.+Palmas,+San+Patricio,+Jalisco"
-              target="_blank" rel="noopener">Cómo llegar</a></li>
-          <li><a href="/aviso-privacidad">Aviso de privacidad</a></li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Barra inferior con copyright -->
-    <div class="footer-inferior">
-      <p>© 2026 Villas Cangrejo. Todos los derechos reservados.</p>
-      <p>San Patricio-Melaque, Bahía de Navidad · Costa Alegre de Jalisco</p>
     </div>
   </footer>
 
-  <!-- Botón flotante de WhatsApp (siempre visible) -->
   <a href="https://wa.me/523151007106" class="whatsapp-flotante" target="_blank" rel="noopener"
-    aria-label="Escríbenos por WhatsApp">
+    aria-label="Escríbenos por WhatsApp" data-en-aria-label="Message us on WhatsApp">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 18.8z"/><path d="M9.2 8.6c.2-.5.6-.5.9-.5.4 0 .6.6.9 1.3.1.3 0 .5-.2.8l-.4.4c.4.9 1.5 2 2.5 2.5l.4-.4c.3-.2.5-.3.8-.2.7.3 1.3.5 1.3.9 0 .3 0 .7-.5.9-.6.3-1.4.4-2.5-.1a8 8 0 0 1-3.4-3.4c-.5-1-.4-1.9-.1-2.5z"/></svg>
   </a>
-
-  <!-- =====================================================
-       MODAL LIGHTBOX (para la galería de fotos)
-       Se muestra al clic sobre cualquier foto de la galería.
-  ====================================================== -->
-  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Visor de galería">
-    <button id="lightbox-cerrar" aria-label="Cerrar galería">×</button>
-    <button class="lightbox-nav" id="lightbox-prev" aria-label="Foto anterior">‹</button>
-    <img id="lightbox-imagen" src="" alt="Foto ampliada de la galería" />
-    <button class="lightbox-nav" id="lightbox-next" aria-label="Siguiente foto">›</button>
-  </div>
-
-  <!-- =====================================================
-       JAVASCRIPT
-       Funciones implementadas:
-       1. Navbar scroll → agrega clase .navbar-solida
-       2. Menú hamburguesa → toggle .abierto
-       3. Parallax suave en el hero
-       4. Intersection Observer → clase .visible en .reveal
-       5. Contadores animados de estadísticas
-       6. Tabs de habitaciones
-       7. Lightbox de galería (fotos)
-       8. Reproductor de audio ambiental
-       9. Validación del formulario de reserva
-  ====================================================== -->
-
-  <!-- Versión en inglés (ES/EN): va antes que main.js porque usa sus traducciones -->
-  <script src="js/i18n.js"></script>
-
-  <!-- JavaScript principal (validación, navbar, animaciones) -->
-  <script src="js/main.js"></script>
 
 </body>
 

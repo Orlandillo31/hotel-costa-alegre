@@ -29,11 +29,13 @@ test('la portada se sirve con las cabeceras de seguridad de public/_headers', as
   assert.equal(res.headers.get('cache-control'), null, 'el HTML no se guarda en caché');
 });
 
-test('CSS, JS e imágenes se guardan un día; la regla general no repite Cache-Control', async () => {
-  for (const ruta of ['/css/styles.css', '/js/main.js', '/img/logo.png']) {
+test('las imágenes se guardan un día; CSS y JS se revisan en cada visita', async () => {
+  const img = await fetch(B + '/img/logo.png');
+  assert.equal(img.headers.get('cache-control'), 'public, max-age=86400');
+  for (const ruta of ['/css/styles.css', '/js/main.js']) {
     const res = await fetch(B + ruta);
     assert.equal(res.status, 200, ruta);
-    assert.equal(res.headers.get('cache-control'), 'public, max-age=86400', ruta);
+    assert.equal(res.headers.get('cache-control'), null, ruta + ': no debe guardarse sin revisar');
     assert.ok(res.headers.get('content-security-policy'), ruta);
   }
 });
@@ -68,13 +70,55 @@ test('la portada tiene título, descripción, canonical y ficha de hotel para Go
   assert.equal(ficha.numberOfRooms, 16);
 });
 
-test('robots.txt y sitemap.xml están disponibles', async () => {
+// Páginas del sitio: cada botón del menú lleva a su propia página
+const PAGINAS = ['/', '/villas', '/galeria', '/ubicacion', '/contacto', '/aviso-privacidad'];
+
+test('cada página abre, con su título, descripción, canonical propio y un solo <h1>', async () => {
+  for (const ruta of PAGINAS) {
+    const res = await fetch(B + ruta);
+    assert.equal(res.status, 200, ruta);
+    const html = await res.text();
+    assert.match(html, /<title>[^<]+<\/title>/, ruta);
+    assert.match(html, /<meta name="description" content="[^"]{30,}"/, ruta);
+    const canonical = html.match(/<link rel="canonical" href="https:\/\/[^/"]+([^"]*)"/);
+    assert.ok(canonical, ruta + ': falta canonical');
+    assert.equal(canonical[1], ruta, ruta + ': canonical de otra página');
+    assert.equal((html.match(/<h1[\s>]/g) || []).length, 1, ruta + ': debe haber un solo <h1>');
+    assert.match(html, /<html lang="es" data-en-title="[^"]+"/, ruta + ': falta el título en inglés');
+  }
+});
+
+test('el menú marca la página actual y solo se cargan scripts propios', async () => {
+  for (const ruta of PAGINAS.filter(r => r !== '/' && r !== '/aviso-privacidad')) {
+    const html = await (await fetch(B + ruta)).text();
+    assert.match(html, new RegExp(`<a href="${ruta}" aria-current="page"`), ruta);
+    const scripts = [...html.matchAll(/<script src="([^"?]+)/g)].map(m => m[1]);   // sin ?v=
+    assert.deepEqual(scripts, ['/js/i18n.js', '/js/main.js'], ruta);
+  }
+});
+
+test('las páginas que usa el menú y el pie existen todas', async () => {
+  const html = await (await fetch(B + '/')).text();
+  const internas = new Set([...html.matchAll(/href="(\/[a-z-]*)(?:#[a-z-]+)?"/g)].map(m => m[1]));
+  for (const ruta of internas) assert.equal((await fetch(B + ruta)).status, 200, ruta);
+});
+
+test('el formulario de reserva está en /contacto con las tarifas para el precio estimado', async () => {
+  const html = await (await fetch(B + '/contacto')).text();
+  for (const id of ['formulario-reservacion', 'campo-nombre', 'campo-llegada', 'campo-salida', 'campo-huespedes', 'precio-estimado', 'formulario-exito', 'exito-whatsapp']) {
+    assert.match(html, new RegExp(`id="${id}"`), id);
+  }
+  for (const t of ['precioNoche', 'mes1', 'mes2', 'mes3']) assert.match(html, new RegExp(`data-tarifa="${t}"`), t);
+});
+
+test('robots.txt y sitemap.xml están disponibles; el sitemap lista todas las páginas', async () => {
   const robots = await fetch(B + '/robots.txt');
   assert.equal(robots.status, 200);
   assert.match(await robots.text(), /Sitemap: https:\/\/\S+\/sitemap\.xml/);
   const mapa = await fetch(B + '/sitemap.xml');
   assert.equal(mapa.status, 200);
-  assert.match(await mapa.text(), /<urlset/);
+  const xml = await mapa.text();
+  for (const ruta of PAGINAS) assert.match(xml, new RegExp(`<loc>https://[^/<]+${ruta === '/' ? '/' : ruta}</loc>`), ruta);
 });
 
 test('una dirección que no existe da 404 (también las de la antigua API)', async () => {

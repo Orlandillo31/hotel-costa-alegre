@@ -6,17 +6,28 @@ The project started as a hotel website, grew into a full reservation system (cus
 
 > The full reservation system is preserved in the git tag [`v2-con-panel`](../../tree/v2-con-panel).
 
+## Pages
+
+| Page | Content |
+| --- | --- |
+| `/` | Home: hero, amenities, links to every page, rates and call to action |
+| `/villas` | What every villa includes, amenities, nightly and monthly rates, check-in/out |
+| `/galeria` | Photo gallery with lightbox |
+| `/ubicacion` | Address, nearby places and Google Maps link |
+| `/contacto` | Reservation form that opens WhatsApp with the message ready to send, contact details and rates |
+| `/aviso-privacidad` | Privacy notice |
+
 ## Features
 
-- Villa information, prices per night and long-stay monthly rates
-- Photo gallery with lightbox
-- Reservation request form that opens WhatsApp with the message ready to send (no data stored on a server)
-- Price estimate based on the selected dates
-- Location section with nearby places
+- Minimal design inspired by [rulebase.co](https://rulebase.co), adapted to the hotel (sand, ocean ink and crab coral)
+- Fonts: Geist, Geist Mono and Fraunces italic (Google Fonts)
+- Smooth page transitions (View Transitions), scroll reveal and a statement that lights up word by word
+- Skeleton loaders with a shimmer while photos download
+- Price estimate based on the selected dates (no data stored on a server)
 - Floating WhatsApp button
-- Spanish and English interface
-- SEO: descriptive title and meta tags, canonical URL, schema.org `Hotel` data, `robots.txt` and `sitemap.xml`
-- Responsive interface
+- Spanish and English: every translatable element carries its English text in a `data-en` attribute (`public/js/i18n.js`)
+- SEO: a title, description and canonical URL per page, schema.org `Hotel` data, `robots.txt` and `sitemap.xml`
+- Responsive interface with a full-screen mobile menu
 
 ## Technologies Used
 
