@@ -178,6 +178,56 @@ if (formulario) {
   const nochesEntre = (a, b) => (a && b && b > a)
     ? Math.round((new Date(b + 'T00:00:00Z') - new Date(a + 'T00:00:00Z')) / 86400000) : 0;
 
+  // 'YYYY-MM-DD' → "viernes 30 de octubre de 2026"
+  const fechaLarga = s => new Date(s + 'T00:00:00')
+    .toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+    .replace(',', '');
+
+  // Mensaje de WhatsApp, con la estructura de una solicitud de reservación
+  // de hotel: estancia, huésped, peticiones y cierre. Siempre en español
+  // (lo lee el hotel) y sin emojis: en algunos teléfonos llegan como "�".
+  // Formato de WhatsApp: *negritas*, _cursivas_, "- " viñetas, "> " cita.
+  function mensajeReserva({ nombre, email, telefono, llegada, salida, huespedes, comentarios }) {
+    const noches  = nochesEntre(llegada, salida);
+    const precio  = calcularPrecio(noches);
+    const personas = huespedes === '5' ? '5 o más personas' : huespedes === '1' ? '1 persona' : `${huespedes} personas`;
+    const detalle = precio.mensual
+      ? `${noches} noches, tarifa mensual de ${fmtDinero(precio.mensual)}`
+      : `${noches} noche${noches === 1 ? '' : 's'} × ${fmtDinero(tarifas.precioNoche)}`;
+
+    const lineas = [
+      '*SOLICITUD DE RESERVACIÓN*',
+      'Villas Cangrejo · San Patricio-Melaque, Jalisco',
+      '',
+      'Buen día. Me gustaría consultar la disponibilidad de una villa para las siguientes fechas:',
+      '',
+      '*DETALLES DE LA ESTANCIA*',
+      `- Llegada: ${fechaLarga(llegada)} (a partir de las 3:00 PM)`,
+      `- Salida: ${fechaLarga(salida)} (antes de las 12:00 PM)`,
+      `- Duración: ${noches} noche${noches === 1 ? '' : 's'}`,
+      `- Huéspedes: ${personas}`,
+      `- Tarifa estimada: ${fmtDinero(precio.total)} MXN + IVA (${detalle})`,
+      '',
+      '*DATOS DEL HUÉSPED*',
+      `- Nombre: ${nombre}`
+    ];
+    if (email)    lineas.push(`- Correo: ${email}`);
+    if (telefono) lineas.push(`- Teléfono: ${telefono}`);
+    if (comentarios) {
+      lineas.push('', '*PETICIONES ESPECIALES*', ...comentarios.split(/\r?\n/).map(l => '> ' + l));
+    }
+    lineas.push(
+      '',
+      'Quedo en espera de su confirmación y de la información para realizar el pago.',
+      '',
+      'Saludos cordiales,',
+      nombre,
+      '',
+      `_Solicitud enviada desde ${location.host}_`
+    );
+    return lineas.join('\n');
+  }
+
   function mostrarError(campoId, errorId, mostrar) {
     document.getElementById(campoId).classList.toggle('error', mostrar);
     document.getElementById(errorId).classList.toggle('visible', mostrar);
@@ -205,25 +255,12 @@ if (formulario) {
       return;
     }
 
-    // ---------- Mensaje (siempre en español: lo lee el hotel) ----------
-    const telefono    = document.getElementById('campo-telefono').value.trim();
-    const comentarios = document.getElementById('campo-comentarios').value.trim();
-    const huespedes   = campoHues.value === '5' ? '5 o más' : campoHues.value;
-    const noches      = nochesEntre(llegada, salida);
-    const lineas = [
-      '*🦀 SOLICITUD DE RESERVA - Villas Cangrejo*',
-      '',
-      `Hola, soy *${nombre}* y me gustaría reservar una villa.`,
-      '',
-      `• Llegada: ${llegada}`,
-      `• Salida: ${salida} (${noches} noche${noches === 1 ? '' : 's'})`,
-      `• Huéspedes: ${huespedes}`
-    ];
-    if (email)       lineas.push(`• Correo: ${email}`);
-    if (telefono)    lineas.push(`• Teléfono: ${telefono}`);
-    if (comentarios) lineas.push('', `📝 ${comentarios}`);
-    lineas.push('', '¿Tienen disponibilidad? ¡Gracias!');
-    const url = enlaceWhatsApp(lineas.join('\n'));
+    const url = enlaceWhatsApp(mensajeReserva({
+      nombre, email, llegada, salida,
+      huespedes:   campoHues.value,
+      telefono:    document.getElementById('campo-telefono').value.trim(),
+      comentarios: document.getElementById('campo-comentarios').value.trim()
+    }));
 
     // Se abre en el mismo clic del botón para que el navegador no lo bloquee
     window.open(url, '_blank', 'noopener');
@@ -248,18 +285,25 @@ if (formulario) {
   document.querySelectorAll('[data-tarifa]').forEach(el => {
     tarifas[el.dataset.tarifa] = Number(el.textContent.replace(/[^\d]/g, ''));
   });
-  const fmtDinero = n => '$' + n.toLocaleString('es-MX');
+  function fmtDinero(n) { return '$' + n.toLocaleString('es-MX'); }
+
+  // { total, mensual } — mensual solo en estancias de 30 noches o más
+  function calcularPrecio(noches) {
+    if (noches >= NOCHES_MES) {
+      const mensual = noches >= 90 ? tarifas.mes3 : noches >= 60 ? tarifas.mes2 : tarifas.mes1;
+      return { mensual, total: Math.round(noches * mensual / NOCHES_MES) };
+    }
+    return { mensual: null, total: tarifas.precioNoche * noches };
+  }
 
   function textoEstimado(noches) {
     const enIngles = !!(window.VC_idioma && window.VC_idioma() === 'en');
-    if (noches >= NOCHES_MES) {
-      const mensual = noches >= 90 ? tarifas.mes3 : noches >= 60 ? tarifas.mes2 : tarifas.mes1;
-      const total = Math.round(noches * mensual / NOCHES_MES);
+    const { mensual, total } = calcularPrecio(noches);
+    if (mensual) {
       return enIngles
         ? `Long stay (${noches} nights): ${fmtDinero(mensual)} per month = <strong>${fmtDinero(total)} MXN</strong> + VAT`
         : `Estancia larga (${noches} noches): ${fmtDinero(mensual)} por mes = <strong>${fmtDinero(total)} MXN</strong> + IVA`;
     }
-    const total = tarifas.precioNoche * noches;
     return enIngles
       ? `Estimated price: ${noches} night${noches === 1 ? '' : 's'} × ${fmtDinero(tarifas.precioNoche)} = <strong>${fmtDinero(total)} MXN</strong> + VAT`
       : `Precio estimado: ${noches} noche${noches === 1 ? '' : 's'} × ${fmtDinero(tarifas.precioNoche)} = <strong>${fmtDinero(total)} MXN</strong> + IVA`;
