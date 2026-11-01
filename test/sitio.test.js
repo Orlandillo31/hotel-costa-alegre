@@ -215,3 +215,14 @@ test('jacuzzi con hidromasaje en comodidades, portada y ficha de Google', async 
   const ficha = JSON.parse(inicio.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
   assert.ok(ficha.amenityFeature.some(a => a.name === 'Jacuzzi con hidromasaje'));
 });
+
+test('portada con el logo grande y el nombre; galería de 14 fotos; fachada en Ubicación', async () => {
+  const inicio = await (await fetch(B + '/'));
+  const html = await inicio.text();
+  assert.match(html, /<img src="\/img\/logo\.png"[^>]*class="hero-cangrejo"/);
+  assert.match(html, /<h1 class="hero-titulo"[^>]*>\s*<span class="hero-marca">Villas Cangrejo<\/span>/);
+  assert.match(html, /family=Fraunces:ital,opsz,wght,SOFT,WONK@0,144,900,100,0/, 'letra gruesa y suave del letrero');
+  const galeria = await (await fetch(B + '/galeria')).text();
+  assert.equal((galeria.match(/class="galeria-item"/g) || []).length, 14, '1 grande + 2 + 2 + 3 × 3');
+  assert.match(await (await fetch(B + '/ubicacion')).text(), /<figure class="fachada">/);
+});

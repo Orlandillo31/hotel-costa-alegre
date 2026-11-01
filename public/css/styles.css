@@ -26,6 +26,7 @@
   --f-sans:  'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --f-mono:  'Geist Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
   --f-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --f-marca: 'Fraunces', Georgia, 'Times New Roman', serif;   /* gruesa (900) y suave, como el letrero */
 
   --radio: 4px;
   --max: 1200px;
@@ -205,18 +206,22 @@ body.menu-abierto .menu-icono span:last-child  { top: 5px; transform: rotate(-45
   padding-bottom: clamp(3rem, 6vw, 4.5rem);
   text-align: center;
 }
-.hero-aviso {
-  display: inline-flex; align-items: center; gap: 0.9rem; text-align: left;
-  padding: 0.4rem 1rem 0.4rem 0.4rem;
-  border: 1px solid var(--linea-clara); border-radius: var(--radio);
-  background: rgba(236, 230, 218, 0.04);
-  font-size: 0.95rem; color: rgba(236, 230, 218, 0.85);
-  transition: border-color 0.2s ease;
+/* Logo grande y nombre con la letra del letrero */
+.hero-cangrejo { width: clamp(110px, 15vw, 168px); height: auto; margin-inline: auto; }
+.hero-titulo { margin: 1.3rem auto 1.5rem; }
+.hero-marca {
+  display: block;
+  font-family: var(--f-marca); font-weight: 900;
+  font-variation-settings: 'SOFT' 100, 'WONK' 0;
+  font-size: clamp(2.7rem, 7.4vw, 5.4rem);
+  letter-spacing: 0.015em; line-height: 1.02;
 }
-.hero-aviso:hover { border-color: rgba(236, 230, 218, 0.35); }
-.hero-aviso img { width: 76px; height: 52px; object-fit: cover; border-radius: 2px; }
-.hero-aviso strong { display: block; font-weight: 500; color: var(--crema); }
-.hero .titulo-xl { margin: 2rem auto 1.4rem; max-width: 14ch; }
+.hero-lema {
+  display: block; margin-top: 1rem;
+  font-size: clamp(1.3rem, 2.6vw, 1.95rem); font-weight: 400;
+  letter-spacing: -0.025em; line-height: 1.25;
+  color: rgba(236, 230, 218, 0.9);
+}
 .hero .lead { margin-inline: auto; color: rgba(236, 230, 218, 0.85); }
 .hero-botones { display: flex; justify-content: center; gap: 0.7rem; flex-wrap: wrap; margin-top: 2rem; }
 .hero .boton-linea { color: var(--crema); border-color: var(--linea-clara); }
@@ -402,6 +407,9 @@ body.menu-abierto .menu-icono span:last-child  { top: 5px; transform: rotate(-45
 .ubicacion-botones { display: flex; gap: 0.7rem; flex-wrap: wrap; }
 .direccion { margin-top: 2.2rem; padding: 1.3rem 1.4rem; background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio); }
 .direccion p { margin-top: 0.5rem; font-size: 1.05rem; letter-spacing: -0.01em; }
+.fachada { margin-top: 1.2rem; }
+.fachada img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; object-position: 50% 62%; border-radius: var(--radio); }
+.fachada figcaption { margin-top: 0.6rem; color: var(--gris); }
 .melaque { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 4.5rem); align-items: center; }
 .melaque img { width: 100%; aspect-ratio: 5 / 4; object-fit: cover; border-radius: var(--radio); }
 .melaque .titulo-l { margin: 1rem 0 1.2rem; }
@@ -590,7 +598,8 @@ img.foto-lista { animation: foto-aparece 0.6s ease; }
   animation: intro-entra 0.5s var(--suave) both, intro-camina 0.8s ease-in-out 0.5s both;
 }
 .intro-nombre {
-  font-size: 1.45rem; font-weight: 500; letter-spacing: -0.03em;
+  font-family: var(--f-marca); font-weight: 900; font-variation-settings: 'SOFT' 100, 'WONK' 0;
+  font-size: 2.1rem; letter-spacing: 0.015em;
   animation: intro-texto 0.5s var(--suave) 0.4s both;
 }
 @keyframes intro-entra { from { opacity: 0; transform: translateY(16px) scale(0.85); } to { opacity: 1; transform: none; } }
