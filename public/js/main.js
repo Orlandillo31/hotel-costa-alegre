@@ -16,6 +16,25 @@ const traducir = s => (window.VC_t ? window.VC_t(s) : s);
 const movimientoReducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // -------------------------------------------------------
+// 0. ANIMACIÓN DE BIENVENIDA (portada)
+//    Un clic o una tecla la saltan; al terminar se quita de la página.
+// -------------------------------------------------------
+const intro = document.querySelector('.intro');
+if (intro && getComputedStyle(intro).display !== 'none') {
+  const quitarIntro = () => intro.remove();
+  const saltarIntro = () => {
+    intro.classList.add('fuera');
+    setTimeout(quitarIntro, 400);   // lo que dura la salida rápida
+  };
+  intro.addEventListener('click', saltarIntro);
+  document.addEventListener('keydown', saltarIntro, { once: true });
+  intro.addEventListener('animationend', e => { if (e.animationName === 'intro-salida') quitarIntro(); });
+  setTimeout(quitarIntro, 2500);    // respaldo: por si el aviso de "terminó" no llega
+} else if (intro) {
+  intro.remove();                   // segunda visita o movimiento reducido
+}
+
+// -------------------------------------------------------
 // 1. CABECERA Y MENÚ
 // -------------------------------------------------------
 const cabecera  = document.getElementById('cabecera');

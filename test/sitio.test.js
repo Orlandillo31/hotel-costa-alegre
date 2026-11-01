@@ -194,3 +194,15 @@ test('precios vigentes: $2,250 por noche; $22,000 / $20,000 / $18,000 por mes', 
   assert.match(inicio, /"priceRange": "Desde \$2,250 MXN por noche"/);
   assert.doesNotMatch(inicio, /\$1,850|\$16,000/);
 });
+
+test('animación de bienvenida: solo en la portada, decidida antes de dibujar', async () => {
+  const inicio = await (await fetch(B + '/')).text();
+  assert.match(inicio, /<script src="\/js\/intro\.js[^"]*"><\/script>\s*<link rel="stylesheet"/, 'intro.js antes del CSS y sin defer');
+  assert.match(inicio, /<div class="intro" aria-hidden="true">/);
+  for (const ruta of PAGINAS.filter(r => r !== '/')) {
+    assert.doesNotMatch(await (await fetch(B + ruta)).text(), /class="intro"|intro\.js/, ruta);
+  }
+  const css = fs.readFileSync(path.join(__dirname, '..', 'public', 'css', 'styles.css'), 'utf8');
+  assert.match(css, /\.sin-intro \.intro \{ display: none; \}/);
+  assert.match(css, /prefers-reduced-motion: reduce\) \{\s*\.intro \{ display: none; \}/);
+});

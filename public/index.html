@@ -26,6 +26,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,300&amp;family=Geist+Mono:wght@400&amp;family=Geist:wght@400;500;600&amp;display=swap" rel="stylesheet" />
+  <!-- Decide antes de dibujar si se muestra la animación de bienvenida -->
+  <script src="/js/intro.js?v=3"></script>
   <link rel="stylesheet" href="/css/styles.css?v=3" />
   <link rel="icon" type="image/png" href="/img/favicon.png" />
   <link rel="apple-touch-icon" href="/img/favicon.png" />
@@ -75,6 +77,15 @@
 </head>
 
 <body class="pagina-inicio">
+  <!-- Animación de bienvenida: el cangrejo da unos pasitos y la pantalla sube.
+       Solo la primera visita de la sesión (js/intro.js); un clic o una tecla la saltan. -->
+  <div class="intro" aria-hidden="true">
+    <div class="intro-contenido">
+      <img src="/img/logo.png" alt="" width="600" height="573" class="intro-cangrejo" />
+      <span class="intro-nombre">Villas Cangrejo</span>
+    </div>
+  </div>
+
   <a class="saltar" href="#contenido" data-en="Skip to content">Saltar al contenido</a>
 
   <header class="cabecera" id="cabecera">
