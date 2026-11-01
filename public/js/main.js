@@ -104,7 +104,7 @@ if (declaraciones.length) {
 //    Mientras una foto se descarga se ve un recuadro con un
 //    brillo que pasa (CSS: img.esqueleto); al llegar, aparece suave.
 // -------------------------------------------------------
-document.querySelectorAll('img[src*="images.unsplash.com"]').forEach(img => {
+document.querySelectorAll('main img:not(#lightbox-imagen)').forEach(img => {
   if (img.complete && img.naturalWidth) return;      // ya estaba en caché
   img.classList.add('esqueleto');
   const listo = () => {
@@ -128,8 +128,8 @@ if (lightbox) {
 
   const mostrar = i => {
     actual = (i + fotos.length) % fotos.length;
-    // Versión más grande de la misma foto
-    imagen.src = fotos[actual].currentSrc.replace(/w=\d+/, 'w=2000');
+    // Versión grande de la misma foto (data-grande); si no tiene, la que ya se ve
+    imagen.src = fotos[actual].dataset.grande || fotos[actual].currentSrc;
     imagen.alt = fotos[actual].alt;
   };
   const abrir = (i, quien) => {
@@ -283,7 +283,8 @@ if (formulario) {
 
   // ---------- Precio estimado ----------
   //  < 30 noches: por noche. 30+ noches: tarifa mensual prorrateada
-  //  (30–59 → 1 mes, 60–89 → 2 meses, 90+ → 3 meses; un mes = 30 noches).
+  //  (30–59 noches → 1 mes, 60–90 → 2 a 3 meses, 91 o más → más de 3 meses;
+  //  un mes = 30 noches).
   //  Los precios se leen de la tarjeta de tarifas de la misma página.
   const NOCHES_MES = 30;
   const tarifas = {};
@@ -295,7 +296,7 @@ if (formulario) {
   // { total, mensual } — mensual solo en estancias de 30 noches o más
   function calcularPrecio(noches) {
     if (noches >= NOCHES_MES) {
-      const mensual = noches >= 90 ? tarifas.mes3 : noches >= 60 ? tarifas.mes2 : tarifas.mes1;
+      const mensual = noches > 90 ? tarifas.mes3 : noches >= 60 ? tarifas.mes2 : tarifas.mes1;
       return { mensual, total: Math.round(noches * mensual / NOCHES_MES) };
     }
     return { mensual: null, total: tarifas.precioNoche * noches };

@@ -48,7 +48,8 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
-img { display: block; max-width: 100%; }
+/* height: auto deja que el CSS (aspect-ratio) mande sobre el alto que traen las fotos */
+img { display: block; max-width: 100%; height: auto; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
 ul { list-style: none; }
@@ -224,6 +225,7 @@ body.menu-abierto .menu-icono span:last-child  { top: 5px; transform: rotate(-45
 .hero-foto { background: linear-gradient(var(--tinta) 55%, var(--arena) 55%); }
 .hero-foto img {
   width: 100%; aspect-ratio: 16 / 7; object-fit: cover;
+  object-position: 50% 72%;   /* encuadre: alberca y letrero, no el cielo */
   border-radius: var(--radio);
 }
 @media (max-width: 700px) { .hero-foto img { aspect-ratio: 4 / 3; } }
@@ -368,6 +370,12 @@ body.menu-abierto .menu-icono span:last-child  { top: 5px; transform: rotate(-45
   .galeria-item:first-child { grid-column: span 2; grid-row: span 1; }
   .galeria-panoramica { aspect-ratio: 4 / 3; }
 }
+
+/* Tres fotos con pie (villas: así es por dentro) */
+.fotos-tres { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(0.8rem, 2vw, 1.4rem); }
+.fotos-tres img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radio); }
+.fotos-tres figcaption { margin-top: 0.6rem; color: var(--gris); }
+@media (max-width: 800px) { .fotos-tres { grid-template-columns: 1fr; } }
 
 /* Visor de fotos */
 #lightbox {

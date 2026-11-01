@@ -157,3 +157,40 @@ test('fácil de usar para todos: teléfono, botones con texto y nada que se muev
   assert.match(css, /html \{ font-size: 112\.5%;/, 'texto base de 18 px');
   assert.match(css, /--gris: +#55524b;/, 'gris con buen contraste');
 });
+
+test('fotos reales del hotel: todas existen, son propias y no traen datos del teléfono', async () => {
+  const usadas = new Set();
+  for (const ruta of PAGINAS) {
+    const html = await (await fetch(B + ruta)).text();
+    assert.doesNotMatch(html, /unsplash/, ruta + ': quedan fotos de banco');
+    for (const m of html.matchAll(/(?:src|srcset|data-grande)="([^"]+)"/g)) {
+      for (const parte of m[1].split(',')) {
+        const url = parte.trim().split(' ')[0];
+        if (url.startsWith('/img/')) usadas.add(url);
+      }
+    }
+  }
+  assert.ok(usadas.size > 20, 'deberían usarse las fotos del hotel');
+  for (const url of usadas) {
+    const res = await fetch(B + url);
+    assert.equal(res.status, 200, url);
+    if (url.endsWith('.webp')) {
+      const datos = Buffer.from(await res.arrayBuffer());
+      assert.ok(!datos.includes(Buffer.from('EXIF')) && !datos.includes(Buffer.from('XMP ')), url + ': trae metadatos');
+    }
+  }
+});
+
+test('precios vigentes: $2,250 por noche; $22,000 / $20,000 / $18,000 por mes', async () => {
+  for (const ruta of ['/villas', '/contacto']) {
+    const html = await (await fetch(B + ruta)).text();
+    assert.match(html, /data-tarifa="precioNoche">\$2,250</, ruta);
+    assert.match(html, /data-tarifa="mes1">\$22,000</, ruta);
+    assert.match(html, /data-tarifa="mes2">\$20,000</, ruta);
+    assert.match(html, /data-tarifa="mes3">\$18,000</, ruta);
+    assert.doesNotMatch(html, /\$1,850|\$16,000/, ruta + ': quedan precios viejos');
+  }
+  const inicio = await (await fetch(B + '/')).text();
+  assert.match(inicio, /"priceRange": "Desde \$2,250 MXN por noche"/);
+  assert.doesNotMatch(inicio, /\$1,850|\$16,000/);
+});
