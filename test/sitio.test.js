@@ -226,3 +226,13 @@ test('portada con el logo grande y el nombre; galería de 14 fotos; fachada en U
   assert.equal((galeria.match(/class="galeria-item"/g) || []).length, 14, '1 grande + 2 + 2 + 3 × 3');
   assert.match(await (await fetch(B + '/ubicacion')).text(), /<figure class="fachada">/);
 });
+
+test('todo apunta al dominio oficial villascangrejo.com', async () => {
+  for (const ruta of PAGINAS) {
+    const html = await (await fetch(B + ruta)).text();
+    assert.match(html, new RegExp(`<link rel="canonical" href="https://villascangrejo\.com${ruta === '/' ? '/' : ruta}"`), ruta);
+    assert.doesNotMatch(html, /workers\.dev|onrender\.com/, ruta + ': quedan direcciones viejas');
+  }
+  assert.match(await (await fetch(B + '/robots.txt')).text(), /Sitemap: https:\/\/villascangrejo\.com\/sitemap\.xml/);
+  assert.doesNotMatch(await (await fetch(B + '/sitemap.xml')).text(), /workers\.dev/);
+});

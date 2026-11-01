@@ -49,7 +49,7 @@ hotel-costa-alegre/
 
 ## Deployment
 
-The site is published on **Cloudflare Workers** (static assets), connected to this repository: every push to `main` is deployed automatically.
+The site is live at **[villascangrejo.com](https://villascangrejo.com)**, published on **Cloudflare Workers** (static assets) and connected to this repository: every push to `main` is deployed automatically.
 
 The configuration is in `wrangler.jsonc`: it publishes the `public/` folder and shows `public/404.html` for pages that do not exist.
 

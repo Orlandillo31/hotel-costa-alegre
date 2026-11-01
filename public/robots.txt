@@ -1,6 +1,6 @@
 # Permite que todos los buscadores lean el sitio completo.
-# Si se compra un dominio propio, cambiar la dirección del sitemap.
+# Dirección oficial: villascangrejo.com
 User-agent: *
 Allow: /
 
-Sitemap: https://hotel-costa-alegre.orlandojamaga.workers.dev/sitemap.xml
+Sitemap: https://villascangrejo.com/sitemap.xml
