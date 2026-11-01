@@ -336,7 +336,9 @@ body.menu-abierto .menu-icono span:last-child  { top: 5px; transform: rotate(-45
 .amenidad svg .relleno { fill: currentColor; stroke: none; }
 .amenidad h3 { font-size: 1.1rem; font-weight: 500; letter-spacing: -0.01em; margin-bottom: 0.35rem; }
 .amenidad p { color: var(--gris); }
-@media (max-width: 900px) { .amenidades { grid-template-columns: 1fr 1fr; } }
+/* Si en la última fila queda una sola tarjeta, se estira a lo ancho (sin huecos) */
+@media (min-width: 901px) { .amenidad:last-child:nth-child(3n + 1) { grid-column: 1 / -1; } }
+@media (max-width: 900px) { .amenidades { grid-template-columns: 1fr 1fr; } .amenidad:last-child:nth-child(odd) { grid-column: 1 / -1; } }
 @media (max-width: 560px) { .amenidades { grid-template-columns: 1fr; } }
 
 .tarifas { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: start; }

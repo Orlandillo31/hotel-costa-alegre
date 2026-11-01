@@ -206,3 +206,12 @@ test('animación de bienvenida: solo en la portada, decidida antes de dibujar', 
   assert.match(css, /\.sin-intro \.intro \{ display: none; \}/);
   assert.match(css, /prefers-reduced-motion: reduce\) \{\s*\.intro \{ display: none; \}/);
 });
+
+test('jacuzzi con hidromasaje en comodidades, portada y ficha de Google', async () => {
+  const villas = await (await fetch(B + '/villas')).text();
+  assert.match(villas, /<h3 data-en="Hot tub with jets">Jacuzzi con hidromasaje<\/h3>/);
+  const inicio = await (await fetch(B + '/')).text();
+  assert.match(inicio, /Jacuzzi con hidromasaje<\/li>/);
+  const ficha = JSON.parse(inicio.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
+  assert.ok(ficha.amenityFeature.some(a => a.name === 'Jacuzzi con hidromasaje'));
+});
