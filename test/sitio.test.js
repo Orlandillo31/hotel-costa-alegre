@@ -236,3 +236,26 @@ test('todo apunta al dominio oficial villascangrejo.com', async () => {
   assert.match(await (await fetch(B + '/robots.txt')).text(), /Sitemap: https:\/\/villascangrejo\.com\/sitemap\.xml/);
   assert.doesNotMatch(await (await fetch(B + '/sitemap.xml')).text(), /workers\.dev/);
 });
+
+test('ícono para Google (múltiplo de 48 px) y nombre del sitio', async () => {
+  for (const ruta of ['/favicon.ico', '/img/favicon-96.png', '/img/favicon-192.png', '/img/apple-touch-icon.png']) {
+    assert.equal((await fetch(B + ruta)).status, 200, ruta);
+  }
+  for (const ruta of PAGINAS) {
+    assert.match(await (await fetch(B + ruta)).text(), /<link rel="icon" type="image\/png" sizes="192x192" href="\/img\/favicon-192\.png"/, ruta);
+  }
+  const inicio = await (await fetch(B + '/')).text();
+  const fichas = [...inicio.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m => JSON.parse(m[1]));
+  assert.ok(fichas.some(f => f['@type'] === 'WebSite' && f.name === 'Villas Cangrejo'));
+});
+
+test('solo un adulto puede reservar; la página no se cambia sola al inglés', async () => {
+  const contacto = await (await fetch(B + '/contacto')).text();
+  assert.match(contacto, /<input type="checkbox" id="campo-mayor" \/>/);
+  assert.match(contacto, /id="error-mayor"/);
+  const main = fs.readFileSync(path.join(__dirname, '..', 'public', 'js', 'main.js'), 'utf8');
+  assert.match(main, /mayor: +!document\.getElementById\('campo-mayor'\)\.checked/);
+  const i18n = fs.readFileSync(path.join(__dirname, '..', 'public', 'js', 'i18n.js'), 'utf8');
+  assert.match(i18n, /if \(guardado === 'en'\) aplicar\('en'\)/, 'solo cambia a inglés si el visitante lo eligió');
+  assert.doesNotMatch(i18n, /test\(delNavegador\) \? 'es' : 'en'/, 'sin cambio automático por el idioma del navegador');
+});

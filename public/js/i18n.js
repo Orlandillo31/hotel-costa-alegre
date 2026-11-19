@@ -9,7 +9,9 @@
  *    <html data-en-title="..."> → título de la pestaña
  *  MENSAJES: textos que arma main.js; los pasa por window.VC_t().
  *  Idioma inicial: el que eligió el visitante (se recuerda entre
- *  páginas) o, si es su primera visita, el de su navegador.
+ *  páginas); si nunca eligió, español. NO se cambia solo al inglés:
+ *  el robot de Google navega en inglés y guardaba la página traducida.
+ *  A quien tiene el navegador en otro idioma se le ofrece un aviso.
  * ============================================================ */
 (function () {
   'use strict';
@@ -72,14 +74,38 @@
   let guardado = null;
   try { guardado = localStorage.getItem(CLAVE); } catch { /* almacenamiento bloqueado */ }
   const delNavegador = (navigator.languages && navigator.languages[0]) || navigator.language || 'es';
-  const inicial = guardado === 'es' || guardado === 'en' ? guardado : (/^es\b/i.test(delNavegador) ? 'es' : 'en');
-  if (inicial === 'en') aplicar('en'); else actualizarBoton();   // el español ya está en el HTML
+  if (guardado === 'en') aplicar('en'); else actualizarBoton();   // el español ya está en el HTML
 
-  botones.forEach(b => b.addEventListener('click', () => {
-    const nuevo = idioma === 'en' ? 'es' : 'en';
+  function elegir(nuevo) {
     aplicar(nuevo);
     try { localStorage.setItem(CLAVE, nuevo); } catch { /* sin almacenamiento: dura hasta recargar */ }
     // Para que main.js vuelva a dibujar lo que genera (precio estimado, texto por palabras, menú)
     document.dispatchEvent(new CustomEvent('vc:idioma', { detail: nuevo }));
+  }
+  botones.forEach(b => b.addEventListener('click', () => {
+    elegir(idioma === 'en' ? 'es' : 'en');
+    quitarAviso();
   }));
+
+  // Aviso para visitantes con el navegador en otro idioma (no cambia la página sola).
+  // data-nosnippet: Google no usa este texto en los resultados.
+  let aviso = null;
+  function quitarAviso() { if (aviso) { aviso.remove(); aviso = null; } }
+  if (!guardado && !/^es\b/i.test(delNavegador)) {
+    aviso = document.createElement('div');
+    aviso.className = 'aviso-idioma';
+    aviso.setAttribute('data-nosnippet', '');
+    aviso.setAttribute('role', 'region');
+    aviso.setAttribute('aria-label', 'Language');
+    aviso.lang = 'en';
+    aviso.innerHTML = '<p>This website is also in English.</p>' +
+      '<button type="button" class="boton boton-acento boton-chico">View in English</button>' +
+      '<button type="button" class="aviso-cerrar" aria-label="Close">×</button>';
+    aviso.querySelector('.boton').addEventListener('click', () => { elegir('en'); quitarAviso(); });
+    aviso.querySelector('.aviso-cerrar').addEventListener('click', () => {
+      try { localStorage.setItem(CLAVE, 'es'); } catch { /* sin almacenamiento */ }
+      quitarAviso();
+    });
+    document.body.appendChild(aviso);
+  }
 })();

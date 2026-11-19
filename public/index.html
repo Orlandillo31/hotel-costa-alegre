@@ -29,8 +29,11 @@
   <!-- Decide antes de dibujar si se muestra la animación de bienvenida -->
   <script src="/js/intro.js?v=3"></script>
   <link rel="stylesheet" href="/css/styles.css?v=3" />
-  <link rel="icon" type="image/png" href="/img/favicon.png" />
-  <link rel="apple-touch-icon" href="/img/favicon.png" />
+  <!-- Íconos: Google usa uno cuadrado múltiplo de 48 px para mostrarlo en los resultados -->
+  <link rel="icon" href="/favicon.ico" sizes="48x48" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/img/favicon-192.png" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/img/favicon-96.png" />
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
 
   <!-- Ficha del hotel para Google (datos estructurados schema.org).
        Mantenerla igual que la información visible de la página. -->
@@ -69,6 +72,18 @@
       { "@type": "LocationFeatureSpecification", "name": "Alberca", "value": true },
       { "@type": "LocationFeatureSpecification", "name": "Jacuzzi con hidromasaje", "value": true }
     ]
+  }
+  </script>
+
+  <!-- Nombre del sitio para Google (aparece arriba del título en los resultados) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Villas Cangrejo",
+    "alternateName": "Villas Cangrejo Melaque",
+    "url": "https://villascangrejo.com/",
+    "inLanguage": "es-MX"
   }
   </script>
 

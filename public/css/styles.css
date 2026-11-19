@@ -488,6 +488,25 @@ body.menu-abierto .menu-icono span:last-child  { top: 5px; transform: rotate(-45
 .dato a { text-decoration: underline; text-decoration-color: rgba(17, 26, 28, 0.35); text-underline-offset: 3px; }
 .dato a:hover { text-decoration-color: currentColor; }
 
+/* Casilla de mayoría de edad */
+.campo-casilla { display: grid; grid-template-columns: auto 1fr; gap: 0.3rem 0.75rem; align-items: start; margin: 0.4rem 0 1.4rem; }
+.campo-casilla input { width: 24px; height: 24px; margin-top: 0.15rem; accent-color: var(--coral); cursor: pointer; }
+.campo-casilla label { margin: 0; font-weight: 400; cursor: pointer; }
+.campo-casilla .campo-error { grid-column: 2; }
+.campo-casilla input.error { outline: 2px solid var(--coral); outline-offset: 2px; }
+
+/* Aviso de idioma para visitantes con el navegador en otro idioma */
+.aviso-idioma {
+  position: fixed; left: 1.2rem; bottom: 1.2rem; z-index: 95;
+  display: flex; align-items: center; gap: 0.8rem; max-width: calc(100vw - 2.4rem);
+  padding: 0.7rem 0.6rem 0.7rem 1rem;
+  background: var(--tinta); color: var(--crema); border-radius: var(--radio);
+  box-shadow: 0 12px 30px -12px rgba(17, 26, 28, 0.6);
+}
+.aviso-idioma p { font-size: 0.95rem; }
+.aviso-cerrar { width: 40px; height: 40px; font-size: 1.4rem; color: var(--crema); }
+@media (max-width: 600px) { .aviso-idioma { bottom: 5.4rem; right: 1rem; left: 1rem; flex-wrap: wrap; } }
+
 /* ---------- Pie de página ---------- */
 .pie { border-top: 1px solid var(--linea); padding-block: clamp(3rem, 6vw, 4.5rem) 2rem; }
 .pie-grid { display: grid; grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr)); gap: 2rem; }

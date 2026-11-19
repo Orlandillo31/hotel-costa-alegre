@@ -237,6 +237,7 @@ if (formulario) {
     ];
     if (email)    lineas.push(`- Correo: ${email}`);
     if (telefono) lineas.push(`- Teléfono: ${telefono}`);
+    lineas.push('- Mayor de 18 años: sí (confirmado en la página)');
     if (comentarios) {
       lineas.push('', '*PETICIONES ESPECIALES*', ...comentarios.split(/\r?\n/).map(l => '> ' + l));
     }
@@ -271,7 +272,8 @@ if (formulario) {
       email:     email !== '' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email),   // opcional
       llegada:   !llegada || llegada < fechaLocal(),
       salida:    !salida || salida <= llegada,
-      huespedes: !campoHues.value
+      huespedes: !campoHues.value,
+      mayor:     !document.getElementById('campo-mayor').checked   // solo adultos pueden reservar
     };
     Object.entries(errores).forEach(([campo, hay]) => mostrarError('campo-' + campo, 'error-' + campo, hay));
     if (Object.values(errores).some(Boolean)) {
@@ -296,8 +298,8 @@ if (formulario) {
   });
 
   // Quitar el error de un campo en cuanto el usuario lo corrige
-  ['nombre', 'email', 'llegada', 'salida', 'huespedes'].forEach(campo => {
-    document.getElementById('campo-' + campo).addEventListener('input', () => mostrarError('campo-' + campo, 'error-' + campo, false));
+  ['nombre', 'email', 'llegada', 'salida', 'huespedes', 'mayor'].forEach(campo => {
+    document.getElementById('campo-' + campo).addEventListener(campo === 'mayor' ? 'change' : 'input', () => mostrarError('campo-' + campo, 'error-' + campo, false));
   });
 
   // ---------- Precio estimado ----------
