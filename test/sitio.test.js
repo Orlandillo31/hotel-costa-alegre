@@ -259,3 +259,13 @@ test('solo un adulto puede reservar; la página no se cambia sola al inglés', a
   assert.match(i18n, /if \(guardado === 'en'\) aplicar\('en'\)/, 'solo cambia a inglés si el visitante lo eligió');
   assert.doesNotMatch(i18n, /test\(delNavegador\) \? 'es' : 'en'/, 'sin cambio automático por el idioma del navegador');
 });
+
+test('correo oficial del hotel en todas las páginas', async () => {
+  for (const ruta of [...PAGINAS, '/404']) {
+    const html = await (await fetch(B + ruta)).text();
+    assert.match(html, /mailto:reservas@villascangrejo\.com/, ruta);
+    assert.doesNotMatch(html, /@gmail\.com/, ruta + ': queda un correo de Gmail');
+  }
+  const ficha = JSON.parse((await (await fetch(B + '/')).text()).match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
+  assert.equal(ficha.email, 'reservas@villascangrejo.com');
+});
